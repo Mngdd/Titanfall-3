@@ -7,19 +7,26 @@
 // Достаточное расстояние - примерно среднее расстояние как длина большого пальца
 // Большое расстояние - по крайней мере четверть карты
 // Маленькое расстояние
-// Я собираюсь сделать только генерацию чисел и возможно сохранения их в вектор
-// 
-// Игроки будут разделены на две команды
-// Игра будет заканчиваться, когда у одной команды кончатся жизни
+//
 // При смерти игрок появляется на достаточном расстоянии от союзников
 
+#include <cmath>
+#include <Graph_lib/Point.h>
 
 #include "level_gen.h"
-#include "Point.h"
 #include "std_lib_facilities.h"
 
+vector<Point> obstacles;
+
 Point SufDistancePoint() {
-    int x = randint(1200);
-    int y = randint(720);
-    return Point(x,y);
+    while (True)
+    {
+        Point TryPoint = {randint(1200), randint(720)};
+
+        for (size_t i = 0, i < obstacles.size(); i++) {
+            if (pow(pow(obstacles[i].x, 2) + pow(obstacles[i], 2), 0.5) < ShortDist)
+            break;
+    }
+    }
+    return TryPoint; // ПРОГА МОЖЕТ ЗАВИСНУТЬ, ЕСЛИ НА ПОЛЕ НЕТ МЕСТА
 }
