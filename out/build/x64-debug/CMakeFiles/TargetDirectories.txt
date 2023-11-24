@@ -1,0 +1,5 @@
+C:/Documents/GitHub/Titanfall-3/CMAKE/Titanfall-3/out/build/x64-debug/CMakeFiles/edit_cache.dir
+C:/Documents/GitHub/Titanfall-3/CMAKE/Titanfall-3/out/build/x64-debug/CMakeFiles/rebuild_cache.dir
+C:/Documents/GitHub/Titanfall-3/CMAKE/Titanfall-3/out/build/x64-debug/Titanfall-3/CMakeFiles/Titanfall-3.dir
+C:/Documents/GitHub/Titanfall-3/CMAKE/Titanfall-3/out/build/x64-debug/Titanfall-3/CMakeFiles/edit_cache.dir
+C:/Documents/GitHub/Titanfall-3/CMAKE/Titanfall-3/out/build/x64-debug/Titanfall-3/CMakeFiles/rebuild_cache.dir
