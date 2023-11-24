@@ -19,8 +19,7 @@
 #include "std_lib_facilities.h"
 
 Point SufDistancePoint() {
-    x = randint(1200)
-    y = randint(720)
-    return Point(x,y)
+    int x = randint(1200);
+    int y = randint(720);
+    return Point(x,y);
 }
-
