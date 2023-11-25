@@ -1,56 +1,83 @@
-#include <cmath>
 #include <Graph_lib/Point.h>
 #include <Graph_lib/Graph.h>
 
 #include "level_gen.h"
 #include "std_lib_facilities.h"
+#include "settings.h"
 
-vector<Circle> obstacles;
-vector<Point> players;
+void HugeObsSpawn() { // returns vector of Huge Obstacles
+    for (size_t i = 0, i < NumOfHugeObs, ++i) {
+        Point Center {pow(randint(pow(FieldLength, HugeObsPower)), 1/HugeObsPower), 
+                    pow(randint(pow(FieldWidth, HugeObsPower)), 1/HugeObsPower)};
+        int Radius = randint(HugeObsMinRad, HugeObsMaxRad);
 
-Point PlayerSpawnPoint() { // returns Point for player to spawn
-    while true
-    {
-        Point TryPoint = {randint(1200), randint(720)};
-        bool fit = true;
-
-        for (size_t i = 0, i < players.size(), i++) {
-            if (dist(players[i], TryPoint) < ShortDist) {
-                fit = false
-                break;
-            }
-        }
-
-        if (fit) {
-            return TryPoint;
-        } // ПРОГА МОЖЕТ ЗАВИСНУТЬ, ЕСЛИ НА ПОЛЕ НЕТ МЕСТА
+        Circle Obstacle {Center, Radius};
+        HugeObstacles.push_back(Obstacle);
     }
 }
 
-Point PlayerRespawnPoint() { // returns Point for player to respawn
-    while true
-    {
-        Point TryPoint = {randint(1200), randint(720)};
-        bool fit = true;
+void MediumObsSpawn() { // returns vector of Medium Obstacles
+    for (size_t i = 0, i < NumOfMediumObs, ++i) {
+        Point Center {pow(randint(pow(FieldLength, MediumObsPower)), 1/MediumObsPower), 
+                    pow(randint(pow(FieldWidth, MediumObsPower)), 1/MediumObsPower)};
+        int Radius = randint(MediumObsMinRad, MediumObsMaxRad);
 
-        for (size_t i = 0, i < obstacles.size(); i++) {
-            if (dist(obstacles[i].center(), TryPoint) < ShortDist) {
-                fit = false;
-                break;
-            }
-        }
-
-        for (size_t i = 0, i < players.size(), i++) {
-            if (dist(players[i], TryPoint) < ShortDist) {
-                fit = false
-                break;
-            }
-        }
-
-        if (fit) {
-            return TryPoint;
-        } // ПРОГА МОЖЕТ ЗАВИСНУТЬ, ЕСЛИ НА ПОЛЕ НЕТ МЕСТА
+        Circle Obstacle {Center, Radius};
+        MediumObstacles.push_back(Obstacle);
     }
 }
 
+void SmallObsSpawn() { // returns vector of Small Obstacles
+    for (size_t i = 0, i < NumOfSmallObs, ++i) {
+        Point Center {randint(FieldLength), randint(FieldWidth)};
+        int Radius = randint(SmallObsMinRad, SmallObsMaxRad);
 
+        Circle Obstacle {Center, Radius};
+        SmallObstacles.push_back(Obstacle);
+    }
+}
+
+void PlayersSpawn() {
+    for (size_t j = 0, j < NumOfPlayers, ++i) {
+        while (true)
+        {
+            Point Center {randint(SpawnWallMinDist, FieldLength - SpawnWallMinDist), 
+                        randint(SpawnWallMinDist, FieldWidth - SpawnWallMinDist)};
+            bool Checks = True;
+
+            for (size_t i = 0, i < HugeObstacles.size(), ++i) {
+                if (dist(Center, HugeObstacles[i].center()) < HugeObstacles[i].radius() + PlayerRad + SpawnObsMinDist) {
+                    Checks = false;
+                    break;
+                }
+            }
+
+            for (size_t i = 0, i < MediumObstacles.size(), ++i) {
+                if (dist(Center, MediumObstacles[i].center()) < MediumObstacles[i].radius() + PlayerRad + SpawnObsMinDist) {
+                    Checks = false;
+                    break;
+                }
+            }
+
+            for (size_t i = 0, i < SmallObstacles.size(), ++i) {
+                if (dist(Center, SmallObstacles[i].center()) < SmallObstacles[i].radius() + PlayerRad + SpawnObsMinDist) {
+                    Checks = false;
+                    break;
+                }
+            }
+
+            for (size_t i = 0, i < Players.size(), ++ i) {
+                if (dist(Center, Players[i].center()) < PlayerRad + PlayerRad + SpawnBetwMinDist) {
+                    Checks = false;
+                    break;
+                }
+            }
+
+            if (Checks) {
+                Circle Player {Center, PlayerRad};
+                Players.push_back(Player);
+                break;
+            }
+        }
+    }
+}
