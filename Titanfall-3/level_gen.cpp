@@ -17,16 +17,47 @@
 #include "std_lib_facilities.h"
 
 vector<Point> obstacles;
+vector<Point> players;
 
-Point SufDistancePoint() {
-    while (True)
+Point PlayerSpawnPoint() {
+    while true
     {
         Point TryPoint = {randint(1200), randint(720)};
+        bool fit = true;
 
         for (size_t i = 0, i < obstacles.size(); i++) {
-            if (pow(pow(obstacles[i].x, 2) + pow(obstacles[i], 2), 0.5) < ShortDist)
+            if (dist(obstacles[i], TryPoint) < ShortDist) {
+                fit = false;
+                break;
+            }
+        }
+
+        for (size_t i = 0, i < players.size(), i++) {
+            if (dist(players[i], TryPoint) < ShortDist) {
+                fit = false
+                break;
+            }
+        }
+
+        if (fit) {
+            return TryPoint;
+        } // ПРОГА МОЖЕТ ЗАВИСНУТЬ, ЕСЛИ НА ПОЛЕ НЕТ МЕСТА
+    }
+}
+Point SufDistancePoint() {
+    while (true)
+    {
+        Point TryPoint = {randint(1200), randint(720)};
+        bool fit = true
+
+        for (size_t i = 0, i < obstacles.size(); i++) {
+            if (pow(pow(obstacles[i].x - TryPoint.x, 2) + pow(obstacles[i].y - TryPoint.y, 2), 0.5) < ShortDist)
+            fit = false;
             break;
+        }
+
+        if (fit) {
+            return TryPoint;
+        } // ПРОГА МОЖЕТ ЗАВИСНУТЬ, ЕСЛИ НА ПОЛЕ НЕТ МЕСТА
     }
-    }
-    return TryPoint; // ПРОГА МОЖЕТ ЗАВИСНУТЬ, ЕСЛИ НА ПОЛЕ НЕТ МЕСТА
 }
