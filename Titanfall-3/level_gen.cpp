@@ -7,8 +7,8 @@
 
 void HugeObsSpawn() {   // adds obstacles to HugeObstacles
     for (size_t i = 0, i < NumOfHugeObs, ++i) {
-        Point Center {pow(randint(pow(FieldLength, HugeObsPower)), 1/HugeObsPower), 
-                    pow(randint(pow(FieldWidth, HugeObsPower)), 1/HugeObsPower)};
+        Point Center {static_cast<int>(pow(randint(static_cast<int>(pow(FieldLength, HugeObsPower))), 1/HugeObsPower)), 
+                    static_cast<int>(pow(randint(static_cast<int>(pow(FieldWidth, HugeObsPower))), 1/HugeObsPower))};
         int Radius = randint(HugeObsMinRad, HugeObsMaxRad);
 
         Circle Obstacle {Center, Radius};
@@ -18,8 +18,8 @@ void HugeObsSpawn() {   // adds obstacles to HugeObstacles
 
 void MediumObsSpawn() { // adds obstacles to MediumObstacles
     for (size_t i = 0, i < NumOfMediumObs, ++i) {
-        Point Center {pow(randint(pow(FieldLength, MediumObsPower)), 1/MediumObsPower), 
-                    pow(randint(pow(FieldWidth, MediumObsPower)), 1/MediumObsPower)};
+        Point Center {static_cast<int>(pow(randint(static_cast<int>(pow(FieldLength, MediumObsPower)), 1/MediumObsPower))), 
+                    static_cast<int>(pow(randint(static_cast<int>(pow(FieldWidth, MediumObsPower)), 1/MediumObsPower)))};
         int Radius = randint(MediumObsMinRad, MediumObsMaxRad);
 
         Circle Obstacle {Center, Radius};
