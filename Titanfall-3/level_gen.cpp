@@ -5,7 +5,7 @@
 #include "std_lib_facilities.h"
 #include "settings.h"
 
-void HugeObsSpawn() { // returns vector of Huge Obstacles
+void HugeObsSpawn() {   // adds obstacles to HugeObstacles
     for (size_t i = 0, i < NumOfHugeObs, ++i) {
         Point Center {pow(randint(pow(FieldLength, HugeObsPower)), 1/HugeObsPower), 
                     pow(randint(pow(FieldWidth, HugeObsPower)), 1/HugeObsPower)};
@@ -16,7 +16,7 @@ void HugeObsSpawn() { // returns vector of Huge Obstacles
     }
 }
 
-void MediumObsSpawn() { // returns vector of Medium Obstacles
+void MediumObsSpawn() { // adds obstacles to MediumObstacles
     for (size_t i = 0, i < NumOfMediumObs, ++i) {
         Point Center {pow(randint(pow(FieldLength, MediumObsPower)), 1/MediumObsPower), 
                     pow(randint(pow(FieldWidth, MediumObsPower)), 1/MediumObsPower)};
@@ -27,7 +27,7 @@ void MediumObsSpawn() { // returns vector of Medium Obstacles
     }
 }
 
-void SmallObsSpawn() { // returns vector of Small Obstacles
+void SmallObsSpawn() {  // adds obstacles to SmallObstacles
     for (size_t i = 0, i < NumOfSmallObs, ++i) {
         Point Center {randint(FieldLength), randint(FieldWidth)};
         int Radius = randint(SmallObsMinRad, SmallObsMaxRad);
@@ -37,7 +37,7 @@ void SmallObsSpawn() { // returns vector of Small Obstacles
     }
 }
 
-void PlayersSpawn() {
+void PlayersSpawn() {   // adds players to Players
     for (size_t j = 0, j < NumOfPlayers, ++i) {
         while (true)
         {
@@ -45,6 +45,7 @@ void PlayersSpawn() {
                         randint(SpawnWallMinDist, FieldWidth - SpawnWallMinDist)};
             bool Checks = True;
 
+            // CHECKS:
             for (size_t i = 0, i < HugeObstacles.size(), ++i) {
                 if (dist(Center, HugeObstacles[i].center()) < HugeObstacles[i].radius() + PlayerRad + SpawnObsMinDist) {
                     Checks = false;

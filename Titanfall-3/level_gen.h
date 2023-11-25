@@ -29,23 +29,13 @@
 //
 // При смерти игрок появляется на достаточном расстоянии от противников
 
-// to-do list:
-// 1) Придумать что-то, что можно сделать с ситуациями когда нет места для игрока:
-// Решения:
-//  1.Заспавнить вне зависимости от игрока и контролировать количество препятствий
-// 2) Продумать и реализовать генерацию
-// 3) Прописать функцию текущей генерации медиум и хьюдж (сейчас дважды прописано одно и то же)
-
-// ЕСЛИ БУДЕМ ДЕЛАТЬ НАСТРОЙКИ, УБРАТЬ КОНСТЫ ПЕРЕД ПЕРЕМЕННЫМИ
-// Вообще я хз где вообще-такие настройки хранить, но их я буду инключить в level_gen 100 проц
-
 #include <cmath>
 #include "std_lib_facilities.h"
 
-void HugeObsSpawn()     // adds Obstacles to HugeObstacles
-void MediumObsSpawn()   // adds Obstacles to MediumObstacles
-void SmallObsSpawn()    // adds Obstacles to SmallObstacles
-void PlayersSpawn()     // adds Players to Players
+void HugeObsSpawn()     // adds obstacles to HugeObstacles
+void MediumObsSpawn()   // adds obstacles to MediumObstacles
+void SmallObsSpawn()    // adds obstacles to SmallObstacles
+void PlayersSpawn()     // adds players to Players
 
 extern vector<Circle> HugeObstacles;
 extern vector<Circle> MediumObstacles;
