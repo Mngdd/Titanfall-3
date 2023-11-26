@@ -2,6 +2,7 @@
 #define POINT_GUARD
 
 #include <math.h>
+
 namespace Graph_lib {
 
 struct Point
@@ -36,7 +37,6 @@ inline bool operator== (Point a, Point b) { return a.x == b.x && a.y == b.y; }
 inline bool operator!= (Point a, Point b) { return !(a == b); }
 
 inline double dist (Point a, Point b) { return pow(pow(a.x - b.x, 2) + pow(a.y - b.y, 2), 0.5)}
-
 }  // namespace Graph_lib
 
 #endif  // POINT_GUARD
