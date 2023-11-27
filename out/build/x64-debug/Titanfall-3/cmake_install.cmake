@@ -1,8 +1,16 @@
+<<<<<<< Updated upstream
 # Install script for directory: C:/Documents/GitHub/Titanfall-3/CMAKE/Titanfall-3/Titanfall-3
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
   set(CMAKE_INSTALL_PREFIX "C:/Documents/GitHub/Titanfall-3/CMAKE/Titanfall-3/out/install/x64-debug")
+=======
+# Install script for directory: C:/Documents/GitHub/Titanfall-3/Titanfall-3
+
+# Set the install prefix
+if(NOT DEFINED CMAKE_INSTALL_PREFIX)
+  set(CMAKE_INSTALL_PREFIX "C:/Documents/GitHub/Titanfall-3/out/install/x64-debug")
+>>>>>>> Stashed changes
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -32,3 +40,10 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
 endif()
 
+<<<<<<< Updated upstream
+=======
+if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "C:/Documents/GitHub/Titanfall-3/out/build/x64-debug/Titanfall-3/Titanfall-3.exe")
+endif()
+
+>>>>>>> Stashed changes
