@@ -31,12 +31,16 @@
 // При смерти игрок появляется на достаточном расстоянии от противников
 
 #include <cmath>
+#include <Graph_lib/Graph.h>
+#include <Graph_lib/Simple_window.h>
 #include "std_lib_facilities.h"
+#include <Graph_lib/GUI.h>
+using namespace Graph_lib;
 
-void HugeObsSpawn()     // adds obstacles to HugeObstacles
-void MediumObsSpawn()   // adds obstacles to MediumObstacles
-void SmallObsSpawn()    // adds obstacles to SmallObstacles
-void PlayersSpawn()     // adds players to Players
+void HugeObsSpawn();     // adds obstacles to HugeObstacles
+void MediumObsSpawn();   // adds obstacles to MediumObstacles
+void SmallObsSpawn();    // adds obstacles to SmallObstacles
+void PlayersSpawn();     // adds players to Players
 
 extern vector<Circle> HugeObstacles;
 extern vector<Circle> MediumObstacles;
