@@ -9,9 +9,7 @@ add_executable(
         enviroment.cpp
         level_gen.cpp
         server.cpp
-        client.h
         client.cpp
-        err_handle.h
         err_handle.cpp
 )
 
