@@ -7,7 +7,7 @@
 #include "settings.h"
 
 void HugeObsSpawn() {   // adds obstacles to HugeObstacles
-    for (size_t i = 0, i < NumOfHugeObs, ++i) {
+    for (size_t i = 0; i < NumOfHugeObs, ++i) {
         Point Center {static_cast<int>(pow(Graph_lib::randint(static_cast<int>(pow(FieldLength, HugeObsPower))), 1/HugeObsPower)), 
                     static_cast<int>(pow(randint(static_cast<int>(pow(FieldWidth, HugeObsPower))), 1/HugeObsPower))};
         int Radius = randint(HugeObsMinRad, HugeObsMaxRad);
