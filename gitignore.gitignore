@@ -1,3 +1,4 @@
 .clangformat
 .vs
 .vscode
+gitignore.gitignore
