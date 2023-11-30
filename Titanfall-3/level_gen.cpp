@@ -1,136 +1,185 @@
-<<<<<<< Updated upstream
-
-#include <Graph_lib/Point.h>
-
-=======
->>>>>>> Stashed changes
 #include "level_gen.h"
 #include "settings.h"
+#include <cmath>
+#include <ctime>
+#include <random>
 
-<<<<<<< Updated upstream
-void HugeObsSpawn() {   // adds obs tacles to HugeObstacles
-    for (size_t i = 0; i < NumOfHugeObs; ++i) {
-        Point Center {static_cast<int>(pow(Graph_lib::randint(static_cast<int>(pow(FieldLength, HugeObsPower))), 1/HugeObsPower)), 
-                    static_cast<int>(pow(Graph_lib::randint(static_cast<int>(pow(FieldWidth, HugeObsPower))), 1/HugeObsPower))};
-        int Radius = Graph_lib::randint(HugeObsMinRad, HugeObsMaxRad);
-=======
 vector<Circle*> HugeObstacles;
 vector<Circle*> MediumObstacles;
 vector<Circle*> SmallObstacles;
->>>>>>> Stashed changes
 
+vector<Circle*> Obstacles;
 vector<Circle*> Players;
 
+struct PRNG
+{
+    std::mt19937 engine;
+};
 
-void HugeObsSpawn() {   // adds obstacles to HugeObstacles
-    for (size_t i = 0; i < NumOfHugeObs; ++i) {
-        Point Center {static_cast<int>(pow(Graph_lib::randint(static_cast<int>(pow(FieldLength, HugeObsPower))), 1/HugeObsPower)), 
-                    static_cast<int>(pow(Graph_lib::randint(static_cast<int>(pow(FieldWidth, HugeObsPower))), 1/HugeObsPower))};
-        int Radius = Graph_lib::randint(HugeObsMinRad, HugeObsMaxRad);
-        
-        Circle* Obstacle = new Circle {Center, Radius};
+void initGenerator (PRNG& generator)
+{
+    const unsigned seed = unsigned(std::time(nullptr));
+    generator.engine.seed(seed);  // Получение случайного зерна для рандома
+}
+
+unsigned random (PRNG& generator, unsigned minValue, unsigned maxValue)
+{
+    // Создаётся распределение
+    std::uniform_int_distribution<unsigned> distribution(minValue, maxValue);
+    // Вычисляется число, вызвав распределение как функцию, передав генератор произвольных чисел аргументом
+    return distribution(generator.engine);
+}
+
+void HugeObsSpawn ()
+{  // adds obstacles to HugeObstacles
+    for (size_t i = 0; i < NumOfHugeObs; ++i)
+    {
+        PRNG generator;
+        initGenerator(generator);
+        srand(time(NULL));
+
+        char xxsign = rand() % 2;
+        char yysign = rand() % 2;
+        int xsign = (xxsign == 0) ? 1 : -1;
+        int ysign = (yysign == 0) ? 1 : -1;
+        int x = static_cast<int>(
+                    pow(random(generator, 0, static_cast<int>(pow(FieldLength / 2, HugeObsPower))), 1 / HugeObsPower)) *
+                xsign;
+        int y = static_cast<int>(
+                    pow(random(generator, 0, static_cast<int>(pow(FieldWidth / 2, HugeObsPower))), 1 / HugeObsPower)) *
+                ysign;
+
+        Point Center{x, y};
+        int Radius = random(generator, HugeObsMinRad, HugeObsMaxRad);
+
+        Circle* Obstacle = new Circle{Center, Radius};
         (*Obstacle).set_fill_color(Color::black);
         HugeObstacles.push_back(Obstacle);
     }
 }
 
-void MediumObsSpawn() { // adds obstacles to MediumObstacles
-    for (size_t i = 0; i < NumOfMediumObs; ++i) {
-<<<<<<< Updated upstream
-        Point Center {static_cast<int>(pow(Graph_lib::randint(static_cast<int>(pow(FieldLength, MediumObsPower)), 1/MediumObsPower))), 
-                    static_cast<int>(pow(Graph_lib::randint(static_cast<int>(pow(FieldWidth, MediumObsPower)), 1/MediumObsPower)))};
-        int Radius = Graph_lib::randint(MediumObsMinRad, MediumObsMaxRad);
-=======
-        Point Center {static_cast<int>(pow(Graph_lib::randint(static_cast<int>(pow(FieldLength, MediumObsPower))), 1/MediumObsPower)), 
-                    static_cast<int>(pow(Graph_lib::randint(static_cast<int>(pow(FieldWidth, MediumObsPower))), 1/MediumObsPower))};
-        int Radius = Graph_lib::randint(MediumObsMinRad, MediumObsMaxRad);
-        
-        Circle* Obstacle = new Circle {Center, Radius};
-        (*Obstacle).set_fill_color(Color::black);
->>>>>>> Stashed changes
+void MediumObsSpawn ()
+{  // adds obstacles to MediumObstacles
+    for (size_t i = 0; i < NumOfMediumObs; ++i)
+    {
+        PRNG generator;
+        initGenerator(generator);
+        srand(time(NULL));
 
+        char xxsign = rand() % 2;
+        char yysign = rand() % 2;
+        int xsign = (xxsign == 0) ? 1 : -1;
+        int ysign = (yysign == 0) ? 1 : -1;
+        int x = static_cast<int>(pow(random(generator, 0, static_cast<int>(pow(FieldLength / 2, MediumObsPower))),
+                                     1 / MediumObsPower)) *
+                xsign;
+        int y = static_cast<int>(pow(random(generator, 0, static_cast<int>(pow(FieldWidth / 2, MediumObsPower))),
+                                     1 / MediumObsPower)) *
+                ysign;
+
+        Point Center{x, y};
+        int Radius = random(generator, MediumObsMinRad, MediumObsMaxRad);
+
+        Circle* Obstacle = new Circle{Center, Radius};
+        (*Obstacle).set_fill_color(MediumObsColor);
         MediumObstacles.push_back(Obstacle);
     }
 }
 
-void SmallObsSpawn() {  // adds obstacles to SmallObstacles
-    for (size_t i = 0; i < NumOfSmallObs; ++i) {
-        Point Center {Graph_lib::randint(FieldLength), Graph_lib::randint(FieldWidth)};
-        int Radius = Graph_lib::randint(SmallObsMinRad, SmallObsMaxRad);
-<<<<<<< Updated upstream
-=======
+void SmallObsSpawn ()
+{  // adds obstacles to SmallObstacles
+    PRNG generator;
+    initGenerator(generator);
+    srand(time(NULL));
 
-        Circle* Obstacle = new Circle {Center, Radius};
-        (*Obstacle).set_fill_color(Color::black);
->>>>>>> Stashed changes
+    int x = random(generator, 0, FieldLength);
+    int y = random(generator, 0, FieldWidth);
 
-        SmallObstacles.push_back(Obstacle);
-    }
+    Point Center{x, y};
+    int Radius = random(generator, SmallObsMinRad, SmallObsMaxRad);
+
+    Circle* Obstacle = new Circle{Center, Radius};
+    (*Obstacle).set_fill_color(SmallObsColor);
+    SmallObstacles.push_back(Obstacle);
 }
 
-void PlayersSpawn() {   // adds players to Players
-<<<<<<< Updated upstream
-    for (size_t j = 0; j < NumOfPlayers; ++i) {
-=======
-    for (size_t j = 0; j < NumOfPlayers; ++j) {
->>>>>>> Stashed changes
+void PlayersSpawn ()
+{  // adds players to Players
+    for (size_t j = 0; j < NumOfPlayers; ++j)
+    {
         while (true)
         {
-            Point Center {Graph_lib::randint(SpawnWallMinDist, FieldLength - SpawnWallMinDist), 
-                        Graph_lib::randint(SpawnWallMinDist, FieldWidth - SpawnWallMinDist)};
+            Point Center{Graph_lib::randint(SpawnWallMinDist, FieldLength - SpawnWallMinDist),
+                         Graph_lib::randint(SpawnWallMinDist, FieldWidth - SpawnWallMinDist)};
             bool Checks = true;
 
             // CHECKS:
-            for (size_t i = 0; i < HugeObstacles.size(); ++i) {
-<<<<<<< Updated upstream
-                if (dist(Center, HugeObstacles[i].center()) < HugeObstacles[i].radius() + PlayerRad + SpawnObsMinDist) {
-=======
-                if (dist(Center, (*HugeObstacles[i]).center()) < (*HugeObstacles[i]).radius() + PlayerRad + SpawnObsMinDist) {
->>>>>>> Stashed changes
+            for (size_t i = 0; i < HugeObstacles.size(); ++i)
+            {
+                if (dist(Center, (*HugeObstacles[i]).center()) <
+                    (*HugeObstacles[i]).radius() + PlayerRad + SpawnObsMinDist)
+                {
                     Checks = false;
                     break;
                 }
             }
 
-            for (size_t i = 0; i < MediumObstacles.size(); ++i) {
-<<<<<<< Updated upstream
-                if (dist(Center, MediumObstacles[i].center()) < MediumObstacles[i].radius() + PlayerRad + SpawnObsMinDist) {
-=======
-                if (dist(Center, (*MediumObstacles[i]).center()) < (*MediumObstacles[i]).radius() + PlayerRad + SpawnObsMinDist) {
->>>>>>> Stashed changes
+            for (size_t i = 0; i < MediumObstacles.size(); ++i)
+            {
+                if (dist(Center, (*MediumObstacles[i]).center()) <
+                    (*MediumObstacles[i]).radius() + PlayerRad + SpawnObsMinDist)
+                {
                     Checks = false;
                     break;
                 }
             }
 
-            for (size_t i = 0; i < SmallObstacles.size(); ++i) {
-<<<<<<< Updated upstream
-                if (dist(Center, SmallObstacles[i].center()) < SmallObstacles[i].radius() + PlayerRad + SpawnObsMinDist) {
-=======
-                if (dist(Center, (*SmallObstacles[i]).center()) < (*SmallObstacles[i]).radius() + PlayerRad + SpawnObsMinDist) {
->>>>>>> Stashed changes
+            for (size_t i = 0; i < SmallObstacles.size(); ++i)
+            {
+                if (dist(Center, (*SmallObstacles[i]).center()) <
+                    (*SmallObstacles[i]).radius() + PlayerRad + SpawnObsMinDist)
+                {
                     Checks = false;
                     break;
                 }
             }
 
-            for (size_t i = 0; i < Players.size(); ++ i) {
-<<<<<<< Updated upstream
-                if (dist(Center, Players[i].center()) < PlayerRad + PlayerRad + SpawnBetwMinDist) {
-=======
-                if (dist(Center, (*Players[i]).center()) < PlayerRad + PlayerRad + SpawnBetwMinDist) {
->>>>>>> Stashed changes
+            for (size_t i = 0; i < Players.size(); ++i)
+            {
+                if (dist(Center, (*Players[i]).center()) < PlayerRad + PlayerRad + SpawnBetwMinDist)
+                {
                     Checks = false;
                     break;
                 }
             }
 
-            if (Checks) {
-                Circle* Player = new Circle {Center, PlayerRad};
+            if (Checks)
+            {
+                Circle* Player = new Circle{Center, PlayerRad};
                 (*Player).set_fill_color(Color::dark_green);
                 Players.push_back(Player);
                 break;
             }
         }
+    }
+}
+
+void Generate ()
+{
+    HugeObsSpawn();
+    MediumObsSpawn();
+    SmallObsSpawn();
+    PlayersSpawn();
+    for (Circle* Obstacle : HugeObstacles)
+    {
+        Obstacles.push_back(Obstacle);
+    }
+    for (Circle* Obstacle : MediumObstacles)
+    {
+        Obstacles.push_back(Obstacle);
+    }
+    for (Circle* Obstacle : SmallObstacles)
+    {
+        Obstacles.push_back(Obstacle);
     }
 }

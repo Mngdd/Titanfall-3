@@ -1,16 +1,6 @@
-﻿
+﻿cmake_minimum_required(VERSION 3.20)
+
 set(TARGET "Titanfall-3")
-<<<<<<< Updated upstream
-project(${TARGET} LANGUAGES CXX)
-add_executable(
-    ${TARGET}
-    main.cpp
-    enviroment.cpp
-    level_gen.cpp
-    server.cpp
-)
-install(TARGETS ${TARGET})
-=======
 
 set(HEADERS
     level_gen.h
@@ -99,4 +89,3 @@ install(TARGETS ${TARGET})
 # endif()
 
 # install(TARGETS ${TARGET})
->>>>>>> Stashed changes
