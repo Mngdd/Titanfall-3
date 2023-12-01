@@ -2,53 +2,40 @@
 #ifndef LEVEL_GEN_H
 #define LEVEL_GEN_H
 
-// Работает гавкошмыг Юманов Василий Михайлович
-
-// Генерация:
-// Сначала генерируются игроки на случайных координатах
-// Затем генерируютяс препятствия между игроками
-// Затем добавляются случайные препятствия
-
-// Но надо всю генерацию переработать, т.к. без прямых прострелов это почти неиграбельно и скучно и невозможно попасть и
-// вообще ужас
-
-// Вариант генерации:
-// Сначала генерируются препятствия, потом игроки
-// n - количество игроков
-// 1. Сначала появляется n кругов большого радиуса в почти случайном месте таких, что вероятнее будет ближе к краю
-// карты. (координата будет браться в квадрате или другой степени больше 1, нужна возможность отрисовки)
-// 2. Затем появляется n кругов среднего радиуса так, что что вероятнее всего будут ближе к середине карты
-// (кординаты будут браться в степени меньше 1, требуется возможность отрисовки)
-// 3. Затем в совершенно случайных местах появляется n маленьких кругов
-// 4. Затем генерируются игроки на малом расстоянии друг от друга
-
-// Карта будет скорее всего 1200:720
-
-// Термины:
-// Достаточное расстояние - примерно среднее расстояние как длина большого пальца
-// Большое расстояние - по крайней мере четверть карты
-// Маленькое расстояние
-//
-// При смерти игрок появляется на достаточном расстоянии от противников
-
 #include "std_lib_facilities.h"
 #include <Graph_lib/Graph.h>
 #include <Graph_lib/Point.h>
 #include <Graph_lib/Simple_window.h>
 using namespace Graph_lib;
 
+// random tech
+struct PRNG
+{
+    std::mt19937 engine;
+};
+void initGenerator(PRNG& generator);    // generates seed for random
+unsigned random(PRNG& generator, unsigned minValue, unsigned maxValue); // gives random ints
+void IntroduceRandom(); // shortcut for initGenerator
+
+Point NotsoRandomPoint(double Power);   // Point "Power" far away from the center
+
+// obstacles generation
 void HugeObsSpawn ();    // adds obstacles to HugeObstacles
 void MediumObsSpawn ();  // adds obstacles to MediumObstacles
 void SmallObsSpawn ();   // adds obstacles to SmallObstacles
+
+bool ObsDistPlayerCheck(Circle* Obstacle);  // obstacle not overlapping player
+void ObstaclesRespawn(); // regenerates obstacles with existing players
+
+// players generation
+bool PlayerDistObsCheck(Point Player);      // Player not overlapping Obstacles
+bool PlayerDistPlayersCheck(Point Player);  // Player not overlapping Players
+void PlayerSpawn();      // adds player to Players
 void PlayersSpawn ();    // adds players to Players
 
-void Generate(); // Generates everything
+void Generate();        // Generates everything at the start of the game
 
-extern vector<Circle*> HugeObstacles;
-extern vector<Circle*> MediumObstacles;
-extern vector<Circle*> SmallObstacles;
-
-extern vector<Circle*> Obstacles;
-extern vector<Circle*> Players;
+extern vector<Circle*> Obstacles;   // vector of all Obstacles
+extern vector<Circle*> Players;     // vector of all players
 
 #endif  // TITANFALL_3_LEVEL_GEN_H
