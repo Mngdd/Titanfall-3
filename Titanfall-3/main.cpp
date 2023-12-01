@@ -16,8 +16,6 @@ int main() {
     int port = 55355;
 
     std::thread srv(server_test, port); // starts rn
-    int waitin=0;
-    std::cin >> waitin;
     std::thread cli(client_test, ip.c_str(), port);
 
     // waits for finish its exec

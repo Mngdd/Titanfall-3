@@ -22,9 +22,10 @@ void Listen(SOCKET sock, int backlog);
 SOCKET Accept(SOCKET sock, struct sockaddr *addr, socklen_t *addr_len);
 
 // обертка для connect (для обработки ошибок), соединяемся с сокетом sock
-void Connect(SOCKET sock, const struct sockaddr *addr, socklen_t addr_len);
+void Connect(SOCKET sock, addrinfo *result);
 
 // обертка для inet_pton (для обработки ошибок), преобразует сетевой адрес IPv4 или IPv6
 // в стандартной форме представления текста в числовую двоичную форму
-void Inet_pton(int af, const char *src, void *dst);
+void Inet_pton(int af, const char *src, void *dst); //TODO: скорее всего не нужен больше, удалить мб
+//TODO: добавить Send и Read!!
 #endif //TITANFALL_3_ERR_HANDLE_H

@@ -12,7 +12,7 @@ int server_test(int port) {
     int iResult; // сюда результат выполнения пишем (успех/ошибка)
 
     // инициализируем Winsock, проверяем на ошибки
-    iResult = WSAStartup(MAKEWORD(2,2), &wsaData); // используем winsock 2.2
+    iResult = WSAStartup(MAKEWORD(2, 2), &wsaData); // используем winsock 2.2
     if (iResult != 0) {
         WSACleanup();
         printf("WSAStartup failed (server): %d\n", iResult);
@@ -42,7 +42,7 @@ int server_test(int port) {
     // getaddrinfo обеспечивает независимое от протокола преобразование из имени узла ANSI в адрес
     // (крч в нормальный вид приводим адрес, и еще динамич. память выделяем на это!)
     iResult = getaddrinfo(NULL, std::to_string(port).c_str(), &hints, &result);
-    if ( iResult != 0 ) {
+    if (iResult != 0) {
         printf("getaddrinfo failed with error: %d\n", iResult);
         WSACleanup();
         return 1;
@@ -68,15 +68,18 @@ int server_test(int port) {
     closesocket(ListenSocket);
 
     // пока соединение не разорвут, получаем инфу
+    //TODO: добавить Send и Read!!
     do {
         printf("Receiving...\n");
         iResult = recv(ClientSocket, buf, buf_size, 0); // тут получаем
         if (iResult > 0) {  // если клиент не отключен
             printf("Bytes received: %d\n", iResult);
 
+            printf("RECEIVED: %s\n", buf); // там чета сзади прилипает в выводе, наверное служебная инфа
+
             // отправим на ClientSocket данные char'ы из buf, iResult штук
             printf("Sending...\n");
-            iSendResult = send(ClientSocket, buf, iResult, 0 );
+            iSendResult = send(ClientSocket, buf, iResult, 0);
             if (iSendResult == SOCKET_ERROR) {
                 printf("send failed with error: %d\n", WSAGetLastError());
                 closesocket(ClientSocket);
@@ -84,10 +87,9 @@ int server_test(int port) {
                 return 1;
             }
             printf("Bytes sent: %d\n", iSendResult);
-        }
-        else if (iResult == 0) // означает что клиент отключился
-            printf("Connection closing...\n");
-        else  {
+        } else if (iResult == 0) // означает что клиент отключился
+            printf("Closing connection ...\n");
+        else {
             printf("recv failed with error: %d\n", WSAGetLastError());
             closesocket(ClientSocket);
             WSACleanup();

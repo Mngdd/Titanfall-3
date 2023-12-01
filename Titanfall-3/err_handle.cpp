@@ -48,13 +48,12 @@ SOCKET Accept(SOCKET sock, struct sockaddr *addr, socklen_t *addr_len) {
     return res;
 }
 
-void Connect(SOCKET sock, const struct sockaddr *addr, socklen_t addr_len) {
-    int res = connect(sock, addr, addr_len);
-    if (res == SOCKET_ERROR) {
-        perror(("connection failed #" +
-                std::to_string(WSAGetLastError())).c_str());
-        WSACleanup();
-        exit(EXIT_FAILURE);
+void Connect(SOCKET sock, addrinfo *result) {
+    int res = connect(sock, result->ai_addr, int(result->ai_addrlen));
+    if (res == SOCKET_ERROR) { // не получилось подключиться - удаляем сокет, потому что можем
+        perror("--connection failed--");
+        closesocket(sock);
+        sock = INVALID_SOCKET;
     }
 }
 
