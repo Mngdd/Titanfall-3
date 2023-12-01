@@ -81,8 +81,8 @@ bool ObsDistPlayerCheck(Circle* Obstacle)   // obstacle not overlapping player
 {
     for (size_t i = 0; i < Players.size(); ++ i)
     {
-        if (dist(Obstacle.center, (*Player[i]).center()) < 
-                (Obstacle.radius + PlayerRad + SpawnObsMinDist))
+        if (dist(*Obstacle->center, *Player[i]->center) < 
+                (*Obstacle->radius + PlayerRad + SpawnObsMinDist))
         {
             return true;
         } else {
@@ -144,7 +144,7 @@ bool PlayerDistObsCheck(Point Player)   // Player not overlapping Obstacles
     for (size_t i = 0; i < Obstacles.size(); ++i)
     {
         if (dist(Player, (*Obstacles[i]).center()) <
-                ((*Obstacles[i]).radius() + PlayerRad + SpawnObsMinDist))
+                (*Obstacles[i]->radius + PlayerRad + SpawnObsMinDist))
         {
             return true;
         } else {
@@ -157,7 +157,7 @@ bool PlayerDistPlayersCheck(Point Player)   // Player not overlapping Players
 {
     for (size_t i = 0; i < Players.size(); ++i)
     {
-        if (dist(Player, (*Players[i]).center()) < (PlayerRad + PlayerRad + SpawnBetwMinDist))
+        if (dist(Player, *Players[i]->center) < (PlayerRad + PlayerRad + SpawnBetwMinDist))
         {
             return true;
         } else {
