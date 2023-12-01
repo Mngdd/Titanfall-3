@@ -30,12 +30,12 @@ struct Color
 {
   enum Color_type
   {
-    black = FL_BLACK,
     red = FL_RED,
     blue = FL_BLUE,
     green = FL_GREEN,
     yellow = FL_YELLOW,
     white = FL_WHITE,
+    black = FL_BLACK,
     magenta = FL_MAGENTA,
     cyan = FL_CYAN,
     dark_red = FL_DARK_RED,

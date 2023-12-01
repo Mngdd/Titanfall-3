@@ -181,6 +181,7 @@ void PlayerSpawn()      // adds player to Players
             if (RainbowPlayers)
             {
                 int color = random(generator, 1, 13);
+                if ((int)color == 5) {color = 0}    // Перекрашивает черных
                 (*Player).set_fill_color(Color::color);
             } else {
                 (*Player).set_fill_color(PlayerColor);
