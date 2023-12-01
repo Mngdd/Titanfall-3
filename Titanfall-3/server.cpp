@@ -1,56 +1,113 @@
 #include "server.h"
-// TODO: раскидать на хедеры!!
-#include <cstdio> // printf
-#include <unistd.h> // write
 #include "err_handle.h"
+#include <unistd.h> // write + sleep
+// TODO: раскидать на хедеры!!
 
 
-int server_test() {
+int server_test(int port) {
+    printf("server_test started...\n");
+
+    printf("tryin to init WSAStartup on server...\n");
     WSADATA wsaData; // содержит сведения о реализации сокетов Windows
-    int iResult;
+    int iResult; // сюда результат выполнения пишем (успех/ошибка)
 
     // инициализируем Winsock, проверяем на ошибки
     iResult = WSAStartup(MAKEWORD(2,2), &wsaData); // используем winsock 2.2
     if (iResult != 0) {
-        printf("WSAStartup failed: %d\n", iResult);
+        WSACleanup();
+        printf("WSAStartup failed (server): %d\n", iResult);
         return 1;
     }
+    printf("WSAStartup success on server!\n");
 
+    struct addrinfo *result = NULL;
+    struct addrinfo hints; // удобная структура, содержит в себе информацию о сети
 
-    int server = Socket(AF_INET, SOCK_STREAM, 0);
+    SOCKET ListenSocket = INVALID_SOCKET;
+    SOCKET ClientSocket = INVALID_SOCKET;
     // 1-какое семейство протоколов (ipv4)
     // tcp-sock_steam, udp-dgram; 0-я хз, дефолтное значние какоето
 
-    struct sockaddr_in adr = {}; // структура, чтоб задать адрес по протоколу ipv4
-    adr.sin_family = AF_INET; // семейство адресов
-    //TODO: ПОРТ МЕНЯТЬ
-    adr.sin_port = htonl(34543); // порт, на котором слушаем, 34543 - по фану порт взяли
-    Bind(server, (struct sockaddr *) &adr, sizeof(adr)); // теперь привязываем сокет к адресу
+    int iSendResult; // сюда результат отправки пишем (успех/ошибка)
+    char buf[DEFAULT_BUFLEN]; // сюда записываем инфу
+    int buf_size = DEFAULT_BUFLEN;
 
-    Listen(server, 5);  // слушаем на сокете server, максимум 5 челов может ждать в очереди
-    socklen_t adrlen = sizeof(adr);
-    int fd = Accept(server, (struct sockaddr *) &adr, &adrlen); // принимаем клиента с сокета прослушиваемого
-    // adr - впишем инфу о клиенте(юзаем эту переменную для других целей, bind себе уже сохранил)
+    ZeroMemory(&hints, sizeof(hints)); // инициализируем hints, точнее - всю память нулями заполняем
+    hints.ai_family = AF_INET; // семйство адресов (проще - тип соединения типа как ipv4, bluetooth, ipv6...)
+    hints.ai_socktype = SOCK_STREAM; // тип сокета, берем дефолтный
+    hints.ai_protocol = IPPROTO_TCP; // берем протокол TCP, т.е. нам все одной пачкой придет
+    hints.ai_flags = AI_PASSIVE; // пометка для ф-ции getbyaddr, значит что мы потом будем связывать ip+port
+    printf("server variables init finished!\n");
 
-    ssize_t nread; // далее читаем
-    char buf[256]; // куда пишем
-    nread = read(fd, buf, 256); // от кого, куда, сколько максимум прочтем в буфер
-    // nread - сколько байт считали
-
-    if (nread == -1) {
-        perror("read failed");
-        exit(EXIT_FAILURE);
+    // getaddrinfo обеспечивает независимое от протокола преобразование из имени узла ANSI в адрес
+    // (крч в нормальный вид приводим адрес, и еще динамич. память выделяем на это!)
+    iResult = getaddrinfo(NULL, std::to_string(port).c_str(), &hints, &result);
+    if ( iResult != 0 ) {
+        printf("getaddrinfo failed with error: %d\n", iResult);
+        WSACleanup();
+        return 1;
     }
-    if (nread == 0) { // дошли до конца файла
-        printf("EOF occurred\n");
-    } // клиент ниче не собирается больше передавать, но мб ждет передачу
-    write(STDOUT_FILENO, buf, nread); // пишем скок получили
-    write(fd, buf, nread); // передаем на fd -> buf размером nread
-    // просто эхо
+    printf("getaddrinfo success!\n");
+    // создаем сокет ДЛЯ прослушивания подключений клиентов...
+    ListenSocket = Socket(result);
+    printf("creating ListenSocket success!\n");
+    // связываем сокет прослушки с адресом из result
+    Bind(ListenSocket, result);
+    printf("Bind success!\n");
 
-    sleep(1);
+    freeaddrinfo(result); // дальше result не нужен, т.к. все настроено
 
-    close(fd);
-    close(server);
+    Listen(ListenSocket, SOMAXCONN); // ждемс
+
+    // принимаем клиентский сокет
+    printf("Waiting...\n");
+    ClientSocket = Accept(ListenSocket, NULL, NULL);
+
+    printf("Client found!\n");
+    // прослушивающий закрываем, уже нашли человека
+    closesocket(ListenSocket);
+
+    // пока соединение не разорвут, получаем инфу
+    do {
+        printf("Receiving...\n");
+        iResult = recv(ClientSocket, buf, buf_size, 0); // тут получаем
+        if (iResult > 0) {  // если клиент не отключен
+            printf("Bytes received: %d\n", iResult);
+
+            // отправим на ClientSocket данные char'ы из buf, iResult штук
+            printf("Sending...\n");
+            iSendResult = send(ClientSocket, buf, iResult, 0 );
+            if (iSendResult == SOCKET_ERROR) {
+                printf("send failed with error: %d\n", WSAGetLastError());
+                closesocket(ClientSocket);
+                WSACleanup();
+                return 1;
+            }
+            printf("Bytes sent: %d\n", iSendResult);
+        }
+        else if (iResult == 0) // означает что клиент отключился
+            printf("Connection closing...\n");
+        else  {
+            printf("recv failed with error: %d\n", WSAGetLastError());
+            closesocket(ClientSocket);
+            WSACleanup();
+            return 1;
+        }
+
+    } while (iResult > 0);
+
+    // вырубаем сервер полностью, мы закончили
+    iResult = shutdown(ClientSocket, SD_SEND);
+    if (iResult == SOCKET_ERROR) {
+        printf("shutdown failed with error: %d\n", WSAGetLastError());
+        closesocket(ClientSocket);
+        WSACleanup();
+        return 1;
+    }
+
+    // чистим-чистим
+    closesocket(ClientSocket);
+    WSACleanup();
+
     return 0;
 }

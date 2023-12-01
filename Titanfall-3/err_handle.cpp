@@ -1,58 +1,77 @@
 #include "err_handle.h"
 
 
-int Socket(int domain, int type, int protocol) {
-    int res = socket(domain, type, protocol);
-    if (res == -1) {  // ну не получилось у нас запустить
-        perror("socket failed");
+SOCKET Socket(addrinfo *result) {
+    SOCKET res = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    if (res == INVALID_SOCKET) {  // не получилось запустить
+        perror(("socket failed #" +
+                std::to_string(WSAGetLastError())).c_str());
+        freeaddrinfo(result); // просто чистим память которую заняли
+        WSACleanup();
         exit(EXIT_FAILURE);
     }
     return res;  // отдаем дескриптор сокета (типа ссылка/указатель или чет такое)
 }
 
-void Bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
-    int res = bind(sockfd, addr, addrlen);
-    if (res == -1) {
-        perror("bind failed");
+void Bind(SOCKET sock, addrinfo *result) {
+    int res = bind(sock, (*result).ai_addr, int((*result).ai_addrlen));
+    if (res == SOCKET_ERROR) {
+        perror(("bind failed #" +
+                std::to_string(WSAGetLastError())).c_str());
+        freeaddrinfo(result);
+        closesocket(sock);
+        WSACleanup();
         exit(EXIT_FAILURE);
     }
 }
 
-void Listen(int sockfd, int backlog) {
-    int res = listen(sockfd, backlog);
-    if (res == -1) {
-        perror("listen failed");
+void Listen(SOCKET sock, int backlog) {
+    int res = listen(sock, backlog);
+    if (res == SOCKET_ERROR) {
+        perror(("listen failed #" +
+                std::to_string(WSAGetLastError())).c_str());
+        closesocket(sock);
+        WSACleanup();
         exit(EXIT_FAILURE);
     }
 }
 
-int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen) {
-    int res = accept(sockfd, addr, addrlen);
-    if (res == -1) {
-        perror("accept failed");
+SOCKET Accept(SOCKET sock, struct sockaddr *addr, socklen_t *addr_len) {
+    SOCKET res = accept(sock, addr, addr_len);
+    if (res == INVALID_SOCKET) {
+        perror(("accept failed #" +
+                std::to_string(WSAGetLastError())).c_str());
+        closesocket(sock);
+        WSACleanup();
         exit(EXIT_FAILURE);
     }
     return res;
 }
 
-void Connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
-    int res = connect(sockfd, addr, addrlen);
-    if (res == -1) {
-        perror("connection failed");
+void Connect(SOCKET sock, const struct sockaddr *addr, socklen_t addr_len) {
+    int res = connect(sock, addr, addr_len);
+    if (res == SOCKET_ERROR) {
+        perror(("connection failed #" +
+                std::to_string(WSAGetLastError())).c_str());
+        WSACleanup();
         exit(EXIT_FAILURE);
     }
 }
 
 void Inet_pton(int af, const char *src, void *dst) {
     int res = inet_pton(af, src, dst);
-    if (res == 0) {
-        perror("inet_pton failed: src does not contain a character"
+    if (res == 0) { // недопустимую строку получили
+        perror(("inet_pton failed: src does not contain a character"
                " string representing a valid net in the specified"
-               " adress family\n");
+               " adress family\nerr #" +
+                std::to_string(WSAGetLastError())).c_str());
+        WSACleanup();
         exit(EXIT_FAILURE);
     }
-    if (res == -1) {
-        perror("inet_pton failed");
+    if (res == SOCKET_ERROR) { // все остальные ошибки
+        perror(("inet_pton failed #" +
+                std::to_string(WSAGetLastError())).c_str());
+        WSACleanup();
         exit(EXIT_FAILURE);
     }
 }

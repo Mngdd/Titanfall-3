@@ -5,6 +5,6 @@
 #ifndef TITANFALL_3_SERVER_H
 #define TITANFALL_3_SERVER_H
 
-int server_test();
+int server_test(int port);
 
 #endif //TITANFALL_3_SERVER_H

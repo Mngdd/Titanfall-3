@@ -6,13 +6,23 @@
 //#include <Graph_lib/Simple_window.h>
 #include "server.h"
 #include "client.h"
-
+#include <string>
+#include <iostream>
+#include <thread>
 //using namespace Graph_lib;
 
 int main() {
-    // одновременно не запустятся тк сервер умирает потом клиент ждет
-    server_test();
-    client_test();
+    std::string ip = "127.0.0.1";
+    int port = 55355;
+
+    std::thread srv(server_test, port); // starts rn
+    int waitin=0;
+    std::cin >> waitin;
+    std::thread cli(client_test, ip.c_str(), port);
+
+    // waits for finish its exec
+    srv.join();
+    cli.join();
 }
 //  закоментил для своих тестов, вот так уот
 //try
