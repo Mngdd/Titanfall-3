@@ -6,11 +6,12 @@ project(${TARGET} LANGUAGES CXX)
 add_executable(
         ${TARGET}
         main.cpp
-        #enviroment.cpp
+        environment.cpp
         #level_gen.cpp
         server.cpp
         client.cpp
         err_handle.cpp
+        graphics.cpp
 )
 
 install(TARGETS ${TARGET})
