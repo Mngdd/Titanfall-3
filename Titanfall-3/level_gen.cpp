@@ -5,8 +5,8 @@
 //#include "std_lib_facilities.h"
 
 
-std::vector<Circle *> Obstacles;
-std::vector<Circle *> Players;
+std::vector<Obstacle*> Obstacles;
+std::vector<Player*> Players;
 
 // random tech
 void initGenerator(PRNG &generator)    // generates seed for random
@@ -23,31 +23,26 @@ unsigned random(PRNG &generator, unsigned minValue, unsigned maxValue) // gives 
     return distribution(generator.engine);
 }
 
-void IntroduceRandom()  // shortcut for initGenerator
+// obstacles generation
+Point NotsoRandomPoint(double Power)   // Point "Power" far away from the center
 {
     PRNG generator;
     initGenerator(generator);
     srand(time(NULL));
-}
 
-// obstacles generation
-Point NotsoRandomPoint(double Power)   // Point "Power" far away from the center
-{
-    IntroduceRandom();
     int xsign = (rand() % 2 == 0) ? 1 : -1;
     int ysign = (rand() % 2 == 0) ? 1 : -1;
-    int x = static_cast<int>(pow(random(generator, SpawnObsWallMinDist,
-                                        static_cast<int>(pow((FieldLength - SpawnObsWallMinDist) / 2, Power))),
-                                 1 / Power)) * xsign;
-    int y = static_cast<int>(pow(random(generator, SpawnObsWallMinDist,
-                                        static_cast<int>(pow((FieldWidth - SpawnObsWallMinDist) / 2, Power))),
-                                 1 / Power)) * ysign;
+    int x = static_cast<int>(pow(random(generator, SpawnObsWallMinDist, static_cast<int>(pow((FieldLength - SpawnObsWallMinDist) / 2, Power))), 1 / Power)) * xsign;
+    int y = static_cast<int>(pow(random(generator, SpawnObsWallMinDist, static_cast<int>(pow((FieldWidth - SpawnObsWallMinDist) / 2, Power))), 1 / Power)) * ysign;
     return Point point{x, y};
 }
 
 void HugeObsSpawn()    // adds obstacles to HugeObstacles
 {
-    IntroduceRandom();
+    PRNG generator;
+    initGenerator(generator);
+    srand(time(NULL));
+
     for (size_t i = 0; i < NumOfHugeObs; ++i) {
         Point Center{NotsoRandomPoint(HugeObsPower)};
         int Radius = random(generator, HugeObsMinRad, HugeObsMaxRad);
@@ -59,7 +54,9 @@ void HugeObsSpawn()    // adds obstacles to HugeObstacles
 
 void MediumObsSpawn()  // adds obstacles to MediumObstacles
 {
-    IntroduceRandom();
+    PRNG generator;
+    initGenerator(generator);
+    srand(time(NULL));
     for (size_t i = 0; i < NumOfMediumObs; ++i) {
         Point Center{NotsoRandomPoint(MediumObsPower)};
         int Radius = random(generator, MediumObsMinRad, MediumObsMaxRad);
@@ -71,7 +68,9 @@ void MediumObsSpawn()  // adds obstacles to MediumObstacles
 
 void SmallObsSpawn()   // adds obstacles to SmallObstacles
 {
-    IntroduceRandom();
+    PRNG generator;
+    initGenerator(generator);
+    srand(time(NULL));
     Point Center{random(generator, SpawnObsWallMinDist, FieldLength),
                  random(generator, SpawnObsWallMinDist, FieldWidth)};
     int Radius = random(generator, SmallObsMinRad, SmallObsMaxRad);
@@ -94,7 +93,9 @@ bool ObsDistPlayerCheck(Circle *Obstacle)   // obstacle not overlapping player
 
 void ObstaclesRespawn() // regenerates obstacles with existing players
 {
-    IntroduceRandom();
+    PRNG generator;
+    initGenerator(generator);
+    srand(time(NULL));
     Obstacles.clear();
 
     for (size_t i = 0; i < NumOfHugeObs; ++i) {
@@ -159,7 +160,9 @@ bool PlayerDistPlayersCheck(Point Player)   // Player not overlapping Players
 
 void PlayerSpawn()      // adds player to Players
 {
-    IntroduceRandom();
+    PRNG generator;
+    initGenerator(generator);
+    srand(time(NULL));
     for (size_t i = 0, i<PlayerSpawnTries, ++i) {
         Point Center{random(generator, SpawnWallMinDist, FieldLength - SpawnWallMinDist),
                      random(generator, SpawnWallMinDist, FieldWidth - SpawnWallMinDist)};

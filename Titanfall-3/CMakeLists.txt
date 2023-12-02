@@ -7,7 +7,7 @@ add_executable(
         ${TARGET}
         main.cpp
         environment.cpp
-        #level_gen.cpp
+        level_gen.cpp
         server.cpp
         client.cpp
         err_handle.cpp
