@@ -24,8 +24,8 @@ public:
         return health;
     }
 
-    int GetCords(){
-        return x, y;
+    pair<int,int> GetCords(){
+        return pair{x, y};
     }
 
     void SetDamage(double damagevalue){
@@ -302,23 +302,7 @@ void parser::get_token()
 		strcpy(errormsg, "Only first letter of variables is considered");
 }
 
-int main()
-{
-	char expstr[256];
-	parser ob;
-	cout << "Math expression parser. Enter a blank line to stop.\n\n";
-	do
-	{
-		//cout << "Enter expression: ";
-		cin.getline(expstr, 255);
-		double ans = ob.eval_exp(expstr);
-		if (*ob.errormsg)
-			cout << "Error: " << ob.errormsg << "\n\n";
-		else
-			cout << "Answer: " << ans << "\n\n";
-	} while (*expstr);
-	return 0;
-}
+
 
 
 
@@ -326,17 +310,92 @@ int main()
 
 
 //
-class Func_trace
-{
-private:
-    string func;
+//class Func_trace
+//{
+//private:
+//    string func;
 
 
-public:
-    Func_trace(string funct){
-        func = funct;
-    }
-};
+//public:
+//    Func_trace(string funct){
+//        func = funct;
+//    }
+//};
 
 
 
+void Func_trace()
+{	const int size_map = 1200; //потом передается длина поля для пробега х
+	string func_enter = "2 ^ x"; // потом передастся
+	
+	pair cords{100,100};
+	bool right_true = true;
+	size_t pos = func_enter.find('x');
+	vector<pair<int, int>> cord_vector;
+
+		if (((pos != string::npos) && (func_enter.find("exp") == string::npos)))
+		{
+			for (int x = 0; x <= size_map; x += 4)
+			{	
+				string new_value = to_string(x);
+				if (x == 0)
+					{func_enter.replace(pos, 1, new_value);}
+				else{
+					func_enter.replace(pos, to_string(x - 4).length(), new_value);
+					}
+				char expstr[256];
+				strcpy(expstr, func_enter.c_str());
+				parser ob;
+				cout << expstr << endl;
+				double ans = ob.eval_exp(expstr);
+				if (*ob.errormsg)
+					{cout << "Error: " << ob.errormsg << "\n\n";}
+					
+				else
+					{if (right_true){
+						if (not(isnan(ans))){
+							//cout << "Answer: " << ans << "\n\n";
+							cord_vector.push_back(make_pair(cords.first + x, cords.second + static_cast<int>(round(ans))));
+								}
+						}
+					else{
+						if (not(isnan(ans))){
+							//cout << "Answer: " << ans << "\n\n";
+							if (cords.first - x >= 0){
+								cord_vector.push_back(make_pair(cords.first - x, cords.second + static_cast<int>(round(ans))));
+								}
+							else{
+								break;
+							}
+							}
+						}
+					
+					}
+					
+				
+			}
+		
+		}
+		else {
+
+			char expstr[256];
+			strcpy(expstr, func_enter.c_str());
+			parser ob;
+			cout << expstr << endl;
+			double ans = ob.eval_exp(expstr);
+			if (right_true){
+				cord_vector.push_back(make_pair(cords.first, ans));
+				cord_vector.push_back(make_pair(size_map, ans));
+					}
+			else{
+				cord_vector.push_back(make_pair(cords.first, ans));
+				cord_vector.push_back(make_pair(0, ans));
+				}
+		}
+	
+	//for (const auto &p: cord_vector)
+	//{
+	//	cout << p.first << ' ' << p.second<< endl;
+	//}
+
+}
