@@ -47,8 +47,8 @@ void HugeObsSpawn()    // adds obstacles to HugeObstacles
         Point Center{NotsoRandomPoint(HugeObsPower)};
         int Radius = random(generator, HugeObsMinRad, HugeObsMaxRad);
 
-        Obstacle *Obstacle = {Center, Radius, false};
-        Obstacles.push_back(Obstacle);
+        Obstacle *Obs = new Obstacle{Center, Radius, false};
+        Obstacles.push_back(Obs);
     }
 }
 
@@ -61,8 +61,8 @@ void MediumObsSpawn()  // adds obstacles to MediumObstacles
         Point Center{NotsoRandomPoint(MediumObsPower)};
         int Radius = random(generator, MediumObsMinRad, MediumObsMaxRad);
 
-        Obstacle *Obstacle = {Center, Radius, false};
-        Obstacles.push_back(Obstacle);
+        Obstacle *Obs = new Obstacle{Center, Radius, false};
+        Obstacles.push_back(Obs);
     }
 }
 
@@ -75,8 +75,8 @@ void SmallObsSpawn()   // adds obstacles to SmallObstacles
                  random(generator, SpawnObsWallMinDist, FieldWidth)};
     int Radius = random(generator, SmallObsMinRad, SmallObsMaxRad);
 
-    Obstacle *Obstacle = {Center, Radius, false};
-    Obstacles.push_back(Obstacle);
+    Obstacle *Obs = new Obstacle{Center, Radius, false};
+    Obstacles.push_back(Obs);
 }
 
 bool ObsDistPlayerCheck(Obstacle const *Obstacle&)   // obstacle not overlapping player
@@ -102,9 +102,9 @@ void ObstaclesRespawn() // regenerates obstacles with existing players
         for (size_t j = 0; j < ObstacleReSpawnTries; ++j) {
             Point Center{NotsoRandomPoint(HugeObsPower)};
             int Radius = random(generator, HugeObsMinRad, HugeObsMaxRad);
-            Obstacle *Obstacle = {Center, Radius};
-            if (ObsDistPlayerCheck(Obstacle)) {
-                Obstacles.push_back(Obstacle);
+            Obstacle *Obs = new Obstacle{Center, Radius};
+            if (ObsDistPlayerCheck(Obs)) {
+                Obstacles.push_back(Obs);
             }
         }
         error("Not enough space for Huge Obstacle! ")
@@ -113,18 +113,18 @@ void ObstaclesRespawn() // regenerates obstacles with existing players
     for (size_t i = 0; i < NumOfMediumObs; ++i) {
         Point Center{NotsoRandomPoint(MediumObsPower)};
         int Radius = random(generator, MediumObsMinRad, MediumObsMaxRad);
-        Obstacle *Obstacle = {Center, Radius};
-        if (ObsDistPlayerCheck(Obstacle)) {
-            Obstacles.push_back(Obstacle);
+        Obstacle *Obs = new Obstacle{Center, Radius};
+        if (ObsDistPlayerCheck(Obs)) {
+            Obstacles.push_back(Obs);
         }
     }
 
     for (size_t i = 0; i < NumOfSmallObs; ++i) {
         Point Center{NotsoRandomPoint(SmallObsPower)};
         int Radius = random(generator, SmallObsMinRad, SmallObsMaxRad);
-        Obstacle *Obstacle = {Center, Radius};
-        if (ObsDistPlayerCheck(Obstacle)) {
-            Obstacles.push_back(Obstacle);
+        Obstacle *Obs = new Obstacle{Center, Radius};
+        if (ObsDistPlayerCheck(Obs)) {
+            Obstacles.push_back(Obs);
         }
     }
 
@@ -164,7 +164,7 @@ void PlayerSpawn()      // adds player to Players
         Point *Player = new Point{random(generator, SpawnWallMinDist, FieldLength - SpawnWallMinDist),
                                 random(generator, SpawnWallMinDist, FieldWidth - SpawnWallMinDist)};
 
-        if ((PlayerDistObsCheck(Center)) && (PlayerDistPlayersCheck(Center)))
+        if ((PlayerDistObsCheck(Player)) && (PlayerDistPlayersCheck(Player)))
         {
             Players.push_back(Player);
             return;
