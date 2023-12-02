@@ -12,6 +12,7 @@ add_executable(
         client.cpp
         err_handle.cpp
         graphics.cpp
+        # sounds.cpp
 )
 
 install(TARGETS ${TARGET})

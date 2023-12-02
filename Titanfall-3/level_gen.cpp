@@ -6,7 +6,7 @@
 
 
 std::vector<Obstacle*> Obstacles;
-std::vector<Player*> Players;
+std::vector<Point*> Players;
 
 // random tech
 void initGenerator(PRNG &generator)    // generates seed for random
@@ -46,8 +46,8 @@ void HugeObsSpawn()    // adds obstacles to HugeObstacles
     for (size_t i = 0; i < NumOfHugeObs; ++i) {
         Point Center{NotsoRandomPoint(HugeObsPower)};
         int Radius = random(generator, HugeObsMinRad, HugeObsMaxRad);
-        Circle *Obstacle = new Circle{Center, Radius};
-        (*Obstacle).set_fill_color(HugeObsColor);
+
+        Obstacle *Obstacle = {Center, Radius, false};
         Obstacles.push_back(Obstacle);
     }
 }
@@ -60,8 +60,8 @@ void MediumObsSpawn()  // adds obstacles to MediumObstacles
     for (size_t i = 0; i < NumOfMediumObs; ++i) {
         Point Center{NotsoRandomPoint(MediumObsPower)};
         int Radius = random(generator, MediumObsMinRad, MediumObsMaxRad);
-        Circle *Obstacle = new Circle{Center, Radius};
-        (*Obstacle).set_fill_color(MediumObsColor);
+
+        Obstacle *Obstacle = {Center, Radius, false};
         Obstacles.push_back(Obstacle);
     }
 }
@@ -74,16 +74,16 @@ void SmallObsSpawn()   // adds obstacles to SmallObstacles
     Point Center{random(generator, SpawnObsWallMinDist, FieldLength),
                  random(generator, SpawnObsWallMinDist, FieldWidth)};
     int Radius = random(generator, SmallObsMinRad, SmallObsMaxRad);
-    Circle *Obstacle = new Circle{Center, Radius};
-    (*Obstacle).set_fill_color(SmallObsColor);
+
+    Obstacle *Obstacle = {Center, Radius, false};
     Obstacles.push_back(Obstacle);
 }
 
-bool ObsDistPlayerCheck(Circle *Obstacle)   // obstacle not overlapping player
+bool ObsDistPlayerCheck(Obstacle const *Obstacle&)   // obstacle not overlapping player
 {
     for (size_t i = 0; i < Players.size(); ++i) {
-        if (dist((*Obstacle).center(), Players[i]->center()) <
-            (Obstacle->radius() + PlayerRad + SpawnObsMinDist)) {
+        if (dist((*Obstacle).center, Players[i]) <
+            ((*Obstacle).radius + PlayerRad + SpawnObsMinDist)) {
             return true;
         } else {
             return false;
@@ -102,9 +102,8 @@ void ObstaclesRespawn() // regenerates obstacles with existing players
         for (size_t j = 0; j < ObstacleReSpawnTries; ++j) {
             Point Center{NotsoRandomPoint(HugeObsPower)};
             int Radius = random(generator, HugeObsMinRad, HugeObsMaxRad);
-            Circle *Obstacle = new Circle{Center, Radius};
+            Obstacle *Obstacle = {Center, Radius};
             if (ObsDistPlayerCheck(Obstacle)) {
-                (*Obstacle).set_fill_color(HugeObsColor);
                 Obstacles.push_back(Obstacle);
             }
         }
@@ -114,9 +113,8 @@ void ObstaclesRespawn() // regenerates obstacles with existing players
     for (size_t i = 0; i < NumOfMediumObs; ++i) {
         Point Center{NotsoRandomPoint(MediumObsPower)};
         int Radius = random(generator, MediumObsMinRad, MediumObsMaxRad);
-        Circle *Obstacle = new Circle{Center, Radius};
+        Obstacle *Obstacle = {Center, Radius};
         if (ObsDistPlayerCheck(Obstacle)) {
-            (*Obstacle).set_fill_color(MediumObsColor);
             Obstacles.push_back(Obstacle);
         }
     }
@@ -124,9 +122,8 @@ void ObstaclesRespawn() // regenerates obstacles with existing players
     for (size_t i = 0; i < NumOfSmallObs; ++i) {
         Point Center{NotsoRandomPoint(SmallObsPower)};
         int Radius = random(generator, SmallObsMinRad, SmallObsMaxRad);
-        Circle *Obstacle = new Circle{Center, Radius};
+        Obstacle *Obstacle = {Center, Radius};
         if (ObsDistPlayerCheck(Obstacle)) {
-            (*Obstacle).set_fill_color(SmallObsColor);
             Obstacles.push_back(Obstacle);
         }
     }
@@ -134,11 +131,11 @@ void ObstaclesRespawn() // regenerates obstacles with existing players
 }
 
 // players generation
-bool PlayerDistObsCheck(Point Player)   // Player not overlapping Obstacles
+bool PlayerDistObsCheck(Point const Player&)   // Player not overlapping Obstacles
 {
     for (size_t i = 0; i < Obstacles.size(); ++i) {
-        if (dist(Player, (*Obstacles[i]).center()) <
-            (*Obstacles[i]->radius + PlayerRad + SpawnObsMinDist)) {
+        if (dist(Player, (*Obstacles[i]).center) <
+            ((*Obstacles[i]).radius + PlayerRad + SpawnObsMinDist)) {
             return true;
         } else {
             return false;
@@ -146,10 +143,10 @@ bool PlayerDistObsCheck(Point Player)   // Player not overlapping Obstacles
     }
 }
 
-bool PlayerDistPlayersCheck(Point Player)   // Player not overlapping Players
+bool PlayerDistPlayersCheck(Point const Player&)   // Player not overlapping Players
 {
     for (size_t i = 0; i < Players.size(); ++i) {
-        if (dist(Player, *Players[i]->center) < (PlayerRad + PlayerRad + SpawnBetwMinDist)) {
+        if (dist(Player, Players[i]) < (PlayerRad + PlayerRad + SpawnBetwMinDist)) {
             return true;
         } else {
             return false;
@@ -164,19 +161,11 @@ void PlayerSpawn()      // adds player to Players
     initGenerator(generator);
     srand(time(NULL));
     for (size_t i = 0, i<PlayerSpawnTries, ++i) {
-        Point Center{random(generator, SpawnWallMinDist, FieldLength - SpawnWallMinDist),
-                     random(generator, SpawnWallMinDist, FieldWidth - SpawnWallMinDist)};
+        Point *Player = new Point{random(generator, SpawnWallMinDist, FieldLength - SpawnWallMinDist),
+                                random(generator, SpawnWallMinDist, FieldWidth - SpawnWallMinDist)};
 
-        if (PlayerDistObsCheck(Center)) and (PlayerDistPlayersCheck(Center))
+        if ((PlayerDistObsCheck(Center)) && (PlayerDistPlayersCheck(Center)))
         {
-            Circle *Player = new Circle{Center, PlayerRad};
-            if (RainbowPlayers) {
-                int color = random(generator, 1, 13);
-                if ((int) color == 5) { color = 0 }    // Перекрашивает черных
-                (*Player).set_fill_color(Color::color);
-            } else {
-                (*Player).set_fill_color(PlayerColor);
-            }
             Players.push_back(Player);
             return;
         }
