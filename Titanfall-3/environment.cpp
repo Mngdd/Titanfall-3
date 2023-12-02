@@ -2,34 +2,35 @@
 // Created by khris on 22.11.2023.
 //
 #include <bits/stdc++.h>
-#include "enviroment.h"
+#include "environment.h"
 
 using namespace std;
-// что я должен делать когда хп меньше 0
-class Player
-{private:
+// что я должен делать когда хп меньше 0 <---- Ничего
+class Player {
+private:
     string name;
     double health;
     int x, y;
-    
 public:
 
-    Player(string namePlayer, double health_point, int xcord, int ycord){
+    Player(string namePlayer, double health_point, int xcord, int ycord) {
         name = namePlayer;
         health = health_point;
         x = xcord;
-        y = ycord;}
+        y = ycord;
+    }
 
-    double GetHealth(){
+    double GetHealth() {
         return health;
     }
 
-    int GetCords(){
+        int GetCords() {
         return x, y;
     }
 
-    void SetDamage(double damagevalue){
-        if (health > 0){health -= damagevalue;}}
+    void SetDamage(double damagevalue) {
+        if (health > 0) { health -= damagevalue; }
+    }
 };
 ////////////// мат выражения
 //
@@ -302,24 +303,26 @@ void parser::get_token()
 		strcpy(errormsg, "Only first letter of variables is considered");
 }
 
-int main()
-{
-	char expstr[256];
-	parser ob;
-	cout << "Math expression parser. Enter a blank line to stop.\n\n";
-	do
-	{
-		//cout << "Enter expression: ";
-		cin.getline(expstr, 255);
-		double ans = ob.eval_exp(expstr);
-		if (*ob.errormsg)
-			cout << "Error: " << ob.errormsg << "\n\n";
-		else
-			cout << "Answer: " << ans << "\n\n";
-	} while (*expstr);
-	return 0;
-}
-
+// TODO: мейн больше не разрешен вне main.cpp,
+// TODO: я теперь инклюдить начинаю, разбери код на нужные части и потом удали
+//int main()
+//{
+//	char expstr[256];
+//	parser ob;
+//	cout << "Math expression parser. Enter a blank line to stop.\n\n";
+//	do
+//	{
+//		//cout << "Enter expression: ";
+//		cin.getline(expstr, 255);
+//		double ans = ob.eval_exp(expstr);
+//		if (*ob.errormsg)
+//			cout << "Error: " << ob.errormsg << "\n\n";
+//		else
+//			cout << "Answer: " << ans << "\n\n";
+//	} while (*expstr);
+//	return 0;
+//}
+//
 
 
 
