@@ -26,7 +26,8 @@ int NumOfPlayers;                   // ТРЕБУЕТСЯ ЗАДАВАТЬ
 const int PlayerRad = 10;           // Радиус игрока
 
 const double HugeObsPower = 2;         // Степень ухода больших препятствий от центра
-const double MediumObsPower = 0.5;     // Степень близости средних препятствий к центру
+const double MediumObsPower = 0.5;     // Степень ухода средних препятствий от центра
+const double SmallObsPower = 1;        // Степень ухода маленьких препятствий от центра
 
 const int SpawnBetwMinDist = 70;   // Минимальное расстояние между игроками (соло режим)
 const int SpawnWallMinDist = 30;    // Минимальное расстояние от игрока до стены (больше радиуса игрока)
