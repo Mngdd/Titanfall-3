@@ -18,7 +18,7 @@ void drawing()
 
     win.wait_for_button();
 
-    for (size_t i{0}; i < pl.size(); ++i)
+    for (size_t i{0}; i < pl.size(); ++i) // draw names
     {
         Text *o;
         if ((*Players[i]).y + 40 < 1200)
@@ -29,13 +29,13 @@ void drawing()
         win.attach(*o);
     }
 
-    for (size_t i{0}; i < Obstacles.size(); ++i)
+    for (size_t i{0}; i < Obstacles.size(); ++i) // draw obstacles
     {
         Circle *c = new Circle{Obstacles[i]->center, Obstacles[i]->radius};
         win.attach(*c);
     };
 
-    for (size_t i{0}; i < Players.size(); ++i)
+    for (size_t i{0}; i < Players.size(); ++i) // draw platers
     {
         Circle *c = new Circle{*Players[i], PlayerRad};
         win.attach(*c);
