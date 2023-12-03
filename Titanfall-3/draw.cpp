@@ -1,19 +1,18 @@
 // у меня не робят закоменченные инклюды лол
+#include <Graph_lib/Simple_window.h>
+#include <Graph_lib/Graph.h>
+
 #include "level_gen.h"
 #include "settings.h"
-#include <Graph_lib/Graph.h>
-#include <Graph_lib/Simple_window.h>
 #include "enviroment.h"
 #include "graphics.h"
+
 using namespace Graph_lib;
 
-int drawing()
+void drawing()
 {
 
-    HugeObsSpawn();
-    MediumObsSpawn();
-    SmallObsSpawn(); // adds obstacles to SmallObstacles
-    PlayersSpawn();
+    Generate(); // generation obstacles and players
 
     Game_window win{Point(100, 100), FieldLength, FieldWidth, "Window"};
 
@@ -21,29 +20,25 @@ int drawing()
 
     for (size_t i{0}; i < pl.size(); ++i)
     {
-        // Out_box *o = new Out_box{*Players[i]->center(), 70, 40, pl[i]};
         Text *o;
-        if ((*Players[i]).center().y + 40 < 1200)
-            o = new Text{Point((*Players[i]).center().x, (*Players[i]).center().y + 40), pl[i].GetName()};
+        if ((*Players[i]).y + 40 < 1200)
+            o = new Text{Point((*Players[i]).x, (*Players[i]).y + 40), pl[i]->GetName()};
         else
-            o = new Text{Point((*Players[i]).center().x, (*Players[i]).center().y - 40), pl[i].GetName()};
+            o = new Text{Point((*Players[i]).x, (*Players[i]).y - 40), pl[i]->GetName()};
         o->set_font_size(30);
         win.attach(*o);
     }
 
-    for (int i{0}; i < HugeObstacles.size(); ++i)
+    for (size_t i{0}; i < Obstacles.size(); ++i)
     {
-        win.attach(*HugeObstacles[i]);
+        Circle *c = new Circle{Obstacles[i]->center, Obstacles[i]->radius};
+        win.attach(*c);
     };
 
-    for (int i{0}; i < MediumObstacles.size(); ++i)
+    for (size_t i{0}; i < Players.size(); ++i)
     {
-        win.attach(*MediumObstacles[i]);
-    };
-
-    for (int i{0}; i < Players.size(); ++i)
-    {
-        win.attach(*Players[i]);
+        Circle *c = new Circle{*Players[i], PlayerRad};
+        win.attach(*c);
     };
     win.wait_for_button();
 }

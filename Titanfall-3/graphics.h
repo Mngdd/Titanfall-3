@@ -2,17 +2,20 @@
 #define GRAPHICS_H
 
 #include <Graph_lib/Graph.h>
-#include "enviroment.h"
 #include <Graph_lib/Simple_window.h>
-#include "std_lib_facilities.h"
 #include <Graph_lib/GUI.h>
+
+#include "enviroment.h"
+#include <bits/stdc++.h>
+#include <vector>
+
 using namespace Graph_lib;
 
-extern vector<Player> pl;
+extern std::vector<Player *> pl; // our players
 
-struct Game_window : Graph_lib::Window
+struct Game_window : Graph_lib::Window // create a new window
 {
-  Game_window(Point xy, int w, int h, const string &title);
+  Game_window(Point xy, int w, int h, const std::string &title);
   void wait_for_button();
 
 private:

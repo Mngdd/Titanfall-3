@@ -6,56 +6,69 @@
 
 using namespace std;
 // что я должен делать когда хп меньше 0
-class Player
-{private:
-    string name;
-    double health;
-    int x, y;
-    
-public:
 
-    Player(string namePlayer, double health_point, int xcord, int ycord){
-        name = namePlayer;
-        health = health_point;
-        x = xcord;
-        y = ycord;}
+Player::Player(string namePlayer, double health_point, int xcord, int ycord)
+{
+	name = namePlayer;
+	health = health_point;
+	x = xcord;
+	y = ycord;
+}
 
-    double GetHealth(){
-        return health;
-    }
+double Player::GetHealth()
+{
+	return health;
+}
 
-    pair<int,int> GetCords(){
-        return pair{x, y};
-    }
+pair<int, int> Player::GetCords()
+{
+	return pair{x, y};
+}
 
-    void SetDamage(double damagevalue){
-        if (health > 0){health -= damagevalue;}}
-};
+string Player::GetName()
+{
+	return name;
+}
+
+void Player::SetDamage(double damagevalue)
+{
+	if (health > 0)
+	{
+		health -= damagevalue;
+	}
+}
 ////////////// мат выражения
 //
-//It supports operators: + - * / ^ ( )
+// It supports operators: + - * / ^ ( )
 
-//It supports math functions : SIN, COS, TAN, ASIN, ACOS, ATAN, SINH, 
-//COSH, TANH, ASINH, ACOSH, ATANH, LN, LOG, EXP, SQRT, SQR, ROUND, INT.
+// It supports math functions : SIN, COS, TAN, ASIN, ACOS, ATAN, SINH,
+// COSH, TANH, ASINH, ACOSH, ATANH, LN, LOG, EXP, SQRT, SQR, ROUND, INT.
 
-//It supports variables A to Z.
+// It supports variables A to Z.
 
 #include <iostream>
 #include <cstdlib>
 #include <cctype>
 #include <cstring>
-#include <math.h> 
+#include <math.h>
 
-#define PI 3.14159265358979323846 
+#define PI 3.14159265358979323846
 
 using namespace std;
 
-enum types { DELIMITER = 1, VARIABLE, NUMBER, FUNCTION };
+enum types
+{
+	DELIMITER = 1,
+	VARIABLE,
+	NUMBER,
+	FUNCTION
+};
 const int NUMVARS = 26;
-class parser {
-	char *exp_ptr; // points to the expression
-	char token[256]; // holds current token
-	char tok_type; // holds token's type
+class parser
+{
+	char *exp_ptr;		  // points to the expression
+	char token[256];	  // holds current token
+	char tok_type;		  // holds token's type
 	double vars[NUMVARS]; // holds variable's values
 	void eval_exp1(double &result);
 	void eval_exp2(double &result);
@@ -64,6 +77,7 @@ class parser {
 	void eval_exp5(double &result);
 	void eval_exp6(double &result);
 	void get_token();
+
 public:
 	parser();
 	double eval_exp(char *exp);
@@ -85,7 +99,7 @@ double parser::eval_exp(char *exp)
 	double result;
 	exp_ptr = exp;
 	get_token();
-	if (!*token) 
+	if (!*token)
 	{
 		strcpy(errormsg, "No Expression Present"); // no expression present
 		return (double)0;
@@ -100,7 +114,7 @@ void parser::eval_exp1(double &result)
 {
 	int slot;
 	char temp_token[80];
-	if (tok_type == VARIABLE) 
+	if (tok_type == VARIABLE)
 	{
 		// save old token
 		char *t_ptr = exp_ptr;
@@ -108,13 +122,14 @@ void parser::eval_exp1(double &result)
 		// compute the index of the variable
 		slot = *token - 'A';
 		get_token();
-		if (*token != '=') 
+		if (*token != '=')
 		{
-			exp_ptr = t_ptr; // return current token
+			exp_ptr = t_ptr;		   // return current token
 			strcpy(token, temp_token); // restore old token
 			tok_type = VARIABLE;
 		}
-		else {
+		else
+		{
 			get_token(); // get next part of exp
 			eval_exp2(result);
 			vars[slot] = result;
@@ -133,7 +148,7 @@ void parser::eval_exp2(double &result)
 	{
 		get_token();
 		eval_exp3(temp);
-		switch (op) 
+		switch (op)
 		{
 		case '-':
 			result = result - temp;
@@ -147,14 +162,14 @@ void parser::eval_exp2(double &result)
 // Multiply or divide two factors.
 void parser::eval_exp3(double &result)
 {
-	 char op;
+	char op;
 	double temp;
 	eval_exp4(result);
-	while ((op = *token) == '*' || op == '/') 
+	while ((op = *token) == '*' || op == '/')
 	{
 		get_token();
 		eval_exp4(temp);
-		switch (op) 
+		switch (op)
 		{
 		case '*':
 			result = result * temp;
@@ -180,7 +195,7 @@ void parser::eval_exp4(double &result)
 // Evaluate a unary + or -.
 void parser::eval_exp5(double &result)
 {
-	 char op;
+	char op;
 	op = 0;
 	if ((tok_type == DELIMITER) && *token == '+' || *token == '-')
 	{
@@ -200,8 +215,8 @@ void parser::eval_exp6(double &result)
 	{
 		strcpy(temp_token, token);
 		get_token();
-	} 
-	if ((*token == '(')) 
+	}
+	if ((*token == '('))
 	{
 		get_token();
 		eval_exp2(result);
@@ -216,11 +231,11 @@ void parser::eval_exp6(double &result)
 			else if (!strcmp(temp_token, "TAN"))
 				result = tan(PI / 180 * result);
 			else if (!strcmp(temp_token, "ASIN"))
-				result = 180 / PI*asin(result);
+				result = 180 / PI * asin(result);
 			else if (!strcmp(temp_token, "ACOS"))
-				result = 180 / PI*acos(result);
+				result = 180 / PI * acos(result);
 			else if (!strcmp(temp_token, "ATAN"))
-				result = 180 / PI*atan(result);
+				result = 180 / PI * atan(result);
 			else if (!strcmp(temp_token, "SINH"))
 				result = sinh(result);
 			else if (!strcmp(temp_token, "COSH"))
@@ -242,7 +257,7 @@ void parser::eval_exp6(double &result)
 			else if (!strcmp(temp_token, "SQRT"))
 				result = sqrt(result);
 			else if (!strcmp(temp_token, "SQR"))
-				result = result*result;
+				result = result * result;
 			else if (!strcmp(temp_token, "ROUND"))
 				result = round(result);
 			else if (!strcmp(temp_token, "INT"))
@@ -252,7 +267,7 @@ void parser::eval_exp6(double &result)
 		}
 		get_token();
 	}
-	else 
+	else
 		switch (tok_type)
 		{
 		case VARIABLE:
@@ -270,24 +285,24 @@ void parser::eval_exp6(double &result)
 // Obtain the next token.
 void parser::get_token()
 {
-	 char *temp;
+	char *temp;
 	tok_type = 0;
 	temp = token;
 	*temp = '\0';
-	if (!*exp_ptr)  // at end of expression
+	if (!*exp_ptr) // at end of expression
 		return;
-	while (isspace(*exp_ptr))  // skip over white space
-		++exp_ptr; 
-	if (strchr("+-*/%^=()", *exp_ptr)) 
+	while (isspace(*exp_ptr)) // skip over white space
+		++exp_ptr;
+	if (strchr("+-*/%^=()", *exp_ptr))
 	{
 		tok_type = DELIMITER;
-		*temp++ = *exp_ptr++;  // advance to next char
+		*temp++ = *exp_ptr++; // advance to next char
 	}
-	else if (isalpha(*exp_ptr)) 
+	else if (isalpha(*exp_ptr))
 	{
 		while (!strchr(" +-/*%^=()\t\r", *exp_ptr) && (*exp_ptr))
 			*temp++ = toupper(*exp_ptr++);
-		while (isspace(*exp_ptr))  // skip over white space
+		while (isspace(*exp_ptr)) // skip over white space
 			++exp_ptr;
 		tok_type = (*exp_ptr == '(') ? FUNCTION : VARIABLE;
 	}
@@ -302,100 +317,101 @@ void parser::get_token()
 		strcpy(errormsg, "Only first letter of variables is considered");
 }
 
-
-
-
-
-
-
-
 //
-//class Func_trace
+// class Func_trace
 //{
-//private:
+// private:
 //    string func;
 
-
-//public:
-//    Func_trace(string funct){
-//        func = funct;
-//    }
-//};
-
-
+// public:
+//     Func_trace(string funct){
+//         func = funct;
+//     }
+// };
 
 void Func_trace()
-{	const int size_map = 1200; //потом передается длина поля для пробега х
+{
+	const int size_map = 1200;	 // потом передается длина поля для пробега х
 	string func_enter = "2 ^ x"; // потом передастся
-	
-	pair cords{100,100};
+
+	pair cords{100, 100};
 	bool right_true = true;
 	size_t pos = func_enter.find('x');
 	vector<pair<int, int>> cord_vector;
 
-		if (((pos != string::npos) && (func_enter.find("exp") == string::npos)))
+	if (((pos != string::npos) && (func_enter.find("exp") == string::npos)))
+	{
+		for (int x = 0; x <= size_map; x += 4)
 		{
-			for (int x = 0; x <= size_map; x += 4)
-			{	
-				string new_value = to_string(x);
-				if (x == 0)
-					{func_enter.replace(pos, 1, new_value);}
-				else{
-					func_enter.replace(pos, to_string(x - 4).length(), new_value);
-					}
-				char expstr[256];
-				strcpy(expstr, func_enter.c_str());
-				parser ob;
-				cout << expstr << endl;
-				double ans = ob.eval_exp(expstr);
-				if (*ob.errormsg)
-					{cout << "Error: " << ob.errormsg << "\n\n";}
-					
-				else
-					{if (right_true){
-						if (not(isnan(ans))){
-							//cout << "Answer: " << ans << "\n\n";
-							cord_vector.push_back(make_pair(cords.first + x, cords.second + static_cast<int>(round(ans))));
-								}
-						}
-					else{
-						if (not(isnan(ans))){
-							//cout << "Answer: " << ans << "\n\n";
-							if (cords.first - x >= 0){
-								cord_vector.push_back(make_pair(cords.first - x, cords.second + static_cast<int>(round(ans))));
-								}
-							else{
-								break;
-							}
-							}
-						}
-					
-					}
-					
-				
+			string new_value = to_string(x);
+			if (x == 0)
+			{
+				func_enter.replace(pos, 1, new_value);
 			}
-		
-		}
-		else {
-
+			else
+			{
+				func_enter.replace(pos, to_string(x - 4).length(), new_value);
+			}
 			char expstr[256];
 			strcpy(expstr, func_enter.c_str());
 			parser ob;
 			cout << expstr << endl;
 			double ans = ob.eval_exp(expstr);
-			if (right_true){
-				cord_vector.push_back(make_pair(cords.first, ans));
-				cord_vector.push_back(make_pair(size_map, ans));
+			if (*ob.errormsg)
+			{
+				cout << "Error: " << ob.errormsg << "\n\n";
+			}
+
+			else
+			{
+				if (right_true)
+				{
+					if (not(isnan(ans)))
+					{
+						// cout << "Answer: " << ans << "\n\n";
+						cord_vector.push_back(make_pair(cords.first + x, cords.second + static_cast<int>(round(ans))));
 					}
-			else{
-				cord_vector.push_back(make_pair(cords.first, ans));
-				cord_vector.push_back(make_pair(0, ans));
 				}
+				else
+				{
+					if (not(isnan(ans)))
+					{
+						// cout << "Answer: " << ans << "\n\n";
+						if (cords.first - x >= 0)
+						{
+							cord_vector.push_back(make_pair(cords.first - x, cords.second + static_cast<int>(round(ans))));
+						}
+						else
+						{
+							break;
+						}
+					}
+				}
+			}
 		}
-	
-	//for (const auto &p: cord_vector)
+	}
+	else
+	{
+
+		char expstr[256];
+		strcpy(expstr, func_enter.c_str());
+		parser ob;
+		cout << expstr << endl;
+		double ans = ob.eval_exp(expstr);
+		if (right_true)
+		{
+			cord_vector.push_back(make_pair(cords.first, ans));
+			cord_vector.push_back(make_pair(size_map, ans));
+		}
+		else
+		{
+			cord_vector.push_back(make_pair(cords.first, ans));
+			cord_vector.push_back(make_pair(0, ans));
+		}
+	}
+
+	// for (const auto &p: cord_vector)
 	//{
 	//	cout << p.first << ' ' << p.second<< endl;
-	//}
-
+	// }
 }

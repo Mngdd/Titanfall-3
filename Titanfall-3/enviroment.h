@@ -1,17 +1,30 @@
+#ifndef ENVIROMENT_H
+#define ENVIROMENT_H
 #include <Graph_lib/Point.h>
 
-using namespace Graph_lib;
+#include <bits/stdc++.h>
 
-struct Obstacle {
+using namespace Graph_lib;
+struct Obstacle
+{
     Point center;
     int radius;
     bool hole;
-}
+};
 
-int GetCords();
+class Player
+{
+private:
+    std::string name;
+    double health;
+    int x, y;
 
-double GetHealth();
+public:
+    Player(std::string namePlayer, double health_point, int xcord, int ycord);
+    double GetHealth();
+    std::string GetName();
+    std::pair<int, int> GetCords();
+    void SetDamage(double damagevalue);
+};
 
-void SetDamage(double damagevalue);
-
-#endif //TITANFALL_3_ENVIRONMENT_H
+#endif // TITANFALL_3_ENVIRONMENT_H
