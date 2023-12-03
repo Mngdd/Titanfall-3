@@ -125,7 +125,7 @@ void ObstaclesRespawn ()  // regenerates obstacles with existing players
                 Obstacles.push_back(Obs);
             }
         }
-        throw NoSpaceException();
+        // throw NoSpaceObstacleException();
     }  // Если большие препятствия нашли себе место, то остальные и подавно найдут
 
     for (size_t i = 0; i < NumOfMediumObs; ++i)
@@ -199,7 +199,7 @@ void PlayerSpawn ()  // adds player to Players
             return;
         }
     }
-    throw NoSpaceException();
+    // throw NoSpacePlayerException();
 }
 
 void PlayersSpawn (int NumOfPlayersAdded)  // adds players to Players
