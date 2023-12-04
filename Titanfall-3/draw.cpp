@@ -20,7 +20,6 @@ void drawing()
     Generate(); // generation obstacles and players
     ObstaclesRespawn();
     std::cout << Obstacles.size();
-    std::cout << Players.size();
 
     Game_window win{Point(100, 100), FieldLength, FieldWidth, "Window"};
 
