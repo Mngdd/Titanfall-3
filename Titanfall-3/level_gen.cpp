@@ -95,13 +95,10 @@ bool ObsDistPlayerCheck (const Obstacle& Obs)  // obstacle not overlapping playe
     {
         if (dist(Obs.center, *Players[i]) < (Obs.radius + PlayerRad + SpawnObsMinDist))
         {
-            return true;
-        }
-        else
-        {
             return false;
         }
     }
+    return true;
 }
 
 void ObstaclesRespawn ()  // regenerates obstacles with existing players
@@ -156,13 +153,10 @@ bool PlayerDistObsCheck (const Point& Player)  // Player not overlapping Obstacl
     {
         if (dist(Player, (*Obstacles[i]).center) < ((*Obstacles[i]).radius + PlayerRad + SpawnObsMinDist))
         {
-            return true;
-        }
-        else
-        {
             return false;
         }
     }
+    return true;
 }
 
 bool PlayerDistPlayersCheck (const Point& Player)  // Player not overlapping Players
@@ -171,13 +165,10 @@ bool PlayerDistPlayersCheck (const Point& Player)  // Player not overlapping Pla
     {
         if (dist(Player, *Players[i]) < (PlayerRad + PlayerRad + SpawnBetwMinDist))
         {
-            return true;
-        }
-        else
-        {
             return false;
         }
     }
+    return true;
 }
 
 void PlayerSpawn ()  // adds player to Players
