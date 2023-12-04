@@ -11,7 +11,7 @@
 
 using namespace Graph_lib;
 
-extern std::vector<Player *> pl; // our players
+extern std::vector<std::string *> pl_name; // our players
 
 struct Game_window : Graph_lib::Window // create a new window
 {

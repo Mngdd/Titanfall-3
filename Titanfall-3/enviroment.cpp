@@ -22,7 +22,7 @@ double Player::GetHealth()
 
 pair<int, int> Player::GetCords()
 {
-	return pair{x, y};
+	return make_pair(x, y);
 }
 
 string Player::GetName()

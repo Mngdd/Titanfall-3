@@ -3,9 +3,7 @@
 
 using namespace Graph_lib;
 
-std::vector<Player *> pl;
-std::string name1;
-std::string ip1;
+std::vector<std::string *> pl_name;
 
 Game_window::Game_window(Point xy, int w, int h, const std::string &title)
     : Window(xy, w, h, title),
@@ -43,10 +41,11 @@ void Game_window::play()
 
   win.wait_for_button();
 
-  name1 = Name.get_string(); // reading name
-  ip1 = IP.get_string();     // reading ip
-  Player *p = new Player{name1, 3, 0, 0};
-  pl.push_back(p);
+  std::string *name1 = new std::string{Name.get_string()}; // reading name
+  // ip1 = IP.get_string();                                   // reading ip
+
+  pl_name.push_back(name1);
+  // this->wait_for_button();
 }
 
 void Game_window::wait_for_button() // conservation window

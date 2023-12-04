@@ -8,12 +8,12 @@ const int FieldWidth = 720;   // Ширина поля
 
 // РАСКРАСКА
 
-Color HugeObsColor = Color::black;
-Color MediumObsColor = Color::black;
-Color SmallObsColor = Color::black;
+inline Color HugeObsColor = Color::black;
+inline Color MediumObsColor = Color::black;
+inline Color SmallObsColor = Color::black;
 
-bool RainbowPlayers = true; // Случайный цвет игроков
-Color PlayerColor = Color::green;
+inline bool RainbowPlayers = true; // Случайный цвет игроков
+inline Color PlayerColor = Color::green;
 // Color Team1PlayerColor = Color::blue;
 // Color Team2PlayerColor = Color::red;
 
@@ -21,7 +21,7 @@ Color PlayerColor = Color::green;
 
 // УБРАТЬ const ПЕРЕД ТЕМИ НАСТРОЙКАМИ, ЧТО МОЖНО БУДЕТ МЕНЯТЬ В МЕНЮШКЕ!!
 
-int NumOfPlayers = 2; // ТРЕБУЕТСЯ ЗАДАВАТЬ
+inline int NumOfPlayers = 2; // ТРЕБУЕТСЯ ЗАДАВАТЬ
 
 const int PlayerRad = 10; // Радиус игрока
 
@@ -35,9 +35,9 @@ const int SpawnObsMinDist = 5;   // Минимальное расстояние 
 
 const int SpawnObsWallMinDist = 3; // Минимальное расстояние от препятствия до стены
 
-const int NumOfHugeObs = 5; // Количество препятствий каждого вида
-const int NumOfMediumObs = 5;
-const int NumOfSmallObs = 5;
+const int NumOfHugeObs = 1; // Количество препятствий каждого вида
+const int NumOfMediumObs = 1;
+const int NumOfSmallObs = 1;
 
 const int HugeObsMaxRad = 100; // Радиусы препятствий разных размеров
 const int HugeObsMinRad = 65;
