@@ -118,6 +118,7 @@ void ObstaclesRespawn ()  // regenerates obstacles with existing players
             if (ObsDistPlayerCheck(*Obs))
             {
                 Obstacles.push_back(Obs);
+                break;
             }
         }
         // throw NoSpaceObstacleException();
@@ -125,12 +126,16 @@ void ObstaclesRespawn ()  // regenerates obstacles with existing players
 
     for (size_t i = 0; i < NumOfMediumObs; ++i)
     {
+        for (size_t j = 0; j < ObstacleReSpawnTries; ++j)
+        {
         Point Center{NotsoRandomPoint(MediumObsPower)};
         int Radius = random(generator, MediumObsMinRad, MediumObsMaxRad);
         Obstacle* Obs = new Obstacle{Center, Radius, false};
         if (ObsDistPlayerCheck(*Obs))
         {
             Obstacles.push_back(Obs);
+            break;
+        }
         }
     }
 
