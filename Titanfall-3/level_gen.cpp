@@ -34,12 +34,10 @@ Point NotsoRandomPoint (double Power)  // Point "Power" far away from the center
     int ysign = (rand() % 2 == 0) ? 1 : -1;
     int x = static_cast<int>(pow(random(generator, SpawnObsWallMinDist,
                                         static_cast<int>(pow((FieldLength - SpawnObsWallMinDist) / 2, Power))),
-                                 1 / Power)) *
-            xsign;
+                                        1 / Power)) * xsign + FieldLength/2;
     int y = static_cast<int>(pow(random(generator, SpawnObsWallMinDist,
                                         static_cast<int>(pow((FieldWidth - SpawnObsWallMinDist) / 2, Power))),
-                                 1 / Power)) *
-            ysign;
+                                        1 / Power)) * ysign + FieldWidth/2;
     return Graph_lib::Point(x, y);
 }
 
