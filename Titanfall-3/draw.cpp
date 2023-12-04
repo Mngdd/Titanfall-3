@@ -18,7 +18,7 @@ void drawing()
 {
 
     Generate(); // generation obstacles and players
-    ObstaclesRespawn();
+    // ObstaclesRespawn();
 
     Game_window win{Point(100, 100), FieldLength, FieldWidth, "Window"};
 
