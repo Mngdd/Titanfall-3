@@ -23,10 +23,12 @@ void drawing()
     Game_window win{Point(100, 100), FieldLength, FieldWidth, "Window"};
 
     win.wait_for_button();
+    std::string *n = new std::string{"NoName"};
+    pl_name.push_back(n);
 
     for (size_t i{0}; i < Players.size(); ++i)
     {
-        Player *m = new Player{*pl_name[0], 3, Players[i]->x, Players[i]->y};
+        Player *m = new Player{*pl_name[i], 3, Players[i]->x, Players[i]->y};
         pl.push_back(m);
     }
 
