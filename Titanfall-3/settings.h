@@ -35,9 +35,9 @@ const int SpawnObsMinDist = 5;   // Минимальное расстояние 
 
 const int SpawnObsWallMinDist = 3; // Минимальное расстояние от препятствия до стены
 
-const int NumOfHugeObs = 1; // Количество препятствий каждого вида
-const int NumOfMediumObs = 1;
-const int NumOfSmallObs = 1;
+const int NumOfHugeObs = 5; // Количество препятствий каждого вида
+const int NumOfMediumObs = 5;
+const int NumOfSmallObs = 5;
 
 const int HugeObsMaxRad = 100; // Радиусы препятствий разных размеров
 const int HugeObsMinRad = 65;
