@@ -11,7 +11,7 @@ const unsigned seed = unsigned(std::time(nullptr));
 // random tech
 void initGenerator (PRNG& generator)  // generates seed for random
 {
-    generator.engine.seed(rand());  // Получение случайного зерна для рандома
+    generator.engine.seed(seed);  // Получение случайного зерна для рандома
 }
 
 unsigned random (PRNG& generator, unsigned minValue, unsigned maxValue)  // gives random ints
