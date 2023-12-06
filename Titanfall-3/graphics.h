@@ -12,7 +12,7 @@
 using namespace Graph_lib;
 
 extern std::vector<std::string *> pl_name; // our players
-
+extern std::string *equation;
 struct Game_window : Graph_lib::Window // create a new window
 {
   Game_window(Point xy, int w, int h, const std::string &title);

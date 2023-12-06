@@ -13,7 +13,7 @@ std::vector<Circle *> show_obs;
 std::vector<Circle *> show_pl;
 std::vector<Text *> show_nm;
 std::vector<Player *> pl;
-
+// bool try;
 void drawing()
 {
 
@@ -21,6 +21,11 @@ void drawing()
     // ObstaclesRespawn();
 
     Game_window win{Point(100, 100), FieldLength, FieldWidth, "Window"};
+
+    // if (try)
+    // {
+    //     In_box
+    // }
 
     win.wait_for_button();
     std::string *n = new std::string{"NoName"};

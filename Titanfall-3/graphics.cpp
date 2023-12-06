@@ -4,6 +4,7 @@
 using namespace Graph_lib;
 
 std::vector<std::string *> pl_name;
+std::string *equation;
 
 Game_window::Game_window(Point xy, int w, int h, const std::string &title)
     : Window(xy, w, h, title),
@@ -45,6 +46,10 @@ void Game_window::play()
   // ip1 = IP.get_string();                                   // reading ip
 
   pl_name.push_back(name1);
+  // In_box equat{Point(300, 300), 200, 100, "Equation:"};
+
+  // this->attach(equat);
+  // equation = new std::string{equat.get_string()};
   // this->wait_for_button();
 }
 
