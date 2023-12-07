@@ -8,8 +8,7 @@ set(CMAKE_CXX_FLAGS "-pedantic -Wall -Wextra")
 cmake_path(SET LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
 include_directories(
-    ${LIB_DIR}
+        ${LIB_DIR}
 )
 
 add_subdirectory (Titanfall-3)
-

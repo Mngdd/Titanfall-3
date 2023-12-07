@@ -3,25 +3,26 @@
 set(TARGET "Titanfall-3")
 
 set(HEADERS
-    level_gen.h
-    enviroment.h
-    graphics.h
-    ${LIB_DIR}/Graph_lib/fltk.h
-    ${LIB_DIR}/Graph_lib/Graph.h
-    ${LIB_DIR}/Graph_lib/GUI.h
-    ${LIB_DIR}/Graph_lib/Point.h
-    ${LIB_DIR}/Graph_lib/Simple_window.h
-    ${LIB_DIR}/Graph_lib/Window.h
+        #level_gen.h
+        #environment.h
+        #graphics.h
+        ${LIB_DIR}/Graph_lib/fltk.h
+        ${LIB_DIR}/Graph_lib/Graph.h
+        ${LIB_DIR}/Graph_lib/GUI.h
+        ${LIB_DIR}/Graph_lib/Point.h
+        ${LIB_DIR}/Graph_lib/Simple_window.h
+        ${LIB_DIR}/Graph_lib/Window.h
 )
 set(SOURCES
-    main.cpp
-    enviroment.cpp
-    draw.cpp
-    graphics.cpp    
-    level_gen.cpp
-    ${LIB_DIR}/Graph_lib/Graph.cpp
-    ${LIB_DIR}/Graph_lib/GUI.cpp
-    ${LIB_DIR}/Graph_lib/Window.cpp
+        main.cpp
+        #environment.cpp
+        #draw.cpp
+        #graphics.cpp
+        #level_gen.cpp
+        ${LIB_DIR}/Graph_lib/Graph.cpp
+        ${LIB_DIR}/Graph_lib/GUI.cpp
+        ${LIB_DIR}/Graph_lib/Window.cpp
+        #err_handle.cpp
 )
 
 project(${TARGET} CXX)
@@ -35,18 +36,12 @@ find_package(OpenGL REQUIRED)
 include_directories(SYSTEM ${FLTK_INCLUDE_DIR})
 link_directories(${FLTK_INCLUDE_DIR}/../lib)
 
-add_executable(${TARGET} ${HEADERS} ${SOURCES})
+add_executable(${TARGET} ${SOURCES})
 
 target_link_libraries(${TARGET} ${FLTK_LIBRARIES} ${OPENGL_LIBRARIES})
-if(WIN32)
-target_link_libraries(
-    ${TARGET}
-    fltk_jpeg
-    fltk_png
-    fltk_z
-)
-# if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-#     target_link_libraries(${TARGET} fltk_jpeg fltk_png fltk_z)
-endif()
+
+ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+     target_link_libraries(${TARGET} fltk_jpeg fltk_png fltk_z)
+ endif()
 
 install(TARGETS ${TARGET})
