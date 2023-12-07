@@ -1,12 +1,28 @@
-//
-// Created by khris on 22.11.2023.
-//
+#ifndef ENVIROMENT_H
+#define ENVIROMENT_H
+#include <Graph_lib/Point.h>
 
-int GetCords();
-double GetHealth();
-void SetDamage(double damagevalue);
+#include <bits/stdc++.h>
 
-#ifndef TITANFALL_3_ENVIROMENT_H
-#define TITANFALL_3_ENVIROMENT_H
+using namespace Graph_lib;
+struct Obstacle
+{
+    Point center;
+    int radius;
+    bool hole; //true - черное
+};
 
-#endif //TITANFALL_3_ENVIROMENT_H
+class Player
+{
+private:
+    std::string name;
+    int x, y;
+
+
+public:
+    Player(std::string namePlayer, int xcord, int ycord);
+    std::string GetName();
+    std::pair<int, int> GetCords();
+};
+
+#endif // TITANFALL_3_ENVIRONMENT_H
