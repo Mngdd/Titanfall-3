@@ -9,22 +9,20 @@ struct Obstacle
 {
     Point center;
     int radius;
-    bool hole;
+    bool hole; //true - черное
 };
 
 class Player
 {
 private:
     std::string name;
-    double health;
     int x, y;
 
+
 public:
-    Player(std::string namePlayer, double health_point, int xcord, int ycord);
-    double GetHealth();
+    Player(std::string namePlayer, int xcord, int ycord);
     std::string GetName();
     std::pair<int, int> GetCords();
-    void SetDamage(double damagevalue);
 };
 
 #endif // TITANFALL_3_ENVIRONMENT_H
