@@ -5,6 +5,10 @@ const int FieldLength = 1200;       // Длина поля
 const int FieldWidth = 720;         // Ширина поля
 
 
+// ИГРА
+
+const int WhiteObsRad = 5;          // радиус вырезов препятсвий
+
 // ГЕНЕРАЦИЯ
 
 // УБРАТЬ const ПЕРЕД ТЕМИ НАСТРОЙКАМИ, ЧТО МОЖНО БУДЕТ МЕНЯТЬ В МЕНЮШКЕ!!
@@ -24,7 +28,6 @@ const int NumOfHugeObs = 5;         // Количество препятстви
 const int NumOfMediumObs = 5;
 const int NumOfSmallObs = 5;
 
-const int WhiteObsRad = 5;          // радиус вырезов препятсвий
 const int HugeObsMaxRad = 100;      // Радиусы препятствий разных размеров
 const int HugeObsMinRad = 65;
 const int MediumObsMaxRad = 65;
