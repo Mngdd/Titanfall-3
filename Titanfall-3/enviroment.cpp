@@ -4,34 +4,23 @@
 #include <bits/stdc++.h>
 #include "enviroment.h"
 #include "settings.h"
-#include "Point.h"
+#include <Graph_lib/Point.h>
+
 using namespace std;
 
+Player::Player(string namePlayer,int xcord, int ycord){
+    name = namePlayer;
+    x = xcord;
+    y = ycord;}
 
+string Player::GetName(){
+    return name;
+}
 
+pair<int, int> Player::GetCords(){
+	return pair{x, y};
+}
 
-
-
-class Player
-{private:
-    string name;
-    int x, y;
-    
-public:
-
-    Player(string namePlayer,int xcord, int ycord){
-        name = namePlayer;
-        x = xcord;
-        y = ycord;}
-
-    string GetName(){
-        return name;
-    }
-
-    pair<int,int> GetCords(){
-        return pair{x, y};
-    }
-};
 ////////////// мат выражения
 //
 //It supports operators: + - * / ^ ( )
@@ -344,16 +333,16 @@ vector<pair<int, int>> player_x_y(vector<Point*> findxyobst){
 	return points;
 }
 
-Point check_player(int x,int y, vector<Point*> players){//тут ищем кому приндлежит данная точка
+Point* check_player(int x,int y, vector<Point*> players){//тут ищем кому приндлежит данная точка
 	int min_dist = 1000;
-	Point closest; 
+	Point* closest; 
 	for (const auto& i: players){
 		int x_player = i->x;
 		int y_player = i->y;
 		double distance = sqrt(pow(x - x_player, 2)+ sqrt(pow(y - y_player, 2)));
 		if (distance < min_dist){
 			min_dist = distance;
-			closest = Point(x_player, y_player);
+			closest = new Point(x_player, y_player);
 		}}
 	return closest; 
 	}
@@ -362,9 +351,9 @@ Point check_player(int x,int y, vector<Point*> players){//тут ищем ком
 vector<pair<int, int>> Func_trace(string func_enter, pair<int,int>& cords,vector<Obstacle*> obstacle_mini, vector<Point*> players_cords)
 {	const int size_map_y = FieldWidth; // длина поля для пробега y
 	const int size_map_x = FieldLength; // длина поля для пробега х
-	string func_enter = "2 ^ x"; // потом передастся
+	//string func_enter = "2 ^ x"; // потом передастся
 	
-	pair cords{100,100}; // координаты игрока не забыть потом за комментить
+	//pair cords{100,100}; // координаты игрока не забыть потом за комментить
 	bool right_true = true;
 	size_t pos = func_enter.find('x');
 	vector<pair<int, int>> cord_vector;
@@ -412,7 +401,7 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int,int>& cords,vector
 
 							if (obst_for != gamers_cords.end()){// попали в препятсвия
 								int rad = WhiteObsRad;
-								Obstacle* with_out = new Obstacle(Graph_lib::Point(x_i, y_i), rad, false);
+								Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, false};
 								obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
 							}
 						
@@ -440,7 +429,7 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int,int>& cords,vector
 
 							if (obst_for != gamers_cords.end()){// попали в препятсвия
 								int rad = WhiteObsRad;
-								Obstacle* with_out = new Obstacle(Graph_lib::Point(x_i, y_i), rad, false);
+								Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, false};
 								obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
 							}
 							
@@ -481,7 +470,7 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int,int>& cords,vector
 
 					if (obst_for != gamers_cords.end()){// попали в препятсвия
 						int rad = WhiteObsRad;
-						Obstacle* with_out = new Obstacle(Graph_lib::Point(x_i, y_i), rad, false);
+						Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, false};
 						obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
 							}
 				}
@@ -503,7 +492,7 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int,int>& cords,vector
 
 					if (obst_for != gamers_cords.end()){// попали в препятсвия
 						int rad = WhiteObsRad;
-						Obstacle* with_out = new Obstacle(Graph_lib::Point(x_i, y_i), rad, false);
+						Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, false};
 						obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
 							}
 					}

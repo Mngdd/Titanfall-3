@@ -25,6 +25,7 @@ inline int NumOfPlayers = 2; // ТРЕБУЕТСЯ ЗАДАВАТЬ
 
 const int PlayerRad = 10; // Радиус игрока
 
+const int WhiteObsRad = 5;
 const double HugeObsPower = 2;     // Степень ухода больших препятствий от центра
 const double MediumObsPower = 0.5; // Степень ухода средних препятствий от центра
 const double SmallObsPower = 1;    // Степень ухода маленьких препятствий от центра
