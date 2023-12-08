@@ -21,7 +21,7 @@ std::vector<std::pair<int, int>> Func_trace(std::string func_enter, std::pair<in
 // inline std::vector<std::pair<int, int>> func;
 // bool try;
 std::pair<int, int> q = std::make_pair(100,100); 
-std::string function = "2 * x";
+std::string function = "120 * sin(x/2)";
 void drawing()
 {
 
@@ -36,7 +36,7 @@ void drawing()
     l = Func_trace(function, q, Obstacles, Players);
 
     for (auto i : l){
-        Point* j = new Point(i.first, 720-i.second);
+        Point* j = new Point(i.first, i.second);
         fn.add(*j);
     }
     fn.set_color(Graph_lib::Color::yellow);
