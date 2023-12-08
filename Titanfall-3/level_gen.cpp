@@ -7,10 +7,11 @@ using namespace Graph_lib;
 
 std::vector<Obstacle*> Obstacles;
 std::vector<Point*> Players;
-const unsigned seed = unsigned(std::time(nullptr));
+
 // random tech
 void initGenerator (PRNG& generator)  // generates seed for random
 {
+    const unsigned seed = unsigned(rand());
     generator.engine.seed(seed);  // Получение случайного зерна для рандома
 }
 
