@@ -14,13 +14,13 @@ std::vector<Circle *> show_pl;
 std::vector<Text *> show_nm;
 std::vector<Player *> pl;
 Graph_lib::Open_polyline fn;
-std::vector<std::pair<int,int>> l;
-std::vector<std::pair<int, int>> Func_trace(std::string func_enter, std::pair<int,int>& cords,std::vector<Obstacle*> obstacle_mini, std::vector<Point*> players_cords);
+std::vector<std::pair<int, int>> l;
+std::vector<std::pair<int, int>> Func_trace(std::string func_enter, std::pair<int, int> &cords, std::vector<Obstacle *> obstacle_mini, std::vector<Point *> players_cords);
 // std::vector<Obstacle *> Obstacles;
 // std::vector<Point *> Players;
 // inline std::vector<std::pair<int, int>> func;
 // bool try;
-std::pair<int, int> q = std::make_pair(100,100); 
+std::pair<int, int> q = std::make_pair(100, 100);
 std::string function = "2 * x";
 void drawing()
 {
@@ -35,12 +35,12 @@ void drawing()
 
     l = Func_trace(function, q, Obstacles, Players);
 
-    for (auto i : l){
-        Point* j = new Point(i.first, 720-i.second);
+    for (auto i : l)
+    {
+        Point *j = new Point(i.first, 720 - i.second);
         fn.add(*j);
     }
-
-    win.attach(fn);
+    fn.set_color(Graph_lib::Color::yellow);
     // for (auto i : fn){
     //     win
     // }
@@ -91,6 +91,7 @@ void drawing()
         win.attach(*i);
     }
 
+    win.attach(fn);
     win.wait_for_button();
 
     win.wait_for_button();
