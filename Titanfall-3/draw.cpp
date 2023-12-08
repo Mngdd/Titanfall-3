@@ -27,7 +27,7 @@ void drawing()
 
     Generate(); // generation obstacles and players
 
-    Game_window win{Point(350, 500), FieldLength, FieldWidth, "Window"};
+    Game_window win{Point(100, 100), FieldLength, FieldWidth, "Window"};
 
     win.wait_for_button();
     std::string *n = new std::string{"NoName"};
