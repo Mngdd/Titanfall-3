@@ -13,22 +13,37 @@ std::vector<Circle *> show_obs;
 std::vector<Circle *> show_pl;
 std::vector<Text *> show_nm;
 std::vector<Player *> pl;
+Graph_lib::Open_polyline fn;
+std::vector<std::pair<int,int>> l;
+std::vector<std::pair<int, int>> Func_trace(std::string func_enter, std::pair<int,int>& cords,std::vector<Obstacle*> obstacle_mini, std::vector<Point*> players_cords);
 // std::vector<Obstacle *> Obstacles;
 // std::vector<Point *> Players;
-inline std::vector<std::pair<int, int>> func;
+// inline std::vector<std::pair<int, int>> func;
 // bool try;
+std::pair<int, int> q = std::make_pair(100,100); 
+std::string function = "2 * x";
 void drawing()
 {
 
     Generate(); // generation obstacles and players
 
-    Game_window win{Point(100, 100), FieldLength, FieldWidth, "Window"};
+    Game_window win{Point(350, 500), FieldLength, FieldWidth, "Window"};
 
     win.wait_for_button();
     std::string *n = new std::string{"NoName"};
     pl_name.push_back(n);
 
-    // func = Func_trace(Obstacles, Players);
+    l = Func_trace(function, q, Obstacles, Players);
+
+    for (auto i : l){
+        Point* j = new Point(i.first, 720-i.second);
+        fn.add(*j);
+    }
+
+    win.attach(fn);
+    // for (auto i : fn){
+    //     win
+    // }
 
     for (size_t i{0}; i < Players.size(); ++i)
     {

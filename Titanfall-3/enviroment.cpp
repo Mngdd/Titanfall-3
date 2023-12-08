@@ -508,3 +508,5 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int,int>& cords,vector
 
 ///} //возможно скобку где то не закрыл....
 
+
+
