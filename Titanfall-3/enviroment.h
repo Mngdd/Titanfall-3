@@ -9,7 +9,7 @@ struct Obstacle
 {
     Point center;
     int radius;
-    bool hole; //true - черное
+    bool hole; //true - белое
 };
 
 class Player

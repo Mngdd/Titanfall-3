@@ -296,23 +296,24 @@ void parser::get_token()
 
 
 
-vector<pair<int, int>> obstac_x_y(vector<Obstacle*> findxyobst){
-	vector<pair<int, int>> points;
-	for (const auto& i: findxyobst){
-		if (i->hole){
-		int a = i->center.x;
-		int b = i->center.y;
-		int r = i->radius;
-		for (int x = a - r; x <= a + r; x += 1) {
-        	int y1 = std::sqrt(std::pow(r, 2) - std::pow(x - a, 2)) + b;
-        	int y2 = -std::sqrt(std::pow(r, 2) - std::pow(x - a, 2)) + b;
-        	points.push_back(std::make_pair(x, y1));
-        	points.push_back(std::make_pair(x, y2));
-    		}
-		}
-	}
+std::vector<std::pair<int, int>> obstac_x_y(vector<Obstacle*> findxyobst){
+    std::vector<std::pair<int, int>> points;
+    for (const auto& i: findxyobst){
+        if (i->hole == false){
+            int a = i->center.x;
+            int b = i->center.y;
+            int r = i->radius;
+            for (int x = a - r; x <= a + r; x += 1) {
+                for (int y = b - r; y <= b + r; y += 1) {
+                    if (std::pow(x - a, 2) + std::pow(y - b, 2) <= std::pow(r, 2)) {
+                        points.push_back(std::make_pair(x, y));
+                    }
+                }
+            }
+        }
+    }
 
-	return points;
+    return points;
 }
 
 vector<pair<int, int>> player_x_y(vector<Point*> findxyobst){
@@ -323,11 +324,12 @@ vector<pair<int, int>> player_x_y(vector<Point*> findxyobst){
 		int b = i->y;
 		const int r = PlayerRad;
 		for (int x = a - r; x <= a + r; x += 1) {
-        	int y1 = std::sqrt(std::pow(r, 2) - std::pow(x - a, 2)) + b;
-        	int y2 = -std::sqrt(std::pow(r, 2) - std::pow(x - a, 2)) + b;
-        	points.push_back(std::make_pair(x, y1));
-        	points.push_back(std::make_pair(x, y2));
-    		}
+                for (int y = b - r; y <= b + r; y += 1) {
+                    if (std::pow(x - a, 2) + std::pow(y - b, 2) <= std::pow(r, 2)) {
+                        points.push_back(std::make_pair(x, y));
+                    }
+                }
+            }
 	}
 
 	return points;
@@ -399,11 +401,12 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int,int>& cords,vector
 								
 							}
 
-							if (obst_for != gamers_cords.end()){// попали в препятсвия
+							if (obst_for != black_cords.end()){// попали в препятсвия
 								int rad = WhiteObsRad;
-								Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, false};
+								Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
 								obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
-							}
+								break;
+								}
 						
 							}
 						}
@@ -427,10 +430,11 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int,int>& cords,vector
 								players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());
 							}
 
-							if (obst_for != gamers_cords.end()){// попали в препятсвия
+							if (obst_for != black_cords.end()){// попали в препятсвия
 								int rad = WhiteObsRad;
-								Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, false};
+								Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
 								obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
+								break;
 							}
 							
 
@@ -468,10 +472,11 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int,int>& cords,vector
 						players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());		
 					}
 
-					if (obst_for != gamers_cords.end()){// попали в препятсвия
+					if (obst_for != black_cords.end()){// попали в препятсвия
 						int rad = WhiteObsRad;
-						Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, false};
+						Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
 						obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
+						break;
 							}
 				}
 				else{
@@ -490,10 +495,11 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int,int>& cords,vector
 							players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());
 						}
 
-					if (obst_for != gamers_cords.end()){// попали в препятсвия
+					if (obst_for != black_cords.end()){// попали в препятсвия
 						int rad = WhiteObsRad;
-						Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, false};
+						Obstacle* with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
 						obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
+						break;
 							}
 					}
 				}
