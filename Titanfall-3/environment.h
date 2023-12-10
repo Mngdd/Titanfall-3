@@ -1,5 +1,5 @@
-#ifndef ENVIROMENT_H
-#define ENVIROMENT_H
+#ifndef ENVIRONMENT_H
+#define ENVIRONMENT_H
 #include <Graph_lib/Point.h>
 
 #include <bits/stdc++.h>
@@ -17,10 +17,13 @@ class Player
 private:
     std::string name;
     int x, y;
-
+    bool alive;
 
 public:
-    Player(std::string namePlayer, int xcord, int ycord);
+    Player() = default;
+    ~Player(){}
+    Player(const std::string& namePlayer, int xcord, int ycord);
+    Player(std::string& namePlayer, int xcord, int ycord);
     std::string GetName();
     std::pair<int, int> GetCords();
 };

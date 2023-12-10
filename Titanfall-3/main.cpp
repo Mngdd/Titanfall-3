@@ -1,17 +1,13 @@
-#include <FL/Fl.H>
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Box.H>
-void drawing();
-int main(int argc, char **argv)
-{
-  drawing();
-  //   Fl_Window *window = new Fl_Window(340,180);
-  //   Fl_Box *box = new Fl_Box(20,40,300,100,"Hello, World!");
-  //   box->box(FL_UP_BOX);
-  //   box->labelfont(FL_BOLD+FL_ITALIC);
-  //   box->labelsize(36);
-  //   box->labeltype(FL_SHADOW_LABEL);
-  //   window->end();
-  //   window->show(argc, argv);
-  //   return Fl::run();
+#include "game_logic.h"
+#include <exception>
+#include <iostream>
+
+int main() {
+    try {
+        game_loop();
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "UNKNOWN ERR" << std::endl;
+    }
 }

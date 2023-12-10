@@ -1,11 +1,19 @@
 ﻿cmake_minimum_required(VERSION 3.20)
 
 set(TARGET "Titanfall-3")
+link_libraries(ws2_32 wsock32) # оч надо для сервера
 
 set(HEADERS
-    level_gen.h
-    enviroment.h
+    client.h
+    draw.h
+    environment.h
+    err_handle.h
+    game_logic.h
     graphics.h
+    level_gen.h
+    server.h
+    settings.h
+    #sounds.h
     ${LIB_DIR}/Graph_lib/fltk.h
     ${LIB_DIR}/Graph_lib/Graph.h
     ${LIB_DIR}/Graph_lib/GUI.h
@@ -14,11 +22,16 @@ set(HEADERS
     ${LIB_DIR}/Graph_lib/Window.h
 )
 set(SOURCES
-    main.cpp
-    enviroment.cpp
+    client.cpp
     draw.cpp
-    graphics.cpp    
+    environment.cpp
+    err_handle.cpp
+    game_logic.cpp
+    graphics.cpp
     level_gen.cpp
+    main.cpp
+    server.cpp
+    #sounds.cpp
     ${LIB_DIR}/Graph_lib/Graph.cpp
     ${LIB_DIR}/Graph_lib/GUI.cpp
     ${LIB_DIR}/Graph_lib/Window.cpp
@@ -29,7 +42,7 @@ project(${TARGET} CXX)
 set(FLTK_SKIP_FLUID True)
 set(FLTK_SKIP_FORMS True)
 
-find_package(FLTK 1.3.8 EXACT REQUIRED)
+find_package(FLTK REQUIRED)
 find_package(OpenGL REQUIRED)
 
 include_directories(SYSTEM ${FLTK_INCLUDE_DIR})
