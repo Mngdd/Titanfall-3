@@ -21,7 +21,7 @@ std::vector<std::pair<int, int>> Func_trace(std::string func_enter, std::pair<in
 // inline std::vector<std::pair<int, int>> func;
 // bool try;
 std::pair<int, int> q = std::make_pair(100,100); 
-std::string function = "120 * sin(x/2)";
+std::string function = "120 * sin(x)";
 void drawing()
 {
 
