@@ -1,10 +1,3 @@
-Также пишите сюда, что вы изменили в граф либе
-added:
-Point.h : double dist(Point a, Point b);
-
-changed:
-Graph.h : Struct Color : enum Color_type : black now 0st
-
 Пишете сюда свои задачи и что вообще надо делать и вообще какие особенности и проблемы и приколы что вы встретили и надо решить
 to-do лист
 

@@ -12,6 +12,8 @@ struct PRNG
     std::mt19937 engine;
 };
 
+double dist (Point a, Point b);    // returns dist between two points
+
 void initGenerator (PRNG& generator);                                     // generates seed for random
 unsigned random (PRNG& generator, unsigned minValue, unsigned maxValue);  // gives random ints
 

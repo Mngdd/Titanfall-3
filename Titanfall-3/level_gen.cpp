@@ -8,6 +8,8 @@ using namespace Graph_lib;
 std::vector<Obstacle*> Obstacles;
 std::vector<Point*> Players;
 
+double dist (Point a, Point b) { return pow(pow(a.x - b.x, 2) + pow(a.y - b.y, 2), 0.5);}
+
 // random tech
 void initGenerator (PRNG& generator)  // generates seed for random
 {
@@ -28,7 +30,6 @@ Point NotsoRandomPoint (double Power)  // Point "Power" far away from the center
 {
     PRNG generator;
     initGenerator(generator);
-    srand(time(NULL));
 
     int xsign = (rand() % 2 == 0) ? 1 : -1;
     int ysign = (rand() % 2 == 0) ? 1 : -1;
@@ -45,7 +46,6 @@ void HugeObsSpawn ()  // adds obstacles to HugeObstacles
 {
     PRNG generator;
     initGenerator(generator);
-    srand(time(NULL));
 
     for (size_t i = 0; i < NumOfHugeObs; ++i)
     {
@@ -61,7 +61,6 @@ void MediumObsSpawn ()  // adds obstacles to MediumObstacles
 {
     PRNG generator;
     initGenerator(generator);
-    srand(time(NULL));
 
     for (size_t i = 0; i < NumOfMediumObs; ++i)
     {
@@ -77,7 +76,6 @@ void SmallObsSpawn ()  // adds obstacles to SmallObstacles
 {
     PRNG generator;
     initGenerator(generator);
-    srand(time(NULL));
 
     for (size_t i = 0; i < NumOfSmallObs; ++i)
     {
@@ -105,7 +103,7 @@ void ObstaclesRespawn ()  // regenerates obstacles with existing players
 {
     PRNG generator;
     initGenerator(generator);
-    srand(time(NULL));
+
     Obstacles.clear();
 
     for (size_t i = 0; i < NumOfHugeObs; ++i)
@@ -180,7 +178,6 @@ void PlayerSpawn ()  // adds player to Players
 {
     PRNG generator;
     initGenerator(generator);
-    srand(time(NULL));
 
     for (size_t i = 0; i < PlayerSpawnTries; ++i)
     {
