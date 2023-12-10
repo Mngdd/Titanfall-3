@@ -8,6 +8,8 @@ using namespace Graph_lib;
 std::vector<Obstacle*> Obstacles;
 std::vector<Point*> Players;
 
+double dist (Point a, Point b) { return pow(pow(a.x - b.x, 2) + pow(a.y - b.y, 2), 0.5);}
+
 // random tech
 void initGenerator (PRNG& generator)  // generates seed for random
 {
