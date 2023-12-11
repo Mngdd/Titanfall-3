@@ -5,11 +5,11 @@
 #include <Graph_lib/Graph.h>
 #include <Graph_lib/Simple_window.h>
 
+#include "environment.h"
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Int_Input.H>
 #include <FL/Fl_Slider.H>
-
-#include "environment.h"
+#include <Graph_lib/GUI.h>
 #include <bits/stdc++.h>
 #include <vector>
 
@@ -17,32 +17,70 @@ using namespace Graph_lib;
 
 extern std::string *equation;
 
-struct MainMenu : Graph_lib::Window {// create a new window
-    MainMenu(Point xy, int w, int h, const std::string &title);
+//TODO: ДОДЕЛАТЬ
+// struct InputMenu : Graph_lib::Window {// create a new window
+//     InputMenu() = default;
+//     InputMenu(Point xy, int w, int h, const std::string &title);
+//     void wait_for_button();
+//     ~InputMenu();
+
+// private:
+//     //MENU
+//     In_box data_output;
+//     In_box func_input;
+//     Button left;
+//     Button right;
+//     Button to_menu;
+//     Button respawn;
+//     Button restart;
+
+//     // Button Quit
+//     bool button_pushed = false;
+//     static void cd_quit(Address, Address widget);
+//     void event_quit();
+//     // Button Host
+//     static void cd_host(Address, Address widget);
+//     void event_host();
+//     // Button Join
+//     static void cd_join(Address, Address widget);
+//     void event_join();
+// };
+
+//TODO: ПРИКРУТИТЬ К ИГРЕ НАЗВАНИЕ + ИКОНКУ
+struct Screen : Graph_lib::Window {// create a new window
+    Screen() = default;
+    Screen(Point xy, int w, int h, const std::string &title);
     void wait_for_button();
+    ~Screen();
 
 private:
-    void hide_all() { // НЕСТАБИЛЬНО, ВЫЗЫВАЕТ ОШИБКИ (ПОЧЕМУ)
-        this->detach(host_button);
-        this->detach(join_button);
-        this->detach(quit_button);
+    void hide_menu() {// мне лень делать красиво
+        host_button.hide();
+        join_button.hide();
+        quit_button.hide();
+        detach(game_name);
+        nick_input.hide();
     }
-
+    //MENU
+    Text game_name;
+    In_box nick_input;
     Button host_button;
     Button join_button;
     Button quit_button;
+    //IN-GAME
+
 
     // cd просто для привязки
     // Button Quit
     bool button_pushed = false;
     static void cd_quit(Address, Address widget);
-    void quit();
+    void event_quit();
     // Button Host
     static void cd_host(Address, Address widget);
-    void host();
+    void event_host();
     // Button Join
     static void cd_join(Address, Address widget);
-    void join();
+    void event_join();
 };
 
 class SliderInput : public Fl_Group {//TODO: описать код и в хедер выкинуть!!!

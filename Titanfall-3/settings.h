@@ -7,17 +7,23 @@
 // выход из игры
 inline bool wanna_exit = false;
 
-const int FieldLength = 1200;// Длина поля
-const int FieldWidth = 720;  // Ширина поля
+// Высота поля
+const int FieldHeight = 1200;
+// Ширина поля
+const int FieldWidth = 720;  
+// Высота меню во время игры
+const int InputHeight = 200; 
+// Ширина меню во время игры
+const int InputWidth = 300; 
+
 
 // РАСКРАСКА
-
 inline Graph_lib::Color HugeObsColor = Graph_lib::Color::black;
 inline Graph_lib::Color MediumObsColor = Graph_lib::Color::black;
 inline Graph_lib::Color SmallObsColor = Graph_lib::Color::black;
 
 // Случайный цвет игроков
-inline bool RainbowPlayers = true;
+inline bool RainbowPlayers = true; //FIXME: не работает
 inline Graph_lib::Color PlayerColor = Graph_lib::Color::green;
 // Color Team1PlayerColor = Color::blue;
 // Color Team2PlayerColor = Color::red;
@@ -26,6 +32,7 @@ inline Graph_lib::Color PlayerColor = Graph_lib::Color::green;
 
 // УБРАТЬ const ПЕРЕД ТЕМИ НАСТРОЙКАМИ, ЧТО МОЖНО БУДЕТ МЕНЯТЬ В МЕНЮШКЕ!!
 
+const std::string GameName = "GAME_NAME_HERE";
 // наш айпи, не const, вдруг он поменяется (впн мб, я не уверен)
 inline std::string MY_IP = "NONE";
 // айпи сервера, на который подключаться будем
@@ -41,6 +48,8 @@ inline int NumOfPlayers = 2;
 const int PlayerRad = 10;
 // Размер ника (font_size)
 const int NickSize = 15;
+// Имя нашего игрока
+inline std::string UserNick = "Player";
 
 // радиус бабаха
 const int WhiteObsRad = 5;
@@ -80,7 +89,7 @@ const int PlayerSpawnTries = 100;
 const int ObstacleReSpawnTries = 100;
 
 // размеры окна создания сервера
-const int HostWin_x = 350;
+const int HostWin_x = 325;
 const int HostWin_y = 350;
 
 // размеры окна подключения к серверу

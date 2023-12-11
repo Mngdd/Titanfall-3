@@ -3,7 +3,6 @@
 #include "graphics.h"
 #include "level_gen.h"
 #include "server.h"
-#include "settings.h"
 #include <Graph_lib/Graph.h>
 
 void event_close(Fl_Widget *widget, void *) {
@@ -20,12 +19,32 @@ void game_loop() {
         //================ MENU ================
         MY_IP = get_my_ip();
         // главное окно, переименовал для ясности
-        MainMenu main_win{Point(100, 100), FieldLength, FieldWidth, "TF3"};
+        Screen main_win{Point(100, 100), FieldHeight, FieldWidth, "TF3"};
         main_win.callback(event_close);
         main_win.wait_for_button();
         if (wanna_exit) { return; }
         //================ GAME ================
-        std::cout << "IM A HOST, IM GOIN TO COMMIT SOME CRINGE\n";
+        if (IM_A_HOST) {// DO IT PARRALLEL
+            //init a server
+
+            // listen
+
+            // generate level
+
+            //------------------
+            // recv
+
+            // check_game_conditions
+
+            // send data
+        }
+
+        // connect
+
+        // send
+
+        // recv
+
         std::vector<Player> players(6);
 
         Player tmp;
@@ -40,5 +59,6 @@ void game_loop() {
 
         Generate();
         game_draw(main_win, players);
+        main_win.wait_for_button();
     }
 }

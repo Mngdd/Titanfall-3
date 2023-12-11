@@ -1,6 +1,3 @@
-#include <unistd.h> // write
-#include "err_handle.h"
-#include <cstdio>
 #include "client.h"
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib

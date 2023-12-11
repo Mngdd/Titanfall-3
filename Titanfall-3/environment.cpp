@@ -8,14 +8,14 @@
 
 using namespace std;
 
-Player::Player(string& namePlayer, int xcord, int ycord) {
+Player::Player(string &namePlayer, int xcord, int ycord) {
     name = namePlayer;
     x = xcord;
     y = ycord;
     alive = true;
     //body = new  = new Graph_lib::Circle{Point(x, y), PlayerRad};
 }
-Player::Player(const string& namePlayer, int xcord, int ycord) {
+Player::Player(const string &namePlayer, int xcord, int ycord) {
     name = namePlayer;
     x = xcord;
     y = ycord;
@@ -277,13 +277,14 @@ void parser::get_token() {
 }
 
 
-std::vector<std::pair<int, int>> obstac_x_y(vector<Obstacle *> findxyobst) {
+std::vector<std::pair<int, int>> obstac_x_y(vector<Obstacle>& findxyobst) {
     std::vector<std::pair<int, int>> points;
-    for (const auto &i: findxyobst) {
-        if (i->hole == false) {
-            int a = i->center.x;
-            int b = i->center.y;
-            int r = i->radius;
+    
+    for (size_t i = 0; i < findxyobst.size(); ++i) {
+        if (findxyobst[i].hole == false) {
+            int a = findxyobst[i].center.x;
+            int b = findxyobst[i].center.y;
+            int r = findxyobst[i].radius;
             for (int x = a - r; x <= a + r; x += 1) {
                 for (int y = b - r; y <= b + r; y += 1) {
                     if (std::pow(x - a, 2) + std::pow(y - b, 2) <= std::pow(r, 2)) {
@@ -297,12 +298,12 @@ std::vector<std::pair<int, int>> obstac_x_y(vector<Obstacle *> findxyobst) {
     return points;
 }
 
-vector<pair<int, int>> player_x_y(vector<Graph_lib::Point *> findxyobst) {
+vector<pair<int, int>> player_x_y(vector<Graph_lib::Point>& findxyobst) {
     vector<pair<int, int>> points;
     for (const auto &i: findxyobst) {
 
-        int a = i->x;
-        int b = i->y;
+        int a = i.x;
+        int b = i.y;
         const int r = PlayerRad;
         for (int x = a - r; x <= a + r; x += 1) {
             for (int y = b - r; y <= b + r; y += 1) {
@@ -316,27 +317,27 @@ vector<pair<int, int>> player_x_y(vector<Graph_lib::Point *> findxyobst) {
     return points;
 }
 
-Graph_lib::Point *check_player(int x, int y, vector<Graph_lib::Point *> players) {//тут ищем кому приндлежит данная точка
+Graph_lib::Point check_player(int x, int y, vector<Graph_lib::Point>& players) {//тут ищем кому приндлежит данная точка
     int min_dist = 1000;
-    Graph_lib::Point *closest;
+    Graph_lib::Point closest;
     for (const auto &i: players) {
-        int x_player = i->x;
-        int y_player = i->y;
+        int x_player = i.x;
+        int y_player = i.y;
         double distance = sqrt(pow(x - x_player, 2) + sqrt(pow(y - y_player, 2)));
         if (distance < min_dist) {
             min_dist = distance;
-            closest = new Graph_lib::Point(x_player, y_player);
+            closest = Graph_lib::Point(x_player, y_player);
         }
     }
     return closest;
 }
 
 
-vector<pair<int, int>> Func_trace(string func_enter, pair<int, int> &cords,
-                                  vector<Obstacle *> obstacle_mini,
-                                  vector<Graph_lib::Point *> players_cords) {
+vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
+                                  vector<Obstacle>& obstacle_mini,
+                                  vector<Graph_lib::Point>& players_cords) {
     const int size_map_y = FieldWidth; // длина поля для пробега y
-    const int size_map_x = FieldLength;// длина поля для пробега х
+    const int size_map_x = FieldHeight;// длина поля для пробега х
     //string func_enter = "2 ^ x"; // потом передастся
 
     //pair cords{100,100}; // координаты игрока не забыть потом за комментить
@@ -386,7 +387,7 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int, int> &cords,
 
                         if (obst_for != black_cords.end()) {// попали в препятсвия
                             int rad = WhiteObsRad;
-                            Obstacle *with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
+                            Obstacle with_out = Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
                             obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
                             break;
                         }
@@ -413,7 +414,7 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int, int> &cords,
 
                         if (obst_for != black_cords.end()) {// попали в препятсвия
                             int rad = WhiteObsRad;
-                            Obstacle *with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
+                            Obstacle with_out = Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
                             obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
                             break;
                         }
@@ -447,7 +448,7 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int, int> &cords,
 
                 if (obst_for != black_cords.end()) {// попали в препятсвия
                     int rad = WhiteObsRad;
-                    Obstacle *with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
+                    Obstacle with_out = Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
                     obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
                     break;
                 }
@@ -469,7 +470,7 @@ vector<pair<int, int>> Func_trace(string func_enter, pair<int, int> &cords,
 
                 if (obst_for != black_cords.end()) {// попали в препятсвия
                     int rad = WhiteObsRad;
-                    Obstacle *with_out = new Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
+                    Obstacle with_out = Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
                     obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
                     break;
                 }

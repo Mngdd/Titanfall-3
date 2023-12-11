@@ -2,7 +2,7 @@
 #include "settings.h"
 #include <Fl/Enumerations.H>
 
-#include <Graph_lib/GUI.h>
+
 #include <bits/stdc++.h>
 
 using namespace Graph_lib;
@@ -63,32 +63,47 @@ SliderInput::SliderInput(int x, int y, int w, int h,
     end();             // close the group
 }
 
-MainMenu::MainMenu(Point xy, int w, int h, const std::string &title)
+Screen::Screen(Point xy, int w, int h, const std::string &title)
     : Window(xy, w, h, title),
       host_button{Point{50, 50}, 70, 20, "Host", cd_host},
       join_button{Point{50, 80}, 70, 20, "Join", cd_join},
-      quit_button{Point{50, 110}, 70, 20, "Quit", cd_quit} {
+      quit_button{Point{50, 110}, 70, 20, "Quit", cd_quit},
+      nick_input{Point(200, 50), 150, 20, "ur nick: "},
+      game_name{Point{30, 30}, GameName} {
     attach(quit_button);
     attach(join_button);
     attach(host_button);
+    attach(nick_input);
+    attach(game_name);
+    game_name.set_font(Graph_lib::Font::helvetica);
+    game_name.set_font_size(20);
+    size_range(FieldHeight, FieldWidth, FieldHeight, FieldWidth);
 }
 
-void MainMenu::cd_quit(Address, Address widget) {
+Screen::~Screen() {
+    detach(host_button);
+    detach(join_button);
+    detach(quit_button);
+    detach(game_name);
+    detach(nick_input);
+}
+
+void Screen::cd_quit(Address, Address widget) {
     auto &btn = reference_to<Button>(widget);
-    dynamic_cast<MainMenu &>(btn.window()).quit();
+    dynamic_cast<Screen &>(btn.window()).event_quit();
 }
 
-void MainMenu::quit() {
+void Screen::event_quit() {
     wanna_exit = true;
     hide();
 }
 
-void MainMenu::cd_host(Address, Address widget) {
+void Screen::cd_host(Address, Address widget) {
     auto &btn = reference_to<Button>(widget);
-    dynamic_cast<MainMenu &>(btn.window()).host();
+    dynamic_cast<Screen &>(btn.window()).event_host();
 }
 
-void MainMenu::host() {
+void Screen::event_host() {
     button_pushed = true;
     Simple_window mini_menu{Point(500, 100),
                             HostWin_x, HostWin_y,
@@ -127,7 +142,7 @@ void MainMenu::host() {
     Text t{Point{bg_offset + 60, btn_begin + 10}, "GAME SETTINGS"};
     mini_menu.attach(t);
     t.set_font(Graph_lib::Font::helvetica);
-    t.set_font_size(20);
+    t.set_font_size(NickSize);
 
     SliderInput *sl_0 = new SliderInput(bg_offset + x_offset, btn_begin + txt_offset,
                                         slide_w, slide_h,
@@ -173,12 +188,12 @@ void MainMenu::host() {
     mini_menu.detach(port);
 }
 
-void MainMenu::cd_join(Address, Address widget) {
+void Screen::cd_join(Address, Address widget) {
     auto &btn = reference_to<Button>(widget);
-    dynamic_cast<MainMenu &>(btn.window()).join();
+    dynamic_cast<Screen &>(btn.window()).event_join();
 }
 
-void MainMenu::join() {
+void Screen::event_join() {
     button_pushed = true;
     Simple_window mini_menu{Point(500, 100),
                             ConnWin_x, ConnWin_y,
@@ -204,9 +219,38 @@ void MainMenu::join() {
     mini_menu.detach(port);
 }
 
-void MainMenu::wait_for_button()// conservation window
+void Screen::wait_for_button()// conservation window
 {
-    while (!button_pushed && Fl::wait());
+    while (!button_pushed && Fl::wait())
+        ;
     button_pushed = false;
+    hide_menu();
     Fl::redraw();
 }
+
+//TODO: ДОДЕЛАТЬ
+//InputMenu::InputMenu(Point xy, int w, int h, const std::string &title) : Window(xy, w, h, title){
+    // : Window(xy, w, h, title),
+    //   host_button{Point{50, 50}, 70, 20, "Host", cd_host},
+    //   join_button{Point{50, 80}, 70, 20, "Join", cd_join},
+    //   quit_button{Point{50, 110}, 70, 20, "Quit", cd_quit},
+    //   func_input{Point(10, 50), 150, 20, "ur func: "},
+    //   data_output{Point(10, 50), 150, 20, "info: "},
+    //   game_name{Point{30, 30}, GameName} {
+
+    // attach(quit_button);
+    // attach(join_button);
+    // attach(host_button);
+    // attach(nick_input);
+    // attach(game_name);
+//}
+
+// InputMenu::~InputMenu() {
+//     left.hide();
+//     right.hide();
+//     to_menu.hide();
+//     respawn.hide();
+//     restart.hide();
+//     data_output.hide();
+//     func_input.hide();
+// }

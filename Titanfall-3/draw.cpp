@@ -28,7 +28,7 @@ std::pair<int, int> q = std::make_pair(100, 100);
 // функция текстом
 std::string function = "120 * sin(x/2)";
 
-void game_draw(MainMenu &main_win, std::vector<Player> &pl) {//TODO: add icon
+void game_draw(Screen &main_win, std::vector<Player> &pl) {//TODO: add icon
     // create & draw function
     l = Func_trace(function, q, Obstacles, Players);
     for (auto i: l) {
@@ -39,7 +39,7 @@ void game_draw(MainMenu &main_win, std::vector<Player> &pl) {//TODO: add icon
 
     // draw obstacles
     for (size_t i = 0; i < Obstacles.size(); ++i) {
-        Circle *c = new Circle{Obstacles[i]->center, Obstacles[i]->radius};
+        Circle *c = new Circle{Obstacles[i].center, Obstacles[i].radius};
         c->set_fill_color(Graph_lib::Color::black);
         show_obs.push_back(c);
         main_win.attach(*show_obs[i]);
@@ -48,7 +48,11 @@ void game_draw(MainMenu &main_win, std::vector<Player> &pl) {//TODO: add icon
     // draw players
     for (size_t i{0}; i < pl.size(); ++i) {
         Circle *c = new Circle{Point(pl[i].GetCords().first, pl[i].GetCords().second), PlayerRad};
-        c->set_fill_color(Graph_lib::Color::cyan);
+        if (pl[i].IsAlive()) {
+            c->set_fill_color(Graph_lib::Color::cyan);
+        } else {
+            c->set_fill_color(Graph_lib::Color::dark_red);
+        }
         show_pl.push_back(c);
         main_win.attach(*show_pl[i]);
     };
@@ -68,7 +72,5 @@ void game_draw(MainMenu &main_win, std::vector<Player> &pl) {//TODO: add icon
         show_nm.push_back(c);
         main_win.attach(*show_nm[i]);
     };
-
     main_win.attach(fn);
-    main_win.wait_for_button();
 }

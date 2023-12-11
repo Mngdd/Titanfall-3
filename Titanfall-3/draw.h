@@ -10,6 +10,6 @@ std::vector<std::pair<int, int>> Func_trace(std::string func_enter, std::pair<in
                                             std::vector<Graph_lib::Point *> players_cords);
 
 // отрисовывает игровое поле
-void game_draw(MainMenu& main_win, std::vector<Player>& pl);
+void game_draw(Screen& main_win, std::vector<Player>& pl);
 
 #endif//TITANFALL_3_SERVER_H
