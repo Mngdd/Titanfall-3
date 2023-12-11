@@ -276,6 +276,25 @@ void parser::get_token() {
         strcpy(errormsg, "Only first letter of variables is considered");
 }
 
+std::vector<std::pair<int, int>> cut_x_y(vector<Obstacle>& findxyobst){
+    std::vector<std::pair<int, int>> points;
+    for (const auto& i: findxyobst){
+        if (i->hole == true){
+            int a = i->center.x;
+            int b = i->center.y;
+            int r = i->radius;
+            for (int x = a - r; x <= a + r; x += 1) {
+                for (int y = b - r; y <= b + r; y += 1) {
+                    if (std::pow(x - a, 2) + std::pow(y - b, 2) <= std::pow(r, 2)) {
+                        points.push_back(std::make_pair(x, y));
+                    }
+                }
+            }
+        }
+    }
+    return points;
+}
+
 
 std::vector<std::pair<int, int>> obstac_x_y(vector<Obstacle>& findxyobst) {
     std::vector<std::pair<int, int>> points;
@@ -338,27 +357,30 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                                   vector<Graph_lib::Point>& players_cords) {
     const int size_map_y = FieldWidth; // длина поля для пробега y
     const int size_map_x = FieldHeight;// длина поля для пробега х
-    //string func_enter = "2 ^ x"; // потом передастся
-
-    //pair cords{100,100}; // координаты игрока не забыть потом за комментить
+    
     bool right_true = true;
     size_t pos = func_enter.find('x');
     vector<pair<int, int>> cord_vector;
+    vector<pair<int, int>> white_cords = cut_x_y(obstacle_mini); 
     vector<pair<int, int>> black_cords = obstac_x_y(obstacle_mini); // нашли все координаты препятствия
     vector<pair<int, int>> gamers_cords = player_x_y(players_cords);// нашли все координаты игроков
     if (pos != string::npos)                                        // проверка есть ли аргумент Х в функции
-    {
+    {   vector<int> index; 
+		for (auto i = 0; i <= func_enter.size() - 1; ++i){
+			if (func_enter[i] == 'x'){
+					index.push_back(i);
+				}
+			}
         for (int x = 0; x <= size_map_x; ++x)// перебираем х
         {
-            string new_value = to_string(x);// из инта в стринг
-            if (x == 0)                     // для нуля не работает замена из за 0-1 -1 поэтому отдельно
-            {
-                func_enter.replace(pos, 1, new_value);
-            } else {
-                func_enter.replace(pos, to_string(x - 1).length(), new_value);
-            }
+            string str_imagin = func_enter;
+			string new_value = to_string(x); // из инта в стринг
+			for (int i = 0; i <= index.size() - 1; ++i){
+			    size_t pos1 = str_imagin.find('x');
+				str_imagin.replace(pos1, 1, new_value);
+					}
             char expstr[256];
-            strcpy(expstr, func_enter.c_str());//
+            strcpy(expstr, str_imagin.c_str());//
             parser ob;
             double ans = ob.eval_exp(expstr);// вычисляем мат выражение
             if (*ob.errormsg) {
@@ -384,6 +406,11 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                         {                                   //удалям координаты из вектора
                             players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());
                         }
+
+                        auto cut_for = find(white_cords.begin(), white_cords.end(), p);
+						if (cut_for != white_cords.end()){
+							continue;
+							} 
 
                         if (obst_for != black_cords.end()) {// попали в препятсвия
                             int rad = WhiteObsRad;
@@ -411,6 +438,11 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                             //удалям координаты из вектора
                             players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());
                         }
+
+                        auto cut_for = find(white_cords.begin(), white_cords.end(), p);
+						if (cut_for != white_cords.end()){
+								continue;
+							} 
 
                         if (obst_for != black_cords.end()) {// попали в препятсвия
                             int rad = WhiteObsRad;
@@ -446,6 +478,11 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                     players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());
                 }
 
+                auto cut_for = find(white_cords.begin(), white_cords.end(), p);
+				if (cut_for != white_cords.end()){
+					continue;
+							} 
+
                 if (obst_for != black_cords.end()) {// попали в препятсвия
                     int rad = WhiteObsRad;
                     Obstacle with_out = Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
@@ -467,6 +504,12 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                     //удалям координаты из вектора
                     players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());
                 }
+
+                auto cut_for = find(white_cords.begin(), white_cords.end(), p);
+				if (cut_for != white_cords.end()){
+					continue;
+							} 
+
 
                 if (obst_for != black_cords.end()) {// попали в препятсвия
                     int rad = WhiteObsRad;
