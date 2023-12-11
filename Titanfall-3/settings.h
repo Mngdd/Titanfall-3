@@ -7,6 +7,8 @@
 // выход из игры
 inline bool wanna_exit = false;
 
+// МЕНЮШКИ ЕБАТЬ
+
 // Высота поля
 const int FieldWidth = 1200;
 // Ширина поля
@@ -15,8 +17,21 @@ const int FieldHeight = 720;
 const int InputHeight = 145; 
 // Ширина меню во время игры
 const int InputWidth = 350; 
+// размеры окна создания сервера
+const int HostWin_x = 325;
+const int HostWin_y = 350;
+
+// размеры окна подключения к серверу
+const int ConnWin_x = 300;
+const int ConnWin_y = 90;
+
+// переменные для сдвига кнопок в меню
+const unsigned int bg_offset = 35;
+const unsigned int btn_begin = bg_offset + 40;
+const unsigned int btn_betw = 50;
 
 // РАСКРАСКА
+
 inline Graph_lib::Color HugeObsColor = Graph_lib::Color::black;
 inline Graph_lib::Color MediumObsColor = Graph_lib::Color::black;
 inline Graph_lib::Color SmallObsColor = Graph_lib::Color::black;
@@ -87,16 +102,4 @@ const int PlayerSpawnTries = 100;
 // Количество попыток зареспавнить препятствие в норм месте
 const int ObstacleReSpawnTries = 100;
 
-// размеры окна создания сервера
-const int HostWin_x = 325;
-const int HostWin_y = 350;
-
-// размеры окна подключения к серверу
-const int ConnWin_x = 300;
-const int ConnWin_y = 90;
-
-// переменные для сдвига кнопок в меню
-const unsigned int bg_offset = 35;
-const unsigned int btn_begin = bg_offset + 40;
-const unsigned int btn_betw = 50;
 #endif
