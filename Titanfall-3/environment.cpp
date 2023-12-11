@@ -4,7 +4,7 @@
 #include "environment.h"
 #include "settings.h"
 #include <Graph_lib/Point.h>
-#include <bits/stdc++.h>
+
 
 using namespace std;
 
@@ -39,11 +39,6 @@ pair<int, int> Player::GetCords() {
 
 //It supports variables A to Z.
 
-#include <cctype>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <math.h>
 
 #define PI 3.14159265358979323846
 
@@ -279,10 +274,10 @@ void parser::get_token() {
 std::vector<std::pair<int, int>> cut_x_y(vector<Obstacle>& findxyobst){
     std::vector<std::pair<int, int>> points;
     for (const auto& i: findxyobst){
-        if (i->hole == true){
-            int a = i->center.x;
-            int b = i->center.y;
-            int r = i->radius;
+        if (i.hole == true){
+            int a = i.center.x;
+            int b = i.center.y;
+            int r = i.radius;
             for (int x = a - r; x <= a + r; x += 1) {
                 for (int y = b - r; y <= b + r; y += 1) {
                     if (std::pow(x - a, 2) + std::pow(y - b, 2) <= std::pow(r, 2)) {
@@ -355,7 +350,7 @@ Graph_lib::Point check_player(int x, int y, vector<Graph_lib::Point>& players) {
 vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                                   vector<Obstacle>& obstacle_mini,
                                   vector<Graph_lib::Point>& players_cords) {
-    const int size_map_y = FieldWidth; // длина поля для пробега y
+    //const int size_map_y = FieldWidth; // длина поля для пробега y
     const int size_map_x = FieldHeight;// длина поля для пробега х
     
     bool right_true = true;
@@ -366,7 +361,7 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
     vector<pair<int, int>> gamers_cords = player_x_y(players_cords);// нашли все координаты игроков
     if (pos != string::npos)                                        // проверка есть ли аргумент Х в функции
     {   vector<int> index; 
-		for (auto i = 0; i <= func_enter.size() - 1; ++i){
+		for (size_t i = 0; i <= func_enter.size() - 1; ++i){
 			if (func_enter[i] == 'x'){
 					index.push_back(i);
 				}
@@ -375,7 +370,7 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
         {
             string str_imagin = func_enter;
 			string new_value = to_string(x); // из инта в стринг
-			for (int i = 0; i <= index.size() - 1; ++i){
+			for (size_t i = 0; i <= index.size() - 1; ++i){
 			    size_t pos1 = str_imagin.find('x');
 				str_imagin.replace(pos1, 1, new_value);
 					}
@@ -388,60 +383,34 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
             }
 
             else {
+                int x_i;
                 if (right_true)// если стреляем вправо
-                {
+                    {x_i = cords.first + x;}
+                else {
+                    x_i = cords.first - x;}
                     if (not(isnan(ans)))// значение non
                     {
-                        int x_i = cords.first + x;
-                        int y_i = cords.second + static_cast<int>(round(ans));
+                        //int y_i = cords.second + static_cast<int>(round(ans));
+                        int y_i = cords.second - static_cast<int>(round(ans));
                         pair<int, int> p = make_pair(x_i, y_i);
                         auto obst_for = find(black_cords.begin(), black_cords.end(), p);//для проверки на попадание в препятсвие
                         auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
-                        cord_vector.push_back(make_pair(x_i, y_i));
+                        
                         if (x <= PlayerRad + SpawnObsMinDist) {
-
+                            cord_vector.push_back(make_pair(x_i, y_i));
                             continue;
                         }
                         if (gamer_for != gamers_cords.end())//true если попали в игрока
                         {                                   //удалям координаты из вектора
+                            cord_vector.push_back(make_pair(x_i, y_i));
                             players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());
-                        }
-
-                        auto cut_for = find(white_cords.begin(), white_cords.end(), p);
-						if (cut_for != white_cords.end()){
-							continue;
-							} 
-
-                        if (obst_for != black_cords.end()) {// попали в препятсвия
-                            int rad = WhiteObsRad;
-                            Obstacle with_out = Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
-                            obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
-                            break;
-                        }
-                    }
-                } else {
-                    if (not(isnan(ans))) {
-                        //cout << "Answer: " << ans << "\n\n";
-                        int x_i = cords.first - x;
-                        int y_i = cords.second + static_cast<int>(round(ans));
-
-                        pair<int, int> p = make_pair(x_i, y_i);
-                        auto obst_for = find(black_cords.begin(), black_cords.end(), p);//для проверки на попадание в препятсвие
-                        auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
-                        cord_vector.push_back(make_pair(x_i, y_i));
-                        if (x <= PlayerRad + SpawnObsMinDist) {
-
                             continue;
                         }
-                        if (gamer_for != gamers_cords.end())//true если попали в игрока
-                        {
-                            //удалям координаты из вектора
-                            players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());
-                        }
 
                         auto cut_for = find(white_cords.begin(), white_cords.end(), p);
 						if (cut_for != white_cords.end()){
-								continue;
+							cord_vector.push_back(make_pair(x_i, y_i));
+                            continue;
 							} 
 
                         if (obst_for != black_cords.end()) {// попали в препятсвия
@@ -450,8 +419,9 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                             obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
                             break;
                         }
+                        cord_vector.push_back(make_pair(x_i, y_i));
+
                     }
-                }
             }
         }
 
@@ -468,19 +438,21 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                 pair<int, int> p = make_pair(x_i, y_i);
                 auto obst_for = find(black_cords.begin(), black_cords.end(), p);//для проверки на попадание в препятсвие
                 auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
-                cord_vector.push_back(make_pair(x_i, y_i));
                 if (x <= PlayerRad + SpawnObsMinDist) {
                     continue;
                 }
                 if (gamer_for != gamers_cords.end())//true если попали в игрока
                 {
                     //удалям координаты из вектора
+                    cord_vector.push_back(make_pair(x_i, y_i));
                     players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());
+                    continue;
                 }
 
                 auto cut_for = find(white_cords.begin(), white_cords.end(), p);
 				if (cut_for != white_cords.end()){
-					continue;
+					cord_vector.push_back(make_pair(x_i, y_i));
+                    continue;
 							} 
 
                 if (obst_for != black_cords.end()) {// попали в препятсвия
@@ -489,25 +461,30 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                     obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
                     break;
                 }
+                cord_vector.push_back(make_pair(x_i, y_i));
+
             } else {
                 int x_i = cords.first - x;
                 int y_i = ans;
                 pair<int, int> p = make_pair(x_i, y_i);
                 auto obst_for = find(black_cords.begin(), black_cords.end(), p);//для проверки на попадание в препятсвие
                 auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
-                cord_vector.push_back(make_pair(x_i, y_i));
                 if (x <= PlayerRad + SpawnObsMinDist) {
+                    cord_vector.push_back(make_pair(x_i, y_i));
                     continue;
                 }
                 if (gamer_for != gamers_cords.end())//true если попали в игрока
                 {
+                    cord_vector.push_back(make_pair(x_i, y_i));
                     //удалям координаты из вектора
                     players_cords.erase(remove(players_cords.begin(), players_cords.end(), check_player(x_i, y_i, players_cords)), players_cords.end());
+                    continue;
                 }
 
                 auto cut_for = find(white_cords.begin(), white_cords.end(), p);
 				if (cut_for != white_cords.end()){
-					continue;
+					cord_vector.push_back(make_pair(x_i, y_i));
+                    continue;
 							} 
 
 
@@ -517,6 +494,7 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                     obstacle_mini.push_back(with_out);// попали в препятствие x_i добавляем вырез
                     break;
                 }
+                cord_vector.push_back(make_pair(x_i, y_i));
             }
         }
     }
