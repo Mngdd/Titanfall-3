@@ -77,7 +77,8 @@ Screen::Screen(Point xy, int w, int h, const std::string &title)
     attach(game_name);
     game_name.set_font(Graph_lib::Font::helvetica);
     game_name.set_font_size(20);
-    size_range(FieldHeight, FieldWidth, FieldHeight, FieldWidth);
+    size_range(FieldWidth, FieldHeight, FieldWidth, FieldHeight);
+    control_win.hide();
 }
 
 Screen::~Screen() {
@@ -228,29 +229,49 @@ void Screen::wait_for_button()// conservation window
     Fl::redraw();
 }
 
+void Screen::control_show() {
+    control_win.show();
+    control_win.set_label("game contol");
+}
+void Screen::control_hide() {
+    control_win.hide();
+}
+
 //TODO: ДОДЕЛАТЬ
-//InputMenu::InputMenu(Point xy, int w, int h, const std::string &title) : Window(xy, w, h, title){
-    // : Window(xy, w, h, title),
-    //   host_button{Point{50, 50}, 70, 20, "Host", cd_host},
-    //   join_button{Point{50, 80}, 70, 20, "Join", cd_join},
-    //   quit_button{Point{50, 110}, 70, 20, "Quit", cd_quit},
-    //   func_input{Point(10, 50), 150, 20, "ur func: "},
-    //   data_output{Point(10, 50), 150, 20, "info: "},
-    //   game_name{Point{30, 30}, GameName} {
+InputMenu::InputMenu(Point xy, int w, int h, const std::string &title)
+    : Window(xy, w, h, title),
+      data_output{Point{40, 116}, 305, 20, "info:"},
+      func_input{Point{35, 20}, 310, 20, "y = "},
+      left{Point{5, 50}, 85, 20,
+           "shoot left", CHANGEME},
+      right{Point(105, 50), 85, 20,
+            "shoot right", CHANGEME},
+      disconnect{Point(245, 80), 100, 20,
+                 "leave game...", CHANGEME},
+      respawn{Point(105, 80), 85, 20,
+              "RESPAWN", CHANGEME},
+      restart{Point(195, 50), 150, 20,
+              "RESTART GAME", CHANGEME},
+      fire{Point(5, 80), 85, 20,
+           "FIRE", CHANGEME} {
 
-    // attach(quit_button);
-    // attach(join_button);
-    // attach(host_button);
-    // attach(nick_input);
-    // attach(game_name);
-//}
+    attach(data_output);
+    attach(func_input);
+    attach(left);
+    attach(right);
+    attach(disconnect);
+    attach(respawn);
+    attach(restart);
+    attach(fire);
+    to_the_right = true;
+}
 
-// InputMenu::~InputMenu() {
-//     left.hide();
-//     right.hide();
-//     to_menu.hide();
-//     respawn.hide();
-//     restart.hide();
-//     data_output.hide();
-//     func_input.hide();
-// }
+InputMenu::~InputMenu() {
+    left.hide();
+    right.hide();
+    disconnect.hide();
+    respawn.hide();
+    restart.hide();
+    data_output.hide();
+    func_input.hide();
+}

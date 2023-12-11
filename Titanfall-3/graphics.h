@@ -5,6 +5,7 @@
 #include <Graph_lib/Graph.h>
 #include <Graph_lib/Simple_window.h>
 
+#include "settings.h"
 #include "environment.h"
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Int_Input.H>
@@ -18,33 +19,33 @@ using namespace Graph_lib;
 extern std::string *equation;
 
 //TODO: ДОДЕЛАТЬ
-// struct InputMenu : Graph_lib::Window {// create a new window
-//     InputMenu() = default;
-//     InputMenu(Point xy, int w, int h, const std::string &title);
-//     void wait_for_button();
-//     ~InputMenu();
+struct InputMenu : Graph_lib::Window {// create a new window
+    InputMenu() = default;
+    InputMenu(Point xy, int w, int h, const std::string &title);
+    void wait_for_button();
+    ~InputMenu();
+    void control_show();
 
-// private:
-//     //MENU
-//     In_box data_output;
-//     In_box func_input;
-//     Button left;
-//     Button right;
-//     Button to_menu;
-//     Button respawn;
-//     Button restart;
+private:
+    //MENU
+    bool close_pressed = false;
+    bool to_the_right;
+    In_box data_output;
+    In_box func_input;
+    Button left;
+    Button right;
+    Button disconnect;
+    Button respawn;
+    Button restart;
+    Button fire;
 
-//     // Button Quit
-//     bool button_pushed = false;
-//     static void cd_quit(Address, Address widget);
-//     void event_quit();
-//     // Button Host
-//     static void cd_host(Address, Address widget);
-//     void event_host();
-//     // Button Join
-//     static void cd_join(Address, Address widget);
-//     void event_join();
-// };
+    // Button Quit
+    static void CHANGEME(Address, Address widget) {
+        auto &btn = reference_to<Button>(widget);
+        dynamic_cast<InputMenu &>(btn.window()).DELETEME();
+    }
+    void DELETEME() {}
+};
 
 //TODO: ПРИКРУТИТЬ К ИГРЕ НАЗВАНИЕ + ИКОНКУ
 struct Screen : Graph_lib::Window {// create a new window
@@ -52,6 +53,8 @@ struct Screen : Graph_lib::Window {// create a new window
     Screen(Point xy, int w, int h, const std::string &title);
     void wait_for_button();
     ~Screen();
+    void control_show();
+    void control_hide();
 
 private:
     void hide_menu() {// мне лень делать красиво
@@ -61,12 +64,14 @@ private:
         detach(game_name);
         nick_input.hide();
     }
+
     //MENU
     Text game_name;
     In_box nick_input;
     Button host_button;
     Button join_button;
     Button quit_button;
+    InputMenu control_win{Point(100, 100), InputWidth, InputHeight, "game contol"};
     //IN-GAME
 
 

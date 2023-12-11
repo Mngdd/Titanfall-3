@@ -8,14 +8,13 @@
 inline bool wanna_exit = false;
 
 // Высота поля
-const int FieldHeight = 1200;
+const int FieldWidth = 1200;
 // Ширина поля
-const int FieldWidth = 720;  
+const int FieldHeight = 720;  
 // Высота меню во время игры
-const int InputHeight = 200; 
+const int InputHeight = 145; 
 // Ширина меню во время игры
-const int InputWidth = 300; 
-
+const int InputWidth = 350; 
 
 // РАСКРАСКА
 inline Graph_lib::Color HugeObsColor = Graph_lib::Color::black;

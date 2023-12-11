@@ -19,7 +19,7 @@ void game_loop() {
         //================ MENU ================
         MY_IP = get_my_ip();
         // главное окно, переименовал для ясности
-        Screen main_win{Point(100, 100), FieldHeight, FieldWidth, "TF3"};
+        Screen main_win{Point(100, 100), FieldWidth, FieldHeight, "TF3"};
         main_win.callback(event_close);
         main_win.wait_for_button();
         if (wanna_exit) { return; }
@@ -56,9 +56,9 @@ void game_loop() {
         players.push_back(tmp);
         tmp = Player{"СКАРЛАТИНА", 200, 170};
         players.push_back(tmp);
-
         Generate();
         game_draw(main_win, players);
+        main_win.control_show();
         main_win.wait_for_button();
     }
 }

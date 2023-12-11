@@ -31,15 +31,15 @@ Point NotsoRandomPoint(double Power) {// Point "Power" far away from the center
     int xsign = (rand() % 2 == 0) ? 1 : -1;
     int ysign = (rand() % 2 == 0) ? 1 : -1;
     int x = static_cast<int>(pow(random(generator, 0,
-                                        static_cast<int>(pow((FieldHeight - SpawnObsWallMinDist) / 2, Power))),
-                                 1 / Power)) *
-                    xsign +
-            (FieldHeight / 2) + (SpawnObsWallMinDist / 2);
-    int y = static_cast<int>(pow(random(generator, 0,
                                         static_cast<int>(pow((FieldWidth - SpawnObsWallMinDist) / 2, Power))),
                                  1 / Power)) *
-                    ysign +
+                    xsign +
             (FieldWidth / 2) + (SpawnObsWallMinDist / 2);
+    int y = static_cast<int>(pow(random(generator, 0,
+                                        static_cast<int>(pow((FieldHeight - SpawnObsWallMinDist) / 2, Power))),
+                                 1 / Power)) *
+                    ysign +
+            (FieldHeight / 2) + (SpawnObsWallMinDist / 2);
     return Graph_lib::Point(x, y);
 }
 
@@ -156,8 +156,8 @@ void PlayerSpawn() {// adds player to Players
     initGenerator(generator);
 
     for (size_t i = 0; i < PlayerSpawnTries; ++i) {
-        Point Player = Point{static_cast<int>(random(generator, SpawnWallMinDist, FieldHeight - SpawnWallMinDist)),
-                             static_cast<int>(random(generator, SpawnWallMinDist, FieldWidth - SpawnWallMinDist))};
+        Point Player = Point{static_cast<int>(random(generator, SpawnWallMinDist, FieldWidth - SpawnWallMinDist)),
+                             static_cast<int>(random(generator, SpawnWallMinDist, FieldHeight - SpawnWallMinDist))};
 
         if ((PlayerDistObsCheck(Player)) && (PlayerDistPlayersCheck(Player))) {
             Players.push_back(Player);

@@ -60,7 +60,7 @@ void game_draw(Screen &main_win, std::vector<Player> &pl) {//TODO: add icon
     // draw nicknames
     for (size_t i{0}; i < pl.size(); ++i) {
         Text *c{nullptr};
-        if (pl[i].GetCords().second + PlayerRad >= FieldWidth) {
+        if (pl[i].GetCords().second + PlayerRad >= FieldHeight) {
             c = new Text{Point(pl[i].GetCords().first, pl[i].GetCords().second + PlayerRad),
                          pl[i].GetName()};
         } else {

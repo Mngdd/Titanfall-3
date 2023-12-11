@@ -336,8 +336,8 @@ Graph_lib::Point check_player(int x, int y, vector<Graph_lib::Point>& players) {
 vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
                                   vector<Obstacle>& obstacle_mini,
                                   vector<Graph_lib::Point>& players_cords) {
-    const int size_map_y = FieldWidth; // длина поля для пробега y
-    const int size_map_x = FieldHeight;// длина поля для пробега х
+    const int size_map_y = FieldHeight; // длина поля для пробега y
+    const int size_map_x = FieldWidth;// длина поля для пробега х
     //string func_enter = "2 ^ x"; // потом передастся
 
     //pair cords{100,100}; // координаты игрока не забыть потом за комментить
