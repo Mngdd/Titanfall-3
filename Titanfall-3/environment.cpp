@@ -359,6 +359,7 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
     vector<pair<int, int>> white_cords = cut_x_y(obstacle_mini); 
     vector<pair<int, int>> black_cords = obstac_x_y(obstacle_mini); // нашли все координаты препятствия
     vector<pair<int, int>> gamers_cords = player_x_y(players_cords);// нашли все координаты игроков
+
     if (pos != string::npos)                                        // проверка есть ли аргумент Х в функции
     {   vector<int> index; 
 		for (size_t i = 0; i <= func_enter.size() - 1; ++i){
@@ -432,6 +433,7 @@ vector<pair<int, int>> Func_trace(string& func_enter, pair<int, int>& cords,
             parser ob;
             cout << expstr << endl;
             double ans = ob.eval_exp(expstr);
+            
             if (right_true) {
                 int x_i = cords.first + x;
                 int y_i = ans;
