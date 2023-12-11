@@ -44,7 +44,8 @@ void game_draw(Screen &main_win, std::vector<Player> &pl)
     {
         Circle *c = new Circle{Obstacles[i].center, Obstacles[i].radius};
         c->set_fill_color(HugeObsColor);
-        main_win.attach(*c);
+        show_obs.push_back(c);
+        main_win.attach(*show_obs[i]);
     };
 
     // draw players
@@ -59,7 +60,8 @@ void game_draw(Screen &main_win, std::vector<Player> &pl)
         {
             c->set_fill_color(Graph_lib::Color::dark_red);
         }
-        main_win.attach(*c);
+        show_pl.push_back(c);
+        main_win.attach(*show_pl[i]);
     };
 
     // draw nicknames
@@ -78,7 +80,8 @@ void game_draw(Screen &main_win, std::vector<Player> &pl)
         }
 
         c->set_font_size(NickSize);
-        main_win.attach(*c);
+        show_nm.push_back(c);
+        main_win.attach(*show_nm[i]);
     };
     main_win.attach(fn);
 }
