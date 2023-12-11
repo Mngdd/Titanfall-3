@@ -16,6 +16,9 @@ Vector_ref<Text *> show_nm;
 // std::vector<Player> pl;// делать указатели юзлесс
 // наша функция, ее тело
 Graph_lib::Open_polyline fn;
+
+Graph_lib::Open_polyline fn2;
+
 // лучше названия не придумаешь, хз че
 std::vector<std::pair<int, int>> l;
 
@@ -84,4 +87,16 @@ void game_draw(Screen &main_win, std::vector<Player> &pl)
         main_win.attach(*show_nm[i]);
     };
     main_win.attach(fn);
+}
+
+void func_draw(Screen &main_win, std::vector<Point> &f)
+{ // TODO: add icon
+    // create & draw function
+    for (auto i : f)
+    {
+        Point *j = new Point(i.x, i.y);
+        fn2.add(*j);
+    }
+    fn2.set_color(Graph_lib::Color::red);
+    main_win.attach(fn2);
 }
