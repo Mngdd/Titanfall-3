@@ -7,7 +7,7 @@
 // выход из игры
 inline bool wanna_exit = false;
 
-// МЕНЮШКИ ЕБАТЬ
+// ОКНА WINDOWS
 
 // Высота поля
 const int FieldWidth = 1200;
@@ -42,9 +42,7 @@ inline Graph_lib::Color PlayerColor = Graph_lib::Color::green;
 // Color Team1PlayerColor = Color::blue;
 // Color Team2PlayerColor = Color::red;
 
-// ГЕНЕРАЦИЯ
-
-// УБРАТЬ const ПЕРЕД ТЕМИ НАСТРОЙКАМИ, ЧТО МОЖНО БУДЕТ МЕНЯТЬ В МЕНЮШКЕ!!
+// СЕРВЕР
 
 const std::string GameName = "GAME_NAME_HERE";
 // наш айпи, не const, вдруг он поменяется (впн мб, я не уверен)
@@ -67,6 +65,11 @@ inline std::string UserNick = "Player";
 
 // радиус бабаха
 const int WhiteObsRad = 5;
+
+// ГЕНЕРАЦИЯ
+
+// ТАКЖЕ ИСПОЛЬЗУЮТСЯ NumOfPlayers и PlayerRad
+
 // Степень ухода больших препятствий от центра
 const double HugeObsPower = 2;
 // Степень ухода средних препятствий от центра
