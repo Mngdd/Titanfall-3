@@ -16,6 +16,15 @@ Player::Player(const string &namePlayer, int xcord, int ycord) {
     awaits_respawn = true;
     //body = new  = new Graph_lib::Circle{Point(x, y), PlayerRad};
 }
+
+Player::Player(const string &namePlayer) {
+    name = namePlayer;
+    x = y = -1;
+    alive = true;
+    awaits_respawn = true;
+    //body = new  = new Graph_lib::Circle{Point(x, y), PlayerRad};
+}
+
 string Player::GetName() {
     return name;
 }
@@ -30,7 +39,7 @@ pair<int, int> Player::GetCords() {
     return pair<int, int>{x, y};
 }
 
-////////////// мат выражения
+///  мат выражения
 //
 //It supports operators: + - * / ^ ( )
 

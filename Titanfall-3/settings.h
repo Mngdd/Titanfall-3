@@ -50,8 +50,9 @@ enum game_state {
     LEAVE = 3
 };
 
+
 // СЕРВЕР
-const std::string GameName = "GAME_NAME_HERE";
+const std::string GameName = "Graph War v0.01 pre-pre-alpha indev";
 // наш айпи, не const, вдруг он поменяется (впн мб, я не уверен)
 inline std::string MY_IP = "NONE";
 // айпи сервера, на который подключаться будем

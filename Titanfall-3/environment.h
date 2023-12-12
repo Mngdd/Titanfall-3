@@ -22,6 +22,7 @@ public:
     Player() = default;
     ~Player() {}
     Player(const std::string &namePlayer, int xcord, int ycord);
+    Player(const std::string &namePlayer);
     std::string GetName();
     std::pair<int, int> GetCords();
     void Kill() { alive = false; }

@@ -19,62 +19,74 @@ void game_loop() {
         //================ MENU ================
         MY_IP = get_my_ip();
         // главное окно, переименовал для ясности
-        Screen main_win{Point(100, 100), FieldWidth, FieldHeight, "TF3"};
+        Screen main_win{Point(100, 100), FieldWidth, FieldHeight, GameName};
         main_win.callback(event_close);
         main_win.wait_for_button();
         if (wanna_exit) { return; }
 
         //================ GAME ================
-        std::vector<Player> players(NumOfPlayers);
-        std::vector<Obstacle> obstacles(NumOfHugeObs + NumOfMediumObs + NumOfSmallObs);
+        // резервируем память для игроков и обстаклов
+        std::vector<Player> players;
+        players.reserve(NumOfPlayers);
+        std::vector<Obstacle> obstacles;
+        obstacles.reserve(NumOfHugeObs + NumOfMediumObs + NumOfSmallObs);
+
+        // наша очередь стрелять?
+        bool my_turn = true;
+        // какой игрок стреляет
+        size_t shoot_turn = 0; // TODO: МЕНЯТЬ СЧЕТЧИК
+        //*declare a server
         if (IM_A_HOST) {// DO IT PARRALLEL
             GenerateObstacles(obstacles);
 
-            Player real_player = Player{"Вы", 530, 150};
-            players.push_back(real_player);// наш игрок всегда первый в списке
+            Player real_player = Player{UserNick};
+            players.push_back(real_player); // наш игрок всегда первый в списке
 
-            //init a server
+            // *init a server
 
-            // listen
-
-            // generate level
-
-            //------------------
-            // recv
-
-            // check_game_conditions
-
-            // send data
+            // *listen
         }
+        // *decl&init a client
+        // *connect
 
-        // connect
+        // *client send
+        // *client recv
 
-        // send
-
-        // recv
-
-        // ! удалить потом ручное создание игроков !
+        // TODO: удалить потом ручное создание игроков !
         Player tmp;
-        tmp = Player{"КОРНЕПЛОД", -1, -1};
+        tmp = Player{"КОРНЕПЛОД"};
         players.push_back(tmp);
-        tmp = Player{"ПЕРУН", -1, -1};
+        tmp = Player{"ПЕРУН"};
         players.push_back(tmp);
-        tmp = Player{"КИШЕМИР", -1, -1};
+        tmp = Player{"КИШЕМИР"};
         players.push_back(tmp);
-        tmp = Player{"СКАРЛАТИНА", -1, -1};
+        tmp = Player{"СКАРЛАТИНА"};
         players.push_back(tmp);
 
+        // ! while loop HERE
+        // *check_game_conditions
         for (size_t i = 0; i < players.size(); ++i) {
             if (players[i].NeedResp()) {
                 GeneratePlayer(players[i], obstacles, players);
                 players[i].Revive();
             }
         }
-
-
         game_draw(main_win, players, obstacles);// рендерим
-        main_win.control_show();                // даем управление
-        main_win.wait_for_button();             // если жмет чета -
+
+
+        // *server send
+        // *server recv
+
+        main_win.control_show();   // даем управление
+        main_win.wait_for_button();// если жмет чета
+        // *client shoots
+        // *client send
+        // *client recv ans
+        //------
         main_win.control_hide();
     }
+}
+
+void game_master() {
+
 }

@@ -3,9 +3,9 @@
 #include "err_handle.h"
 #include <cstdio>
 #include <map>
-#include <utility>
 #include <string>
 #include <unistd.h>// write
+#include <utility>
 #include <vector>
 
 using container = std::map<
@@ -21,18 +21,20 @@ using container = std::map<
 //     SOCKET ConnectSocket;
 //     struct addrinfo *result;
 //     const char *sendbuf;
-//     char buf[DEFAULT_BUFLEN];//
+//     // буффер размером DEFAULT_BUFLEN, мб поменяем
+//     char buf[DEFAULT_BUFLEN];
+//     // содержит результат (int) исполнения
 //     int iResult;
-//     int buf_size = DEFAULT_BUFLEN;
+//     // размер буфера приема
+
 
 // public:
-// Client() = default;
-// //Client();
-// ~Client();
-//     void Connect(std::string& ip, int port);
-//     void Send(std::vector<Player& pl,
-//     std::vector<Obstacle>& Obst);
-// container Recv();
+//     Client();
+//     ~Client();
+//     void Connect(std::string &ip, int port);
+//     void Send(std::vector < Player & pl,
+//               std::vector<Obstacle> &Obst);
+//     container Recv();
 // };
 
 int client_test(const char ip[], int port);
