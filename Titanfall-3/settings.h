@@ -7,6 +7,8 @@
 // выход из игры
 inline bool wanna_exit = false;
 
+// ОКНА WINDOWS
+
 // Высота поля
 const int FieldWidth = 1200;
 // Ширина поля
@@ -15,8 +17,21 @@ const int FieldHeight = 720;
 const int InputHeight = 145; 
 // Ширина меню во время игры
 const int InputWidth = 350; 
+// размеры окна создания сервера
+const int HostWin_x = 325;
+const int HostWin_y = 350;
+
+// размеры окна подключения к серверу
+const int ConnWin_x = 300;
+const int ConnWin_y = 90;
+
+// переменные для сдвига кнопок в меню
+const unsigned int bg_offset = 35;
+const unsigned int btn_begin = bg_offset + 40;
+const unsigned int btn_betw = 50;
 
 // РАСКРАСКА
+
 inline Graph_lib::Color HugeObsColor = Graph_lib::Color::black;
 inline Graph_lib::Color MediumObsColor = Graph_lib::Color::black;
 inline Graph_lib::Color SmallObsColor = Graph_lib::Color::black;
@@ -35,9 +50,7 @@ enum game_state {
     LEAVE = 3
 };
 
-// ГЕНЕРАЦИЯ
-// УБРАТЬ const ПЕРЕД ТЕМИ НАСТРОЙКАМИ, ЧТО МОЖНО БУДЕТ МЕНЯТЬ В МЕНЮШКЕ!!
-
+// СЕРВЕР
 const std::string GameName = "GAME_NAME_HERE";
 // наш айпи, не const, вдруг он поменяется (впн мб, я не уверен)
 inline std::string MY_IP = "NONE";
@@ -59,6 +72,11 @@ inline std::string UserNick = "Player";
 
 // радиус бабаха
 const int WhiteObsRad = 5;
+
+// ГЕНЕРАЦИЯ
+
+// ТАКЖЕ ИСПОЛЬЗУЮТСЯ NumOfPlayers и PlayerRad
+
 // Степень ухода больших препятствий от центра
 const double HugeObsPower = 2;
 // Степень ухода средних препятствий от центра
@@ -94,16 +112,4 @@ const int PlayerSpawnTries = 100;
 // Количество попыток зареспавнить препятствие в норм месте
 const int ObstacleReSpawnTries = 100;
 
-// размеры окна создания сервера
-const int HostWin_x = 325;
-const int HostWin_y = 350;
-
-// размеры окна подключения к серверу
-const int ConnWin_x = 300;
-const int ConnWin_y = 90;
-
-// переменные для сдвига кнопок в меню
-const unsigned int bg_offset = 35;
-const unsigned int btn_begin = bg_offset + 40;
-const unsigned int btn_betw = 50;
 #endif
