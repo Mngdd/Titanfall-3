@@ -12,6 +12,10 @@ struct PRNG {
     std::mt19937 engine;
 };
 struct GenerationSettings {
+    // Количество игроков для которых надо сгенерировать
+    const int NumOfPlayers;
+    // Радиус игрока
+    const int PlayerRad = 10;
     // Степень ухода больших препятствий от центра
     const double HugeObsPower = 2;
     // Степень ухода средних препятствий от центра
@@ -30,9 +34,9 @@ struct GenerationSettings {
     const int SpawnObsWallMinDist = 3;
     
     // Количество препятствий каждого вида
-    inline int NumOfHugeObs = 1;
-    inline int NumOfMediumObs = 1;
-    inline int NumOfSmallObs = 1;
+    const int NumOfHugeObs = 5;
+    const int NumOfMediumObs = 5;
+    const int NumOfSmallObs = 5;
     
     // Радиусы препятствий разных размеров
     const int HugeObsMaxRad = 100;
