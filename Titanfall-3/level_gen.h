@@ -17,15 +17,15 @@ double dist(Graph_lib::Point a, Graph_lib::Point b);// returns dist between two 
 void initGenerator(PRNG &generator);                                   // generates seed for random
 unsigned random(PRNG &generator, unsigned minValue, unsigned maxValue);// gives random ints
 
-Graph_lib::Point NotsoRandomPoint(double Power);// Point "Power" far away from the center
+Graph_lib::Point NotsoRandomPoint(PRNG& generator, double Power);// Point "Power" far away from the center
 
 // obstacles generation
-void HugeObsSpawn(std::vector<Obstacle> &Obs_vec);  // adds obstacles to HugeObstacles
-void MediumObsSpawn(std::vector<Obstacle> &Obs_vec);// adds obstacles to MediumObstacles
-void SmallObsSpawn(std::vector<Obstacle> &Obs_vec); // adds obstacles to SmallObstacles
+void HugeObsSpawn(PRNG& generator, std::vector<Obstacle> &Obs_vec);  // adds obstacles to HugeObstacles
+void MediumObsSpawn(PRNG& generator, std::vector<Obstacle> &Obs_vec);// adds obstacles to MediumObstacles
+void SmallObsSpawn(PRNG& generator, std::vector<Obstacle> &Obs_vec); // adds obstacles to SmallObstacles
 
 bool ObsDistPlayerCheck(const Obstacle &Obs, const std::vector<Player> &players_vec);// obstacle not overlapping player
-void ObstaclesRespawn(std::vector<Obstacle> &Obs_vec);                               // regenerates obstacles with existing players
+void ObstaclesRespawn(PRNG& generator, std::vector<Obstacle> &Obs_vec);                               // regenerates obstacles with existing players
 
 // players generation
 bool PlayerDistObsCheck(const Graph_lib::Point &Player_pos, const std::vector<Obstacle> &Obs_vec);      // Player not overlapping Obstacles
