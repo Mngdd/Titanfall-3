@@ -21,7 +21,10 @@ unsigned random(PRNG &generator, unsigned minValue, unsigned maxValue) {// gives
 }
 
 // obstacles generation
-Point NotsoRandomPoint(PRNG& generator, double Power) {// Point "Power" far away from the center
+Point NotsoRandomPoint(double Power) {// Point "Power" far away from the center
+    PRNG generator;
+    initGenerator(generator);
+
     int xsign = (rand() % 2 == 0) ? 1 : -1;
     int ysign = (rand() % 2 == 0) ? 1 : -1;
     int x = static_cast<int>(pow(random(generator, 0,
@@ -37,7 +40,10 @@ Point NotsoRandomPoint(PRNG& generator, double Power) {// Point "Power" far away
     return Graph_lib::Point(x, y);
 }
 
-void HugeObsSpawn(PRNG& generator, std::vector<Obstacle> &Obs_vec) {// adds obstacles to HugeObstacles
+void HugeObsSpawn(std::vector<Obstacle> &Obs_vec) {// adds obstacles to HugeObstacles
+    PRNG generator;
+    initGenerator(generator);
+
     for (size_t i = 0; i < NumOfHugeObs; ++i) {
         Point Center{NotsoRandomPoint(HugeObsPower)};
         int Radius = random(generator, HugeObsMinRad, HugeObsMaxRad);
@@ -47,7 +53,10 @@ void HugeObsSpawn(PRNG& generator, std::vector<Obstacle> &Obs_vec) {// adds obst
     }
 }
 
-void MediumObsSpawn(PRNG& generator, std::vector<Obstacle> &Obs_vec) {// adds obstacles to MediumObstacles
+void MediumObsSpawn(std::vector<Obstacle> &Obs_vec) {// adds obstacles to MediumObstacles
+    PRNG generator;
+    initGenerator(generator);
+
     for (size_t i = 0; i < NumOfMediumObs; ++i) {
         Point Center{NotsoRandomPoint(MediumObsPower)};
         int Radius = random(generator, MediumObsMinRad, MediumObsMaxRad);
@@ -57,7 +66,10 @@ void MediumObsSpawn(PRNG& generator, std::vector<Obstacle> &Obs_vec) {// adds ob
     }
 }
 
-void SmallObsSpawn(PRNG& generator, std::vector<Obstacle> &Obs_vec) {// adds obstacles to SmallObstacles
+void SmallObsSpawn(std::vector<Obstacle> &Obs_vec) {// adds obstacles to SmallObstacles
+    PRNG generator;
+    initGenerator(generator);
+
     for (size_t i = 0; i < NumOfSmallObs; ++i) {
         Point Center{NotsoRandomPoint(SmallObsPower)};
         int Radius = random(generator, SmallObsMinRad, SmallObsMaxRad);
@@ -76,7 +88,10 @@ bool ObsDistPlayerCheck(const Obstacle &Obs, const std::vector<Player> &players_
     return true;
 }
 
-void ObstaclesRespawn(PRNG& generator, const std::vector<Player> &players, std::vector<Obstacle> &Obs_vec) {// regenerates obstacles with existing players
+void ObstaclesRespawn(std::vector<Player> &players, std::vector<Obstacle> &Obs_vec) {// regenerates obstacles with existing players
+    PRNG generator;
+    initGenerator(generator);
+
     Obs_vec.clear();
 
     for (size_t i = 0; i < NumOfHugeObs; ++i) {
@@ -105,13 +120,11 @@ void ObstaclesRespawn(PRNG& generator, const std::vector<Player> &players, std::
     }
 
     for (size_t i = 0; i < NumOfSmallObs; ++i) {
-        for (size_t j = 0; j < ObstacleReSpawnTries; ++j) {
-            Point Center{NotsoRandomPoint(SmallObsPower)};
-            int Radius = random(generator, SmallObsMinRad, SmallObsMaxRad);
-            Obstacle Obs = Obstacle{Center, Radius, false};
-            if (ObsDistPlayerCheck(Obs, players)) {
-                Obs_vec.push_back(Obs);
-                break;
+        Point Center{NotsoRandomPoint(SmallObsPower)};
+        int Radius = random(generator, SmallObsMinRad, SmallObsMaxRad);
+        Obstacle Obs = Obstacle{Center, Radius, false};
+        if (ObsDistPlayerCheck(Obs, players)) {
+            Obs_vec.push_back(Obs);
         }
     }
 }
@@ -136,16 +149,13 @@ bool PlayerDistPlayersCheck(const Point &Player_pos, const std::vector<Player> &
 }
 
 void GenerateObstacles(std::vector<Obstacle> &obstacles) {
-    PRNG generator;
-    initGenerator(generator);
-
     HugeObsSpawn(obstacles);
     MediumObsSpawn(obstacles);
     SmallObsSpawn(obstacles);
 }
 
-void GeneratePlayer(Player &player_, const std::vector<Obstacle> &obstacles, const std::vector<Player> &players_vec)
-{
+void GeneratePlayer(Player &player_, const std::vector<Obstacle> &obstacles,
+                    const std::vector<Player> &players_vec) {
     PRNG generator;
     initGenerator(generator);
 

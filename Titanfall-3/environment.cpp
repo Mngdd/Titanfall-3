@@ -411,7 +411,7 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                     auto obst_for = find(black_cords.begin(), black_cords.end(), p);//для проверки на попадание в препятсвие
                     auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
 
-                    if (x <= PlayerRad + 1) {
+                    if (x <= PlayerRad + SpawnObsMinDist) {
                         cord_vector.push_back(make_pair(x_i, y_i));
                         continue;
                     }
@@ -453,7 +453,7 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                 pair<int, int> p = make_pair(x_i, y_i);
                 auto obst_for = find(black_cords.begin(), black_cords.end(), p);//для проверки на попадание в препятсвие
                 auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
-                if (x <= PlayerRad + 1) {
+                if (x <= PlayerRad + SpawnObsMinDist) {
                     continue;
                 }
                 if (gamer_for != gamers_cords.end())//true если попали в игрока
@@ -484,7 +484,7 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                 pair<int, int> p = make_pair(x_i, y_i);
                 auto obst_for = find(black_cords.begin(), black_cords.end(), p);//для проверки на попадание в препятсвие
                 auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
-                if (x <= PlayerRad + 1) {
+                if (x <= PlayerRad + SpawnObsMinDist) {
                     cord_vector.push_back(make_pair(x_i, y_i));
                     continue;
                 }
