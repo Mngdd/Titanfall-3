@@ -108,7 +108,7 @@ const int SmallObsMaxRad = 30;
 const int SmallObsMinRad = 15;
 
 // Количество попыток заспавнить игрока в норм месте
-const int PlayerSpawnTries = 100;
+const int PlayerSpawnTries = 500;
 // Количество попыток зареспавнить препятствие в норм месте
 const int ObstacleReSpawnTries = 100;
 

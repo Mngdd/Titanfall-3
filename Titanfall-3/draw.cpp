@@ -31,7 +31,8 @@ std::pair<int, int> q = std::make_pair(100, 100);
 // функция текстом
 std::string function = "120 * sin(x/2)";
 
-void game_draw(Screen &main_win, std::vector<Player> &pl)
+void game_draw(Screen &main_win, std::vector<Player> &pl, 
+std::vector<Obstacle>& obst)
 { // TODO: add icon
     // create & draw function
     // l = Func_trace(function, q, Obstacles, Players);
@@ -43,9 +44,9 @@ void game_draw(Screen &main_win, std::vector<Player> &pl)
     // fn.set_color(Graph_lib::Color::red);
 
     // draw obstacles
-    for (size_t i = 0; i < Obstacles.size(); ++i)
+    for (size_t i = 0; i < obst.size(); ++i)
     {
-        Circle *c = new Circle{Obstacles[i].center, Obstacles[i].radius};
+        Circle *c = new Circle{obst[i].center, obst[i].radius};
         c->set_fill_color(HugeObsColor);
         show_obs.push_back(c);
         main_win.attach(*show_obs[i]);

@@ -23,8 +23,16 @@ void game_loop() {
         main_win.callback(event_close);
         main_win.wait_for_button();
         if (wanna_exit) { return; }
+
         //================ GAME ================
+        std::vector<Player> players(NumOfPlayers);
+        std::vector<Obstacle> obstacles(NumOfHugeObs + NumOfMediumObs + NumOfSmallObs);
         if (IM_A_HOST) {// DO IT PARRALLEL
+            GenerateObstacles(obstacles);
+
+            Player real_player = Player{"Вы", 530, 150};
+            players.push_back(real_player);// наш игрок всегда первый в списке
+
             //init a server
 
             // listen
@@ -44,23 +52,29 @@ void game_loop() {
         // send
 
         // recv
-        std::vector<Player> players(6);
-        Player real_player = Player{"Вы", 530, 150};
-        players.push_back(real_player);// наш игрок всегда первый в списке
-        Player tmp;
-        tmp = Player{"КОРНЕПЛОД", 130, 130};
-        players.push_back(tmp);
-        tmp = Player{"ПЕРУН", 863, 204};
-        players.push_back(tmp);
-        tmp = Player{"КИШЕМИР", 590, 550};
-        players.push_back(tmp);
-        tmp = Player{"СКАРЛАТИНА", 200, 170};
-        players.push_back(tmp);
-        Generate();
 
-            game_draw(main_win, players);// рендерим
-            main_win.control_show();     // даем управление
-            main_win.wait_for_button();  // если жмет чета -
+        // ! удалить потом ручное создание игроков !
+        Player tmp;
+        tmp = Player{"КОРНЕПЛОД", -1, -1};
+        players.push_back(tmp);
+        tmp = Player{"ПЕРУН", -1, -1};
+        players.push_back(tmp);
+        tmp = Player{"КИШЕМИР", -1, -1};
+        players.push_back(tmp);
+        tmp = Player{"СКАРЛАТИНА", -1, -1};
+        players.push_back(tmp);
+
+        for (size_t i = 0; i < players.size(); ++i) {
+            if (players[i].NeedResp()) {
+                GeneratePlayer(players[i], obstacles, players);
+                players[i].Revive();
+            }
+        }
+
+
+        game_draw(main_win, players, obstacles);// рендерим
+        main_win.control_show();                // даем управление
+        main_win.wait_for_button();             // если жмет чета -
         main_win.control_hide();
     }
 }

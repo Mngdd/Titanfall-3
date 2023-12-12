@@ -20,22 +20,19 @@ unsigned random(PRNG &generator, unsigned minValue, unsigned maxValue);// gives 
 Graph_lib::Point NotsoRandomPoint(double Power);// Point "Power" far away from the center
 
 // obstacles generation
-void HugeObsSpawn();  // adds obstacles to HugeObstacles
-void MediumObsSpawn();// adds obstacles to MediumObstacles
-void SmallObsSpawn(); // adds obstacles to SmallObstacles
+void HugeObsSpawn(std::vector<Obstacle> &Obs_vec);  // adds obstacles to HugeObstacles
+void MediumObsSpawn(std::vector<Obstacle> &Obs_vec);// adds obstacles to MediumObstacles
+void SmallObsSpawn(std::vector<Obstacle> &Obs_vec); // adds obstacles to SmallObstacles
 
-bool ObsDistPlayerCheck(const Obstacle &Obs);// obstacle not overlapping player
-void ObstaclesRespawn();                     // regenerates obstacles with existing players
+bool ObsDistPlayerCheck(const Obstacle &Obs, const std::vector<Player> &players_vec);// obstacle not overlapping player
+void ObstaclesRespawn(std::vector<Obstacle> &Obs_vec);                               // regenerates obstacles with existing players
 
 // players generation
-bool PlayerDistObsCheck(const Graph_lib::Point &Player);    // Player not overlapping Obstacles
-bool PlayerDistPlayersCheck(const Graph_lib::Point &Player);// Player not overlapping Players
-void PlayerSpawn();                              // adds player to Players
-void PlayersSpawn(int NumOfPlayersAdded);        // adds players to Players
+bool PlayerDistObsCheck(const Graph_lib::Point &Player_pos, const std::vector<Obstacle> &Obs_vec);      // Player not overlapping Obstacles
+bool PlayerDistPlayersCheck(const Graph_lib::Point &Player_pos, const std::vector<Player> &players_vec);// Player not overlapping Players
 
-void Generate();// Generates everything at the start of the game
-
-extern std::vector<Obstacle> Obstacles;// vector of all Obstacles
-extern std::vector<Graph_lib::Point> Players;      // vector of all players
+void GenerateObstacles(std::vector<Obstacle> &obstacles);// Generates everything at the start of the game
+void GeneratePlayer(Player &player_, const std::vector<Obstacle> &obstacles,
+                    const std::vector<Player> &players_vec);// Generates everything at the start of the game
 
 #endif// TITANFALL_3_LEVEL_GEN_H
