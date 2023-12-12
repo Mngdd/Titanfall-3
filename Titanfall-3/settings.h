@@ -27,8 +27,15 @@ inline Graph_lib::Color PlayerColor = Graph_lib::Color::green;
 // Color Team1PlayerColor = Color::blue;
 // Color Team2PlayerColor = Color::red;
 
-// ГЕНЕРАЦИЯ
+// состояние игры
+enum game_state {
+    FIRE = 0,
+    RESPAWN = 1,
+    RESTART = 2,
+    LEAVE = 3
+};
 
+// ГЕНЕРАЦИЯ
 // УБРАТЬ const ПЕРЕД ТЕМИ НАСТРОЙКАМИ, ЧТО МОЖНО БУДЕТ МЕНЯТЬ В МЕНЮШКЕ!!
 
 const std::string GameName = "GAME_NAME_HERE";

@@ -79,6 +79,7 @@ Screen::Screen(Point xy, int w, int h, const std::string &title)
     game_name.set_font_size(20);
     size_range(FieldWidth, FieldHeight, FieldWidth, FieldHeight);
     control_win.hide();
+    gamin_now = false;
 }
 
 Screen::~Screen() {
@@ -222,19 +223,24 @@ void Screen::event_join() {
 
 void Screen::wait_for_button()// conservation window
 {
-    while (!button_pushed && Fl::wait())
-        ;
+    while (!button_pushed && Fl::wait()) {};
+    if (!gamin_now) {
+        hide_menu();
+    } else {
+        //...
+    }
     button_pushed = false;
-    hide_menu();
     Fl::redraw();
 }
 
 void Screen::control_show() {
     control_win.show();
     control_win.set_label("game contol");
+    gamin_now = true;
 }
 void Screen::control_hide() {
     control_win.hide();
+    gamin_now = false;
 }
 
 //TODO: ДОДЕЛАТЬ

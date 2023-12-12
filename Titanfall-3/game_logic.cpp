@@ -44,9 +44,9 @@ void game_loop() {
         // send
 
         // recv
-
         std::vector<Player> players(6);
-
+        Player real_player = Player{"Вы", 530, 150};
+        players.push_back(real_player);// наш игрок всегда первый в списке
         Player tmp;
         tmp = Player{"КОРНЕПЛОД", 130, 130};
         players.push_back(tmp);
@@ -57,8 +57,10 @@ void game_loop() {
         tmp = Player{"СКАРЛАТИНА", 200, 170};
         players.push_back(tmp);
         Generate();
-        game_draw(main_win, players);
-        main_win.control_show();
-        main_win.wait_for_button();
+
+            game_draw(main_win, players);// рендерим
+            main_win.control_show();     // даем управление
+            main_win.wait_for_button();  // если жмет чета -
+        main_win.control_hide();
     }
 }

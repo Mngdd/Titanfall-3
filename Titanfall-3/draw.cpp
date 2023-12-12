@@ -34,13 +34,13 @@ std::string function = "120 * sin(x/2)";
 void game_draw(Screen &main_win, std::vector<Player> &pl)
 { // TODO: add icon
     // create & draw function
-    l = Func_trace(function, q, Obstacles, Players);
-    for (auto i : l)
-    {
-        Point *j = new Point(i.first, i.second);
-        fn.add(*j);
-    }
-    fn.set_color(Graph_lib::Color::red);
+    // l = Func_trace(function, q, Obstacles, Players);
+    // for (auto i : l)
+    // {
+    //     Point *j = new Point(i.first, i.second);
+    //     fn.add(*j);
+    // }
+    // fn.set_color(Graph_lib::Color::red);
 
     // draw obstacles
     for (size_t i = 0; i < Obstacles.size(); ++i)

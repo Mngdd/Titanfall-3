@@ -55,7 +55,7 @@ struct Screen : Graph_lib::Window {// create a new window
     ~Screen();
     void control_show();
     void control_hide();
-
+    bool playing() { return gamin_now; }
 private:
     void hide_menu() {// мне лень делать красиво
         host_button.hide();
@@ -71,6 +71,7 @@ private:
     Button host_button;
     Button join_button;
     Button quit_button;
+    bool gamin_now;
     InputMenu control_win{Point(100, 100), InputWidth, InputHeight, "game contol"};
     //IN-GAME
 
