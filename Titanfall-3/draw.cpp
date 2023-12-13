@@ -6,34 +6,22 @@
 #include "settings.h"
 
 using namespace Graph_lib;
-// препятствия
-Vector_ref<Circle *> show_obs;
-// игроки (тела, странно почему мы так их храим...)
-Vector_ref<Circle *> show_pl;
-// ники
-Vector_ref<Text *> show_nm;
-// игроки как клаасс. опять же, странно храним, могли бы 1 такой список держать
-// std::vector<Player> pl;// делать указатели юзлесс
-// наша функция, ее тело
-Graph_lib::Open_polyline fn;
 
-Graph_lib::Open_polyline fn2;
-
-// лучше названия не придумаешь, хз че
-std::vector<std::pair<int, int>> l;
-
-// std::vector<Obstacle *> Obstacles;
-// std::vector<Point *> Players;
-// inline std::vector<std::pair<int, int>> func;
-// bool try;
-// очень ясно, 100% понимания, 0% осуждения
-std::pair<int, int> q = std::make_pair(100, 100);
-// функция текстом
-std::string function = "120 * sin(x/2)";
-
-void game_draw(Screen &main_win, std::vector<Player> &pl, 
-std::vector<Obstacle>& obst)
+void game_draw(Screen &main_win, std::vector<Player> &pl,
+               std::vector<Obstacle> &obst)
 { // TODO: add icon
+    // функция текстом
+    std::string function = "120 * sin(x/2)";
+    std::pair<int, int> q = std::make_pair(100, 100);
+    std::vector<std::pair<int, int>> l;
+    // наша функция, ее тело
+    // Graph_lib::Open_polyline fn;
+    // препятствия
+    Vector_ref<Circle *> show_obs;
+    // игроки (тела, странно почему мы так их храим...)
+    Vector_ref<Circle *> show_pl;
+    // ники
+    Vector_ref<Text *> show_nm;
     // create & draw function
     // l = Func_trace(function, q, Obstacles, pl);
     // for (auto i : l)
@@ -72,7 +60,8 @@ std::vector<Obstacle>& obst)
     for (size_t i{0}; i < pl.size(); ++i)
     {
         Text *c{nullptr};
-        if (pl[i].GetCords().second + PlayerRad >= FieldHeight) {
+        if (pl[i].GetCords().second + PlayerRad >= FieldHeight)
+        {
             c = new Text{Point(pl[i].GetCords().first, pl[i].GetCords().second + PlayerRad),
                          pl[i].GetName()};
         }
@@ -86,11 +75,12 @@ std::vector<Obstacle>& obst)
         show_nm.push_back(c);
         main_win.attach(*show_nm[i]);
     };
-    main_win.attach(fn);
+    // main_win.attach(fn);
 }
 
 void func_draw(Screen &main_win, std::vector<Point> &f)
 { // TODO: add icon
+    Graph_lib::Open_polyline fn2;
     // create & draw function
     for (auto i : f)
     {
