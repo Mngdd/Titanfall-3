@@ -7,7 +7,7 @@
 
 std::vector<std::pair<int, int>> Func_trace(std::string func_enter, std::pair<int, int> &cords,
                                             std::vector<Obstacle *> obstacle_mini,
-                                            std::vector<Graph_lib::Point *> players_cords);
+                                            std::vector<Player *> players_cords);
 
 // отрисовывает игровое поле
 void game_draw(Screen &main_win, std::vector<Player> &pl,

@@ -35,7 +35,7 @@ void game_draw(Screen &main_win, std::vector<Player> &pl,
 std::vector<Obstacle>& obst)
 { // TODO: add icon
     // create & draw function
-    // l = Func_trace(function, q, Obstacles, Players);
+    // l = Func_trace(function, q, Obstacles, pl);
     // for (auto i : l)
     // {
     //     Point *j = new Point(i.first, i.second);
