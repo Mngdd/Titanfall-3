@@ -31,6 +31,7 @@ set(SOURCES
     level_gen.cpp
     main.cpp
     server.cpp
+    parser.cpp
     #sounds.cpp
     ${LIB_DIR}/Graph_lib/Graph.cpp
     ${LIB_DIR}/Graph_lib/GUI.cpp

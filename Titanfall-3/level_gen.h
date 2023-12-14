@@ -11,6 +11,46 @@
 struct PRNG {
     std::mt19937 engine;
 };
+struct GenerationSettings {
+    // Количество игроков для которых надо сгенерировать
+    const int NumOfPlayers;
+    // Радиус игрока
+    const int PlayerRad = 10;
+    // Степень ухода больших препятствий от центра
+    const double HugeObsPower = 2;
+    // Степень ухода средних препятствий от центра
+    const double MediumObsPower = 0.5;
+    // Степень ухода маленьких препятствий от центра
+    const double SmallObsPower = 1;
+    
+    // Минимальное расстояние между игроками (мультиплеер)
+    const int SpawnBetwMinDist = 70;
+    // Минимальное расстояние от игрока до стены (больше радиуса игрока)
+    const int SpawnWallMinDist = 30;
+    // Минимальное расстояние от игрока до препятствия
+    const int SpawnObsMinDist = 5;
+    
+    // Минимальное расстояние от препятствия до стены
+    const int SpawnObsWallMinDist = 3;
+    
+    // Количество препятствий каждого вида
+    const int NumOfHugeObs = 5;
+    const int NumOfMediumObs = 5;
+    const int NumOfSmallObs = 5;
+    
+    // Радиусы препятствий разных размеров
+    const int HugeObsMaxRad = 100;
+    const int HugeObsMinRad = 65;
+    const int MediumObsMaxRad = 65;
+    const int MediumObsMinRad = 30;
+    const int SmallObsMaxRad = 30;
+    const int SmallObsMinRad = 15;
+    
+    // Количество попыток заспавнить игрока в норм месте
+    const int PlayerSpawnTries = 500;
+    // Количество попыток зареспавнить препятствие в норм месте
+    const int ObstacleReSpawnTries = 100;
+};
 
 double dist(Graph_lib::Point a, Graph_lib::Point b);// returns dist between two points
 
