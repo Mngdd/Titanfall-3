@@ -1,9 +1,12 @@
 #include "game_logic.h"
+#include "client.h"
 #include "draw.h"
 #include "graphics.h"
 #include "level_gen.h"
 #include "server.h"
 #include <Graph_lib/Graph.h>
+#include <thread>
+#include <unistd.h>
 
 void event_close(Fl_Widget *widget, void *) {
     wanna_exit = true;
@@ -30,22 +33,23 @@ void game_loop() {
         players.reserve(NumOfPlayers);
         std::vector<Obstacle> obstacles;
         obstacles.reserve(NumOfHugeObs + NumOfMediumObs + NumOfSmallObs);
+        std::thread srv(server_test, 12345);//!!!
 
         // наша очередь стрелять?
         bool my_turn = true;
         // какой игрок стреляет
-        size_t shoot_turn = 0; // TODO: МЕНЯТЬ СЧЕТЧИК
+        size_t shoot_turn = 0;// TODO: МЕНЯТЬ СЧЕТЧИК
         //*declare a server
         if (IM_A_HOST) {// DO IT PARRALLEL
             GenerateObstacles(obstacles);
 
             Player real_player = Player{UserNick};
-            players.push_back(real_player); // наш игрок всегда первый в списке
+            players.push_back(real_player);// наш игрок всегда первый в списке
 
             // *init a server
-
             // *listen
         }
+
         // *decl&init a client
         // *connect
 
@@ -73,20 +77,34 @@ void game_loop() {
         }
         game_draw(main_win, players, obstacles);// рендерим
 
-
+        std::thread clie(game_master);
+        clie.join();
+        srv.join();
         // *server send
         // *server recv
 
         main_win.control_show();   // даем управление
         main_win.wait_for_button();// если жмет чета
-        // *client shoots
+        // ?PLAYER shoots
         // *client send
         // *client recv ans
         //------
         main_win.control_hide();
+        if (wanna_exit && IM_A_HOST) {
+        }
     }
 }
 
 void game_master() {
-
+    try {
+        Client cli{"26.10.48.122", 12345};
+        cli.Send("dunke", "1000/x-100", true);
+        int res = -1;
+        do {
+            res = cli.Recv();
+        } while (res > 0);
+        std::cout << "res=0\n";
+    } catch (std::runtime_error &e) {
+        std::cout << e.what() << std::endl;
+    }
 }

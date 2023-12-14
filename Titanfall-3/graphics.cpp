@@ -214,7 +214,7 @@ void Screen::event_join() {
     // get values ---------------------------------------------------
     CONN_IP = ip.get_string();
     PORT = port.get_int();
-    IM_A_HOST = true;
+    IM_A_HOST = false;
 
     //hide_all();
     mini_menu.detach(ip);

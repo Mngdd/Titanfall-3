@@ -115,7 +115,7 @@ int server_test(int port) {
     // пока соединение не разорвут, получаем инфу
     //TODO: добавить Send и Read!!
     do {
-        printf("Receiving...\n");
+        printf("SRV Receiving...\n");
         iResult = recv(ClientSocket, buf, buf_size, 0);// тут получаем
         if (iResult > 0) {                             // если клиент не отключен
             printf("Bytes received: %d\n", iResult);
@@ -126,16 +126,16 @@ int server_test(int port) {
             printf("Sending...\n");
             iSendResult = send(ClientSocket, buf, iResult, 0);
             if (iSendResult == SOCKET_ERROR) {
-                printf("send failed with error: %d\n", WSAGetLastError());
+                printf("SRV send failed with error: %d\n", WSAGetLastError());
                 closesocket(ClientSocket);
                 WSACleanup();
                 return 1;
             }
-            printf("Bytes sent: %d\n", iSendResult);
+            printf("SRV Bytes sent: %d\n", iSendResult);
         } else if (iResult == 0)// означает что клиент отключился
             printf("Closing connection ...\n");
         else {
-            printf("recv failed with error: %d\n", WSAGetLastError());
+            printf("SRV recv failed with error: %d\n", WSAGetLastError());
             closesocket(ClientSocket);
             WSACleanup();
             return 1;

@@ -1,24 +1,107 @@
 #include "client.h"
-
+#include <iostream>
+#include <stdexcept>
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment(lib, "Mswsock.lib")
 #pragma comment(lib, "AdvApi32.lib")// TODO: помогите, откуда их в симейке привязывать...
 
 
-// Client::Client() {
-//     SOCKET ConnectSocket = INVALID_SOCKET;
-//     struct addrinfo *result = NULL,
-//                     *ptr = NULL,
-//                     hints;
+Client::Client(const std::string &ip_, const int port) {
+    ConnectSocket = INVALID_SOCKET;
+    result = NULL;
+    ptr = NULL;
 
-//     // init Winsock
-//     iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-//     if (iResult != 0) {
-//         printf("WSAStartup failed with error: %d\n", iResult);
-//         return 1;
-//     }
-// }
+    //const char *sendbuf; //todo: не забыть отправлять через sendbuf
+
+    // init Winsock
+    iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (iResult != 0) {
+        //printf("WSAStartup failed with error: %d\n", iResult);
+        std::string err_msg = "WSAStartup failed with error: " + std::to_string(iResult);
+        throw std::runtime_error(err_msg);
+    }
+
+    ZeroMemory(&hints, sizeof(hints));// чистим кусок памяти от мусора, все в нулях
+    hints.ai_family = AF_UNSPEC;      // без семейства
+    hints.ai_socktype = SOCK_STREAM;  // тип сокета, берем дефолтный
+    hints.ai_protocol = IPPROTO_TCP;  // берем протокол TCP, т.е. нам все одной пачкой придет
+
+    // getaddrinfo обеспечивает независимое от протокола преобразование из имени узла ANSI в адрес
+    // (крч в нормальный вид приводим адрес, и еще динамич. память выделяем на это!)
+    iResult = getaddrinfo(ip_.c_str(), std::to_string(port).c_str(), &hints, &result);
+    if (iResult != 0) {
+        //printf("getaddrinfo failed with error: %d\n", iResult);
+        WSACleanup();
+        std::string err_msg = "getaddrinfo failed with error: " + std::to_string(iResult);
+        throw std::runtime_error(err_msg);
+    }
+
+    // подключаемся до тех пор, пока нас не подключит
+    for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
+
+        // создаем сокет чтоб к серверу подключиться
+        ConnectSocket = Socket(ptr);
+
+        // пытаемся подключиться
+        Connect(ConnectSocket, ptr);// если не удалось - отключаем сокет
+        if (ConnectSocket == INVALID_SOCKET) { continue; }
+        break;
+    }
+
+    freeaddrinfo(result);// мы настроились уже, не нужен он больше
+
+    if (ConnectSocket == INVALID_SOCKET) {
+        //printf("Unable to connect to server!\n");
+        WSACleanup();
+        throw std::runtime_error("Unable to connect to server!");
+    }
+}
+
+Client::~Client() {
+    std::cout << "SHUTTIN DOWN!\n";
+    iResult = shutdown(ConnectSocket, SD_SEND);
+    if (iResult == SOCKET_ERROR) {
+        // change da wolrd, my final message, goodbye
+        printf("shutdown failed with error: %d\n", WSAGetLastError());
+    }
+    closesocket(ConnectSocket);
+    WSACleanup();
+}
+
+int Client::Send(const std::string &name, const std::string &func, bool right) {
+    // ! первые 20 байт выделены на ник игрока, еще 3 на bool (включая пробелы справа и слева),
+    // ! оставшееся выделено на функцию
+    // fixme: зафиксировать размеры отправляемых файлов!
+
+    std::string msg = name + ' ' + std::to_string(right) + ' ' + func;
+    const char *data = msg.c_str();
+    iResult = send(ConnectSocket, data, (int) strlen(data), 0);
+    if (iResult == SOCKET_ERROR) {
+        //printf("send failed with error: %d\n", WSAGetLastError());
+        closesocket(ConnectSocket);
+        WSACleanup();
+        std::string err_msg = "send failed with error: " + std::to_string(WSAGetLastError());
+        throw std::runtime_error(err_msg);
+    }
+    return iResult;
+}
+
+int Client::Recv() {
+    char buf[DEFAULT_BUFLEN];
+    iResult = recv(ConnectSocket, buf, DEFAULT_BUFLEN, 0);
+    if (iResult > 0) {
+        printf("Bytes received: %d\n", iResult);
+    } else if (iResult == 0) {
+        throw std::runtime_error("Connection closed\n");
+        //printf("Connection closed\n");
+    } else {
+        std::string err_msg = "recv failed with error: " + std::to_string(WSAGetLastError());
+        throw std::runtime_error(err_msg);
+    }
+    std::cout << buf << std::endl;
+    return iResult;
+}
 
 
 // Тут все почти аналогично server.cpp, комментирую только новое
@@ -86,7 +169,7 @@ int client_test(const char ip[], int port) {
         return 1;
     }
 
-    printf("Bytes Sent: %ld\n", iResult);
+    printf("Bytes Sent: %d\n", iResult);
 
     // мы отправили все что хотели, отключаемся от отправки
     iResult = shutdown(ConnectSocket, SD_SEND);

@@ -2,6 +2,14 @@
 #define TITANFALL_3_SERVER_H
 #include <string>
 
+class Server {
+    public:
+    Server(const int port);
+    ~Server();
+    int Send();
+    int Recv();
+}
+
 struct IPv4 {
     unsigned char b1, b2, b3, b4;
 };
