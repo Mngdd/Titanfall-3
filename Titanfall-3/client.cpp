@@ -1,4 +1,5 @@
 #include "client.h"
+#include "settings.h"
 #include <iostream>
 #include <stdexcept>
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
@@ -59,7 +60,7 @@ Client::Client(const std::string &ip_, const int port) {
 }
 
 Client::~Client() {
-    std::cout << "SHUTTIN DOWN!\n";
+    std::cout << "CLIENT IS SHUTTIN DOWN!\n";
     iResult = shutdown(ConnectSocket, SD_SEND);
     if (iResult == SOCKET_ERROR) {
         // change da wolrd, my final message, goodbye
@@ -74,7 +75,7 @@ int Client::Send(const std::string &name, const std::string &func, bool right) {
     // ! оставшееся выделено на функцию
     // fixme: зафиксировать размеры отправляемых файлов!
 
-    std::string msg = name + ' ' + std::to_string(right) + ' ' + func;
+    std::string msg = name + delimiter + std::to_string(right) + delimiter + func;
     const char *data = msg.c_str();
     iResult = send(ConnectSocket, data, (int) strlen(data), 0);
     if (iResult == SOCKET_ERROR) {

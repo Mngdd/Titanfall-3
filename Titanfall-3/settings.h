@@ -61,6 +61,12 @@ inline std::string CONN_IP = "NONE";
 inline int PORT = -1;
 // мне создавать сервер?
 inline bool IM_A_HOST = false;
+// разделитель между словами
+constexpr char delimiter = '$';
+// конец ввода предложения
+constexpr char endchar = ';';
+// могу щас удалять/добавлять игроков?
+inline bool could_interact = false;
 
 // кол-во игроков
 inline int NumOfPlayers = 2;

@@ -7,6 +7,7 @@
 #include <Graph_lib/Graph.h>
 #include <thread>
 #include <unistd.h>
+#define SRV_TEST 0
 
 void event_close(Fl_Widget *widget, void *) {
     wanna_exit = true;
@@ -33,10 +34,14 @@ void game_loop() {
         players.reserve(NumOfPlayers);
         std::vector<Obstacle> obstacles;
         obstacles.reserve(NumOfHugeObs + NumOfMediumObs + NumOfSmallObs);
-        std::thread srv(server_test, 12345);//!!!
+        std::string func_text{};
+#if SRV_TEST == 1
+        std::thread srv;
+#endif
 
         // наша очередь стрелять?
         bool my_turn = true;
+        bool playin = true;
         // какой игрок стреляет
         size_t shoot_turn = 0;// TODO: МЕНЯТЬ СЧЕТЧИК
         //*declare a server
@@ -46,15 +51,27 @@ void game_loop() {
             Player real_player = Player{UserNick};
             players.push_back(real_player);// наш игрок всегда первый в списке
 
-            // *init a server
+        // *init a server
+#if SRV_TEST == 1
+            srv = std::thread(server_test, 12345);
+#endif
             // *listen
         }
 
-        // *decl&init a client
-        // *connect
+        // *decl&init a client + connect
+#if SRV_TEST == 1
+        Client cli{"26.10.48.122", 12345};//FIXME: hardcoded
 
         // *client send
+        cli.Send(UserNick, "", false);
         // *client recv
+
+        int res = -1;
+        do {
+            res = cli.Recv();
+        } while (res > 0);
+        std::cout << res << " res=0\n";
+#endif
 
         // TODO: удалить потом ручное создание игроков !
         Player tmp;
@@ -67,44 +84,38 @@ void game_loop() {
         tmp = Player{"СКАРЛАТИНА"};
         players.push_back(tmp);
 
-        // ! while loop HERE
-        // *check_game_conditions
-        for (size_t i = 0; i < players.size(); ++i) {
-            if (players[i].NeedResp()) {
-                GeneratePlayer(players[i], obstacles, players);
-                players[i].Revive();
+        while (playin) {
+            // *check_game_conditions
+            for (size_t i = 0; i < players.size(); ++i) {
+                if (players[i].NeedResp()) {
+                    GeneratePlayer(players[i], obstacles, players);
+                    players[i].Revive();
+                }
             }
-        }
-        game_draw(main_win, players, obstacles);// рендерим
+            game_draw(main_win, players, obstacles);// рендерим
 
-        std::thread clie(game_master);
-        clie.join();
-        srv.join();
-        // *server send
-        // *server recv
+            //std::thread clie(game_master);
+            //clie.join();
+            //srv.join();
+            // *server send
+            // *server recv
 
-        main_win.control_show();   // даем управление
-        main_win.wait_for_button();// если жмет чета
-        // ?PLAYER shoots
-        // *client send
-        // *client recv ans
-        //------
-        main_win.control_hide();
-        if (wanna_exit && IM_A_HOST) {
+            main_win.control_show();   // даем управление
+            main_win.wait_for_button();// если жмет чета
+            // ?PLAYER shoots
+            // *client send
+            // *client recv ans
+            //------
+
+#if SRV_TEST == 1
+            main_win.control_hide();
+            if ((wanna_exit || !playin) && IM_A_HOST) {
+                srv.join();// хочю выйти...
+            }
+#endif
         }
     }
 }
 
 void game_master() {
-    try {
-        Client cli{"26.10.48.122", 12345};
-        cli.Send("dunke", "1000/x-100", true);
-        int res = -1;
-        do {
-            res = cli.Recv();
-        } while (res > 0);
-        std::cout << "res=0\n";
-    } catch (std::runtime_error &e) {
-        std::cout << e.what() << std::endl;
-    }
 }
