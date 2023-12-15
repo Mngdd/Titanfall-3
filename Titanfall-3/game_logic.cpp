@@ -9,24 +9,33 @@
 #include <unistd.h>
 #define SRV_TEST 0
 
-void event_close(Fl_Widget *widget, void *) {
+void event_close(Fl_Widget *widget, void *)
+{
     wanna_exit = true;
     Fl_Window *window = dynamic_cast<Fl_Window *>(widget);
     window->hide();
-    while (Fl::first_window()) {
+    while (Fl::first_window())
+    {
         delete Fl::first_window();
     }
 }
 
-void game_loop() {
-    while (!wanna_exit) {
+void game_loop()
+{
+    while (!wanna_exit)
+    {
         //================ MENU ================
         MY_IP = get_my_ip();
         // главное окно, переименовал для ясности
-        Screen main_win{Point(100, 100), FieldWidth, FieldHeight, GameName};
+        bool my_turn = true;
+
+        Screen main_win{Point(100, 100), FieldWidth, FieldHeight, GameName, my_turn};
         main_win.callback(event_close);
         main_win.wait_for_button();
-        if (wanna_exit) { return; }
+        if (wanna_exit)
+        {
+            return;
+        }
 
         //================ GAME ================
         // резервируем память для игроков и обстаклов
@@ -43,15 +52,16 @@ void game_loop() {
         bool my_turn = true;
         bool playin = true;
         // какой игрок стреляет
-        size_t shoot_turn = 0;// TODO: МЕНЯТЬ СЧЕТЧИК
+        size_t shoot_turn = 0; // TODO: МЕНЯТЬ СЧЕТЧИК
+
+        Player real_player = Player{UserNick};
+        players.push_back(real_player); // наш игрок всегда первый в списке
+
         //*declare a server
-        if (IM_A_HOST) {// DO IT PARRALLEL
+        if (IM_A_HOST) { // DO IT PARRALLEL
             GenerateObstacles(obstacles);
 
-            Player real_player = Player{UserNick};
-            players.push_back(real_player);// наш игрок всегда первый в списке
-
-        // *init a server
+            // *init a server
 #if SRV_TEST == 1
             srv = std::thread(server_test, 12345);
 #endif

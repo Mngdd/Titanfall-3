@@ -16,7 +16,7 @@
 
 using namespace Graph_lib;
 
-struct input_data
+struct input_data // данные передаваемые кнопкой
 {
     game_state g_s;
     std::string equation;
@@ -98,7 +98,7 @@ private:
 struct Screen : Graph_lib::Window
 { // create a new window
     Screen() = default;
-    Screen(Point xy, int w, int h, const std::string &title);
+    Screen(Point xy, int w, int h, const std::string &title, bool &my_turn);
     void wait_for_button();
     ~Screen();
     void control_show();

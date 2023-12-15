@@ -7,18 +7,18 @@
 #include <random>
 #include <vector>
 
-// random tech
-struct PRNG
-{
-    std::mt19937 engine;
-};
-
+// НАСТРОЙКИ ГЕНЕРАЦИИ
 struct GenerationSettings
 {
     // Количество игроков для которых надо сгенерировать
     const int NumOfPlayers;
-    // Радиус игрока
-    const int PlayerRad = 10;
+
+    // ДЕФОЛТНЫЕ НАСТРОЙКИ
+    // Ширина поля
+    const int FieldWidth = 1200;
+    // Высота поля
+    const int FieldHeight = 720;
+
     // Степень ухода больших препятствий от центра
     const double HugeObsPower = 2;
     // Степень ухода средних препятствий от центра
@@ -55,30 +55,42 @@ struct GenerationSettings
     const int ObstacleReSpawnTries = 100;
 };
 
+// random tech
+struct PRNG
+{
+    std::mt19937 engine;
+};
+
 double dist (Graph_lib::Point a, Graph_lib::Point b);  // returns dist between two points
 
 void initGenerator (PRNG& generator);                                     // generates seed for random
 unsigned random (PRNG& generator, unsigned minValue, unsigned maxValue);  // gives random ints
 
-Graph_lib::Point NotsoRandomPoint (double Power);  // Point "Power" far away from the center
+Graph_lib::Point NotsoRandomPoint (GenerationSettings& settings, PRNG& generator,
+                                   double Power);  // Point "Power" far away from the center
 
 // obstacles generation
-void HugeObsSpawn (std::vector<Obstacle>& Obs_vec);    // adds obstacles to HugeObstacles
-void MediumObsSpawn (std::vector<Obstacle>& Obs_vec);  // adds obstacles to MediumObstacles
-void SmallObsSpawn (std::vector<Obstacle>& Obs_vec);   // adds obstacles to SmallObstacles
+void HugeObsSpawn (GenerationSettings& settings, PRNG& generator,
+                   std::vector<Obstacle>& Obs_vec);  // adds obstacles to HugeObstacles
+void MediumObsSpawn (GenerationSettings& settings, PRNG& generator,
+                     std::vector<Obstacle>& Obs_vec);  // adds obstacles to MediumObstacles
+void SmallObsSpawn (GenerationSettings& settings, PRNG& generator,
+                    std::vector<Obstacle>& Obs_vec);  // adds obstacles to SmallObstacles
 
-bool ObsDistPlayerCheck (const Obstacle& Obs,
+bool ObsDistPlayerCheck (GenerationSettings& settings, const Obstacle& Obs,
                          const std::vector<Player>& players_vec);  // obstacle not overlapping player
-void ObstaclesRespawn (std::vector<Obstacle>& Obs_vec);            // regenerates obstacles with existing players
+void ObstaclesRespawn (GenerationSettings& settings, PRNG& generator, std::vector<Player>& players,
+                       std::vector<Obstacle>& Obs_vec);  // regenerates obstacles with existing players
 
 // players generation
-bool PlayerDistObsCheck (const Graph_lib::Point& Player_pos,
+bool PlayerDistObsCheck (GenerationSettings& settings, const Graph_lib::Point& Player_pos,
                          const std::vector<Obstacle>& Obs_vec);  // Player not overlapping Obstacles
-bool PlayerDistPlayersCheck (const Graph_lib::Point& Player_pos,
+bool PlayerDistPlayersCheck (GenerationSettings& settings, const Graph_lib::Point& Player_pos,
                              const std::vector<Player>& players_vec);  // Player not overlapping Players
 
-void GenerateObstacles (std::vector<Obstacle>& obstacles);  // Generates everything at the start of the game
-void GeneratePlayer (Player& player_, const std::vector<Obstacle>& obstacles,
+void GenerateObstacles (GenerationSettings& settings,
+                        std::vector<Obstacle>& obstacles);  // Generates everything at the start of the game
+void GeneratePlayer (GenerationSettings& settings, Player& player_, const std::vector<Obstacle>& obstacles,
                      const std::vector<Player>& players_vec);  // Generates everything at the start of the game
 
 #endif  // TITANFALL_3_LEVEL_GEN_H
