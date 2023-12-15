@@ -16,7 +16,7 @@
 
 using namespace Graph_lib;
 
-struct input_data
+struct input_data // данные передаваемые кнопкой
 {
     game_state g_s;
     std::string equation;

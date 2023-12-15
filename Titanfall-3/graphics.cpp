@@ -6,7 +6,16 @@
 
 using namespace Graph_lib;
 
-std::string *equation;
+void control_close(Fl_Widget *widget, void *)
+{
+    wanna_exit = true;
+    Fl_Window *window = dynamic_cast<Fl_Window *>(widget);
+    window->hide();
+    while (Fl::first_window())
+    {
+        delete Fl::first_window();
+    }
+}
 
 void SliderInput::Slider_CB2()
 {
@@ -92,6 +101,7 @@ Screen::Screen(Point xy, int w, int h, const std::string &title)
     game_name.set_font_size(20);
     size_range(FieldWidth, FieldHeight, FieldWidth, FieldHeight);
     control_win.hide();
+    control_win.callback(control_close);
     gamin_now = false;
 
     // this->redraw();
@@ -291,7 +301,6 @@ InputMenu::InputMenu(Point xy, int w, int h, const std::string &title)
       fire{Point(5, 80), 85, 20,
            "FIRE", fire_bt}
 {
-
     attach(data_output);
     attach(func_input);
     attach(left);
@@ -309,7 +318,6 @@ InputMenu::InputMenu(Point xy, int w, int h, const std::string &title)
 input_data InputMenu::wait_for_game_button()
 {
     this->show();
-
     while (Fl::wait() && !game_button_pushed)
     {
     };
@@ -317,50 +325,44 @@ input_data InputMenu::wait_for_game_button()
     Fl::redraw();
     input_data *s = new input_data{
         state, line, to_the_right};
-
     return *s;
 }
-
+// RESTART
 void InputMenu::restart_()
 {
     state = game_state::RESTART;
     game_button_pushed = true;
 }
-
+// RESPAWN
 void InputMenu::resp()
 {
     state = game_state::RESPAWN;
     game_button_pushed = true;
 }
-
+// FIRE
 void InputMenu::fr()
 {
-
     line = func_input.get_string();
-    std::cout << "fair" << ' ';
-    std::cout << line;
-
     state = game_state::FIRE;
     game_button_pushed = true;
 }
-
+// LEAVE
 void InputMenu::leave()
 {
     state = game_state::LEAVE;
     game_button_pushed = true;
 }
-
+// RIGHT
 void InputMenu::rt()
 {
     to_the_right = true;
 }
-
+// LEFT
 void InputMenu::lt()
 {
     to_the_right = false;
     // game_button_pushed = true;
 }
-
 InputMenu::~InputMenu()
 {
     left.hide();
