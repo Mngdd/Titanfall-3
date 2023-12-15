@@ -96,8 +96,13 @@ void game_loop() {
                     players[i].Revive();
                 }
             }
-            game_draw(main_win, players, obstacles,
-                      input_data{game_state::FIRE, func_text, true}, real_player); // рендерим
+
+            //FIXME: пока кринж какой-то
+            game_draw(main_win, players, obstacles, input_data{game_state::FIRE, "x", true}, players[0]);// рендерим
+            for (int i = 0; i < 1000; ++i) {// TODO: DELETE ME
+                input_data equation = main_win.control_win.wait_for_game_button();
+                game_draw(main_win, players, obstacles, equation, players[0]);// рендерим
+            }
 
             //std::thread clie(game_master);
             //clie.join();
