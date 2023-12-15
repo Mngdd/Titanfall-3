@@ -17,6 +17,8 @@ void control_close(Fl_Widget *widget, void *)
     }
 }
 
+void control_not_close(Fl_Widget *widget, void *) {}
+
 void SliderInput::Slider_CB2()
 {
     static int recurse = 0;
@@ -84,7 +86,7 @@ SliderInput::SliderInput(int x, int y, int w, int h,
     end();              // close the group
 }
 
-Screen::Screen(Point xy, int w, int h, const std::string &title)
+Screen::Screen(Point xy, int w, int h, const std::string &title, bool &my_turn)
     : Window(xy, w, h, title),
       host_button{Point{50, 50}, 70, 20, "Host", cd_host},
       join_button{Point{50, 80}, 70, 20, "Join", cd_join},
@@ -101,7 +103,7 @@ Screen::Screen(Point xy, int w, int h, const std::string &title)
     game_name.set_font_size(20);
     size_range(FieldWidth, FieldHeight, FieldWidth, FieldHeight);
     control_win.hide();
-    control_win.callback(control_close);
+    // control_win.callback(control_close);
     gamin_now = false;
 
     // this->redraw();
@@ -301,6 +303,9 @@ InputMenu::InputMenu(Point xy, int w, int h, const std::string &title)
       fire{Point(5, 80), 85, 20,
            "FIRE", fire_bt}
 {
+    this->size_range(InputWidth, InputHeight, InputWidth, InputHeight); // lock size
+    callback(control_not_close);
+
     attach(data_output);
     attach(func_input);
     attach(left);

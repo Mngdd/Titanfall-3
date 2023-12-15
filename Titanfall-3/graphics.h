@@ -98,7 +98,7 @@ private:
 struct Screen : Graph_lib::Window
 { // create a new window
     Screen() = default;
-    Screen(Point xy, int w, int h, const std::string &title);
+    Screen(Point xy, int w, int h, const std::string &title, bool &my_turn);
     void wait_for_button();
     ~Screen();
     void control_show();

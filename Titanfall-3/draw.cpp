@@ -12,7 +12,8 @@ Graph_lib::Open_polyline *fn2 = nullptr;
 void game_draw(Screen &main_win, std::vector<Player> &pl,
                std::vector<Obstacle> &obst, input_data equation, Player real_player)
 { // TODO: add icon
-    std::pair<int, int> q = std::make_pair(100, 100);
+    std::pair<int, int> q = real_player.GetCords();
+
     std::vector<std::pair<int, int>> l;
     // obstacles
     Vector_ref<Circle *> show_obs;
@@ -25,7 +26,10 @@ void game_draw(Screen &main_win, std::vector<Player> &pl,
     {
         Circle *c = new Circle{obst[i].center, obst[i].radius};
         if (obst[i].hole)
+        {
             c->set_fill_color(FL_LIGHT1);
+            c->set_color(FL_LIGHT1);
+        }
         else
             c->set_fill_color(HugeObsColor);
 
@@ -38,7 +42,14 @@ void game_draw(Screen &main_win, std::vector<Player> &pl,
         Circle *c = new Circle{Point(pl[i].GetCords().first, pl[i].GetCords().second), PlayerRad};
         if (pl[i].IsAlive())
         {
-            c->set_fill_color(Graph_lib::Color::cyan);
+            if (pl[i].GetName() == real_player.GetName())
+            {
+                c->set_fill_color(Graph_lib::Color::yellow);
+            }
+            else
+            {
+                c->set_fill_color(Graph_lib::Color::cyan);
+            }
         }
         else
         {
@@ -67,6 +78,7 @@ void game_draw(Screen &main_win, std::vector<Player> &pl,
     };
     std::string function = equation.equation;
     // draw function
+
     if (equation.g_s == game_state::FIRE)
     {
         main_win.detach(*fn2);

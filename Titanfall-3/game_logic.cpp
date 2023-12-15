@@ -23,7 +23,9 @@ void game_loop()
         //================ MENU ================
         MY_IP = get_my_ip();
         // главное окно, переименовал для ясности
-        Screen main_win{Point(100, 100), FieldWidth, FieldHeight, GameName};
+        bool my_turn = true;
+
+        Screen main_win{Point(100, 100), FieldWidth, FieldHeight, GameName, my_turn};
         main_win.callback(event_close);
         main_win.wait_for_button();
         if (wanna_exit)
@@ -39,7 +41,7 @@ void game_loop()
         obstacles.reserve(NumOfHugeObs + NumOfMediumObs + NumOfSmallObs);
 
         // наша очередь стрелять?
-        bool my_turn = true;
+        // bool my_turn = true;
         // какой игрок стреляет
         size_t shoot_turn = 0; // TODO: МЕНЯТЬ СЧЕТЧИК
 
@@ -85,7 +87,7 @@ void game_loop()
         for (int i = 0; i < 1000; ++i)
         { // TODO: DELETE ME
             input_data equation = main_win.control_win.wait_for_game_button();
-            game_draw(main_win, players, obstacles, equation, real_player); // рендерим
+            game_draw(main_win, players, obstacles, equation, players[0]); // рендерим
         }
 
         // *server send
