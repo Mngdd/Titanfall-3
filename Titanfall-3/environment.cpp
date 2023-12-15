@@ -150,7 +150,7 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                                   vector<Obstacle> &obstacle_mini,
                                   vector<Player> &players_cords, bool right_true)
 {
-    // const int size_map_y = FieldHeight; // длина поля для пробега y
+    //const int size_map_y = FieldHeight; // длина поля для пробега y
     const int size_map_x = FieldWidth; // длина поля для пробега х
 
     // bool right_true = true; // в какую сторону стрелять
@@ -159,10 +159,9 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
     vector<pair<int, int>> white_cords = cut_x_y(obstacle_mini);     // нашли все координаты вырезов
     vector<pair<int, int>> black_cords = obstac_x_y(obstacle_mini);  // нашли все координаты препятствия
     vector<pair<int, int>> gamers_cords = player_x_y(players_cords); // нашли все координаты игроков
-
+    vector<int> index;
     if (pos != string::npos) // проверка есть ли аргумент Х в функции
     {
-        vector<int> index;
         for (size_t i = 0; i <= func_enter.size() - 1; ++i)
         {
             if (func_enter[i] == 'x')
@@ -170,14 +169,17 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                 index.push_back(i);
             }
         }
+    }
         for (int x = 0; x <= size_map_x; ++x) // перебираем х
         {
             string str_imagin = func_enter;
             string new_value = to_string(x); // из инта в стринг
-            for (size_t i = 0; i <= index.size() - 1; ++i)
-            {
-                size_t pos1 = str_imagin.find('x');
-                str_imagin.replace(pos1, 1, new_value);
+            if (not(index.empty())){
+                for (size_t i = 0; i <= index.size() - 1; ++i)
+                {
+                    size_t pos1 = str_imagin.find('x');
+                    str_imagin.replace(pos1, 1, new_value);
+                }
             }
             char expstr[256];
             strcpy(expstr, str_imagin.c_str()); //
@@ -203,10 +205,11 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                 {
                     // int y_i = cords.second + static_cast<int>(round(ans));
                     int y_i = cords.second - static_cast<int>(round(ans));
+                    if ((y_i < 0) || (y_i > FieldHeight)){break;}
                     pair<int, int> p = make_pair(x_i, y_i);
                     auto obst_for = find(black_cords.begin(), black_cords.end(), p); // для проверки на попадание в препятсвие
                     auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
-
+                    
                     if (x <= PlayerRad + SpawnObsMinDist)
                     {
                         cord_vector.push_back(make_pair(x_i, y_i));
@@ -238,90 +241,6 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                 }
             }
         }
-    }
-    else
-    {
-        for (int x = 0; size_map_x >= x; ++x)
-        {
-            char expstr[256];
-            strcpy(expstr, func_enter.c_str());
-            parser ob;
-            cout << expstr << endl;
-            double ans = ob.eval_exp(expstr);
-
-            if (right_true)
-            {
-                int x_i = cords.first + x;
-                int y_i = ans;
-                pair<int, int> p = make_pair(x_i, y_i);
-                auto obst_for = find(black_cords.begin(), black_cords.end(), p); // для проверки на попадание в препятсвие
-                auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
-                if (x <= PlayerRad + SpawnObsMinDist)
-                {
-                    continue;
-                }
-                if (gamer_for != gamers_cords.end()) // true если попали в игрока
-                {
-                    // удалям координаты из вектора
-                    cord_vector.push_back(make_pair(x_i, y_i));
-                    check_player(x_i, y_i, players_cords).Kill();
-                    continue;
-                }
-
-                auto cut_for = find(white_cords.begin(), white_cords.end(), p);
-                if (cut_for != white_cords.end())
-                {
-                    cord_vector.push_back(make_pair(x_i, y_i));
-                    continue;
-                }
-
-                if (obst_for != black_cords.end())
-                { // попали в препятсвия
-                    int rad = WhiteObsRad;
-                    Obstacle with_out = Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
-                    obstacle_mini.push_back(with_out); // попали в препятствие x_i добавляем вырез
-                    break;
-                }
-                cord_vector.push_back(make_pair(x_i, y_i));
-            }
-            else
-            {
-                int x_i = cords.first - x;
-                int y_i = ans;
-                pair<int, int> p = make_pair(x_i, y_i);
-                auto obst_for = find(black_cords.begin(), black_cords.end(), p); // для проверки на попадание в препятсвие
-                auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
-                if (x <= PlayerRad + SpawnObsMinDist)
-                {
-                    cord_vector.push_back(make_pair(x_i, y_i));
-                    continue;
-                }
-                if (gamer_for != gamers_cords.end()) // true если попали в игрока
-                {
-                    cord_vector.push_back(make_pair(x_i, y_i));
-                    // удалям координаты из вектора
-                    check_player(x_i, y_i, players_cords).Kill();
-                    continue;
-                }
-
-                auto cut_for = find(white_cords.begin(), white_cords.end(), p);
-                if (cut_for != white_cords.end())
-                {
-                    cord_vector.push_back(make_pair(x_i, y_i));
-                    continue;
-                }
-
-                if (obst_for != black_cords.end())
-                { // попали в препятсвия
-                    int rad = WhiteObsRad;
-                    Obstacle with_out = Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
-                    obstacle_mini.push_back(with_out); // попали в препятствие x_i добавляем вырез
-                    break;
-                }
-                cord_vector.push_back(make_pair(x_i, y_i));
-            }
-        }
-    }
     return cord_vector;
 }
 // for (const auto &p: cord_vector)
