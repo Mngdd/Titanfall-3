@@ -9,21 +9,17 @@
 #include <unistd.h>
 #define SRV_TEST 0
 
-void event_close(Fl_Widget *widget, void *)
-{
+void event_close(Fl_Widget *widget, void *) {
     wanna_exit = true;
     Fl_Window *window = dynamic_cast<Fl_Window *>(widget);
     window->hide();
-    while (Fl::first_window())
-    {
+    while (Fl::first_window()) {
         delete Fl::first_window();
     }
 }
 
-void game_loop()
-{
-    while (!wanna_exit)
-    {
+void game_loop() {
+    while (!wanna_exit) {
         //================ MENU ================
         MY_IP = get_my_ip();
         // главное окно, переименовал для ясности
@@ -32,8 +28,7 @@ void game_loop()
         Screen main_win{Point(100, 100), FieldWidth, FieldHeight, GameName, my_turn};
         main_win.callback(event_close);
         main_win.wait_for_button();
-        if (wanna_exit)
-        {
+        if (wanna_exit) {
             return;
         }
 
@@ -43,22 +38,21 @@ void game_loop()
         players.reserve(NumOfPlayers);
         std::vector<Obstacle> obstacles;
         obstacles.reserve(NumOfHugeObs + NumOfMediumObs + NumOfSmallObs);
-        std::string func_text{};
+        std::string func_text = "x";
 #if SRV_TEST == 1
         std::thread srv;
 #endif
 
         // наша очередь стрелять?
-        bool my_turn = true;
         bool playin = true;
         // какой игрок стреляет
-        size_t shoot_turn = 0; // TODO: МЕНЯТЬ СЧЕТЧИК
+        size_t shoot_turn = 0;// TODO: МЕНЯТЬ СЧЕТЧИК
 
         Player real_player = Player{UserNick};
-        players.push_back(real_player); // наш игрок всегда первый в списке
+        players.push_back(real_player);// наш игрок всегда первый в списке
 
         //*declare a server
-        if (IM_A_HOST) { // DO IT PARRALLEL
+        if (IM_A_HOST) {// DO IT PARRALLEL
             GenerateObstacles(obstacles);
 
             // *init a server
@@ -102,7 +96,8 @@ void game_loop()
                     players[i].Revive();
                 }
             }
-            game_draw(main_win, players, obstacles);// рендерим
+            game_draw(main_win, players, obstacles,
+                      input_data{game_state::FIRE, func_text, true}, real_player); // рендерим
 
             //std::thread clie(game_master);
             //clie.join();
@@ -112,10 +107,10 @@ void game_loop()
 
             main_win.control_show();   // даем управление
             main_win.wait_for_button();// если жмет чета
-            // ?PLAYER shoots
-            // *client send
-            // *client recv ans
-            //------
+                                       // ?PLAYER shoots
+                                       // *client send
+                                       // *client recv ans
+                                       //------
 
 #if SRV_TEST == 1
             main_win.control_hide();
