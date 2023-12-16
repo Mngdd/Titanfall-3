@@ -7,7 +7,7 @@
 #include <Graph_lib/Graph.h>
 #include <thread>
 #include <unistd.h>
-#define SRV_TEST 0
+#define SRV_TEST 1
 
 void event_close(Fl_Widget *widget, void *) {
     wanna_exit = true;
@@ -40,7 +40,8 @@ void game_loop() {
         obstacles.reserve(NumOfHugeObs + NumOfMediumObs + NumOfSmallObs);
         std::string func_text = "x";
 #if SRV_TEST == 1
-        std::thread srv;
+        //std::thread srv;
+        std::thread srv_manager;
 #endif
 
         // наша очередь стрелять?
@@ -48,7 +49,7 @@ void game_loop() {
         // какой игрок стреляет
         size_t shoot_turn = 0;// TODO: МЕНЯТЬ СЧЕТЧИК
 
-        Player real_player = Player{UserNick};
+        Player real_player = Player{UserNick}; //todo: искать себя по нику а не так вот
         players.push_back(real_player);// наш игрок всегда первый в списке
 
         //*declare a server
@@ -57,7 +58,8 @@ void game_loop() {
 
             // *init a server
 #if SRV_TEST == 1
-            srv = std::thread(server_test, 12345);
+            //srv = std::thread(server_test, 12345);
+            srv_manager = std::thread(game_master);
 #endif
             // *listen
         }
@@ -67,26 +69,26 @@ void game_loop() {
         Client cli{"26.10.48.122", 12345};//FIXME: hardcoded
 
         // *client send
-        cli.Send(UserNick, "", false);
+        //cli.Send(UserNick, "sin(1/x)", false, false);
         // *client recv
 
         int res = -1;
-        do {
-            res = cli.Recv();
-        } while (res > 0);
+        // do {
+        //     res = cli.Recv();
+        // } while (res > 0);
         std::cout << res << " res=0\n";
 #endif
 
         // TODO: удалить потом ручное создание игроков !
         Player tmp;
-        tmp = Player{"КОРНЕПЛОД"};
-        players.push_back(tmp);
-        tmp = Player{"ПЕРУН"};
-        players.push_back(tmp);
-        tmp = Player{"КИШЕМИР"};
-        players.push_back(tmp);
-        tmp = Player{"СКАРЛАТИНА"};
-        players.push_back(tmp);
+        // tmp = Player{"КОРНЕПЛОД"};
+        // players.push_back(tmp);
+        // tmp = Player{"ПЕРУН"};
+        // players.push_back(tmp);
+        // tmp = Player{"КИШЕМИР"};
+        // players.push_back(tmp);
+        // tmp = Player{"СКАРЛАТИНА"};
+        // players.push_back(tmp);
 
         while (playin) {
             // *check_game_conditions
@@ -120,7 +122,8 @@ void game_loop() {
 #if SRV_TEST == 1
             main_win.control_hide();
             if ((wanna_exit || !playin) && IM_A_HOST) {
-                srv.join();// хочю выйти...
+                //srv.join();// хочю выйти...
+                srv_manager.join();
             }
 #endif
         }

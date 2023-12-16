@@ -1,8 +1,7 @@
-#include "settings.h"
 #include "server.h"
+#include "settings.h"
 #include <cstring>
 #include <unistd.h>// write + sleep
-// TODO: раскидать на хедеры!!
 
 bool getMyIP(IPv4 &myIP) {
     char szBuffer[1024];
@@ -53,6 +52,8 @@ std::string get_my_ip() {
 Server::Server(const int port) {
     curr_players_amount = 0;
     is_listening = false;
+    can_change = true;
+
     data.reserve(NumOfPlayers);
     printf("server_test started...\n");
     printf("tryin to init WSAStartup on server...\n");
@@ -97,12 +98,11 @@ Server::~Server() {
     std::cout << "SERVER IS SHUTTIN DOWN!\n";
     // вырубаем сервер полностью, мы закончили
     freeaddrinfo(result);// Освобождаем памятьб
-    iResult = shutdown(ClientSocket, SD_SEND);
-    if (iResult == SOCKET_ERROR) {
-        printf("shutdown failed with error: %d\n", WSAGetLastError());
-    }
+
     // чистим-чистим
-    closesocket(ClientSocket);
+    for (auto &i: data) {
+        disconnect(i.second);
+    }
     WSACleanup();
 }
 
@@ -117,19 +117,29 @@ void Server::StartListen() {
     Listen(ListenSocket, SOMAXCONN);// ждемс
 
     // принимаем клиентский сокет
-    printf("Waiting...\n");
     is_listening = true;
-    while (curr_players_amount < NumOfPlayers) {
+    while ((curr_players_amount < NumOfPlayers) && is_listening) {
+        printf("Waiting...\n");
         ClientSocket = Accept(ListenSocket, NULL, NULL);
         printf("Client found!\n");
-        Player tmp_pl;
-        for (auto &pl: data) {
-            if (pl.first.GetName() == "NAMEHERE") {
+        bool accepted = true;
+
+        Player *ptr = new Player("ponos_net_tmp");
+        Recv(*ptr, ClientSocket);                                     //fixme
+        for (auto pl: data) {                           // проверяем, есть ли такой ник на серве
+            if (pl.first->GetName() == ptr->GetName()) {// ник все-таки занят
                 closesocket(ClientSocket);
+                accepted = false;
+                delete ptr;
                 break;
             }
         }
-        //ADD
+        if (accepted) {// ADD
+            // ждем пока разрешат, точно уйдет в бесконечность (>1 сек уж точно)
+            while (!can_change)
+                ;
+            data.emplace_back(ptr, ClientSocket);
+        }
     }
     StopListen();
 }
@@ -140,31 +150,33 @@ void Server::StopListen() {
     closesocket(ListenSocket);
 }
 
-int Server::Recv() {
+void Server::Recv(Player &pl, SOCKET from_who) {
+    char buf[DEFAULT_BUFLEN];
     printf("SRV Receiving...\n");
-    char *buf;
-    iResult = recv(ClientSocket, buf, DEFAULT_BUFLEN, 0);// тут получаем
-    if (iResult > 0) {                                   // если клиент не отключен
+    iResult = recv(from_who, buf, DEFAULT_BUFLEN, 0);// тут получаем
+    if (iResult > 0) {                               // если клиент не отключен
         printf("Bytes received: %d\n", iResult);
         printf("RECEIVED: %s\n", buf);// там чета сзади прилипает в выводе, наверное служебная инфа
     } else if (iResult == 0)          // означает что клиент отключился
-        printf("Closing connection ...\n");
+        printf("SRV Client disconnected...\n");
     else {
-        //printf("SRV recv failed with error: %d\n", WSAGetLastError());
-        closesocket(ClientSocket);
+        // printf("SRV recv failed with error: %d\n", WSAGetLastError());
+        closesocket(from_who);
         WSACleanup();
         std::string err_msg = "SRV recv failed with error: " + std::to_string(iResult);
         throw std::runtime_error(err_msg);
     }
-    return 0;
+
+    decode(pl, buf);
 }
 
-int Server::Send(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
-                 std::string &func_text_) {
+void Server::Send(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
+                 std::string &func_text_, bool right, std::string &who,
+                 SOCKET to_who) {// все по ссылке - вдруг мы успеем чет нажать
     // отправим на ClientSocket данные char'ы из buf, iResult штук
     printf("SRV Sending...\n");
-    const char *msg = convert(players_, obstacles_, func_text_);
-    iSendResult = send(ClientSocket, msg, strlen(msg), 0);
+    const char *msg = encode(players_, obstacles_, func_text_, right, who);
+    iSendResult = send(to_who, msg, strlen(msg), 0);
     if (iSendResult == SOCKET_ERROR) {
         printf("SRV send failed with error: %d\n", WSAGetLastError());
         closesocket(ClientSocket);
@@ -173,45 +185,84 @@ int Server::Send(std::vector<Player> &players_, std::vector<Obstacle> &obstacles
         throw std::runtime_error(err_msg);
     }
     printf("SRV Bytes sent: %d\n", iSendResult);
-    return 0;
 }
 
-const char *Server::convert(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
-                            std::string &func_text_) {
+const char *Server::encode(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
+                           std::string &func_text_, bool right, std::string &who) {
     std::string msg{};
-    for (auto pl: players_) {
-        std::pair<int, int> pl_cords = pl.GetCords();
-        msg += pl.GetName() + delimiter + std::to_string(pl_cords.first) + delimiter +
-               std::to_string(pl_cords.second) + delimiter;
+    // single client: name$x$y$respawn$alive... ($ if next player exists else ;)
+    for (size_t i = 0; i < players_.size(); ++i) {
+        std::pair<int, int> pl_cords = players_[i].GetCords();
+        msg += players_[i].GetName() + delimiter + std::to_string(pl_cords.first) +
+               delimiter + std::to_string(pl_cords.second) +
+               delimiter + std::to_string(players_[i].awaits_respawn) +
+               delimiter + std::to_string(players_[i].IsAlive());
+        if ((i + 1) != players_.size()) {
+            msg += delimiter;
+        } else {
+            msg += endchar;
+        }
     }
-    msg += endchar;
-    for (auto ob: obstacles_) {
-        Graph_lib::Point ob_cords = ob.center;
-        msg += std::to_string(ob.hole) + delimiter + std::to_string(ob_cords.x) + delimiter +
-               std::to_string(ob_cords.y) + delimiter + std::to_string(ob.radius) + delimiter;
-    }
-    msg += endchar + func_text_ + endchar;
 
+    // single obstacle: hole(bool)$x$y$radius... ($ if next obstacle exists else ;)
+    for (size_t i = 0; i < obstacles_.size(); ++i) {
+        Graph_lib::Point ob_cords = obstacles_[i].center;
+        msg += std::to_string(obstacles_[i].hole) + delimiter + std::to_string(ob_cords.x) + delimiter +
+               std::to_string(ob_cords.y) + delimiter + std::to_string(obstacles_[i].radius);
+        if ((i + 1) != obstacles_.size()) {
+            msg += delimiter;
+        } else {
+            msg += endchar;
+        }
+    }
+
+    // important data about current turn: func$right$who;
+    msg += func_text_ + delimiter + std::to_string(right) + delimiter + who + endchar;
+
+    // put into c-string...
     char *ptr = new char[msg.size() + 1];
     strcpy(ptr, msg.c_str());
     return ptr;
 }
 
-void Server::decode(Player &pl, std::string &func,
-                    bool &right, const char *buf) {
+void Server::decode(Player &pl, const char *buf) {
     const char *ptr = buf;
     std::string msg{};
-    while (*ptr != endchar) { msg += *ptr; }
+
+    // get name
+    for (; *ptr != delimiter; ++ptr) { msg += *ptr; }
     pl.SetName(msg);
     msg.clear();
-    
-    while (*ptr != endchar) { msg += *ptr; }
-    //func_text_ = msg;
-    msg.clear();
+    ++ptr;
 
-    
+    // get respawn+alive and respawn if needed else kill
+    pl.awaits_respawn = *ptr == TRUE_BOOL;
+    ptr += 2;
+    bool alive_ = *ptr == TRUE_BOOL;
+    ptr += 2;
+    if (alive_ || pl.awaits_respawn) {
+        pl.Revive();
+    } else {
+        pl.Kill();
+    }
+
+    // get func
+    for (; *ptr != delimiter; ++ptr) { msg += *ptr; }
+    pl.func = msg;
+    msg.clear();
+    ++ptr;
+
+    // get right(bool)
+    pl.right = *ptr == TRUE_BOOL;
 }
 
+void Server::disconnect(SOCKET client_socket_) {
+    iResult = shutdown(client_socket_, SD_SEND);
+    if (iResult == SOCKET_ERROR) {
+        printf("shutdown failed with error: %d\n", WSAGetLastError());
+    }
+    closesocket(client_socket_);// free mem
+}
 
 int server_test(int port) {
     printf("server_test started...\n");

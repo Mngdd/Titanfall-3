@@ -1,6 +1,7 @@
 #ifndef TITANFALL_3_CLIENT_H
 #define TITANFALL_3_CLIENT_H
 #include "err_handle.h"
+#include "environment.h"
 #include <cstdio>
 #include <map>
 #include <string>
@@ -26,15 +27,18 @@ private:
     // содержит результат (int) исполнения
     int iResult;
     // размер буфера приема
-
+    void decode(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
+                std::string &func_text_, bool right, std::string &who, const char *buf);
 
 public:
-    Client(const std::string& ip_, const int port);
+    Client(const std::string &ip_, const int port);
     ~Client();
     //void Connect(std::string &ip, int port);
-    // возвращает кол-во 
-    int Send(const std::string& name, const std::string& func, bool right);
-    int Recv(); // FIXME: RETURN NEEDED OBJECTS, NOT VOID!!!
+    // возвращает кол-во
+    int Send(const std::string &name, bool respawn, bool alive,
+             const std::string &func, bool right);
+    int Recv(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
+             std::string &func_text_, bool right, std::string &who);
 };
 
 int client_test(const char ip[], int port);

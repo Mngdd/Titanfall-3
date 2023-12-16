@@ -1,6 +1,7 @@
 #ifndef TITANFALL_3_ERR_HANDLE_H
 #define TITANFALL_3_ERR_HANDLE_H
 #define DEFAULT_BUFLEN 512
+#define TRUE_BOOL '1'
 
 #include <WinSock2.h> // замена linux <sys/socket.h>, тут функция сокет определена
 #include <windows.h>

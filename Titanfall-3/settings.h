@@ -9,9 +9,9 @@ inline bool wanna_exit = false;
 
 // ОКНА WINDOWS
 
-// Высота поля
-const int FieldWidth = 1200;
 // Ширина поля
+const int FieldWidth = 1200;
+// Высота поля
 const int FieldHeight = 720;  
 // Высота меню во время игры
 const int InputHeight = 145; 

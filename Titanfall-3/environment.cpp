@@ -15,6 +15,7 @@ Player::Player(const string &namePlayer, int xcord, int ycord)
     y = ycord;
     alive = true;
     awaits_respawn = true;
+    func = "x";
     // body = new  = new Graph_lib::Circle{Point(x, y), PlayerRad};
 }
 
@@ -24,6 +25,7 @@ Player::Player(const string &namePlayer)
     x = y = -1;
     alive = true;
     awaits_respawn = true;
+    func = "x";
     // body = new  = new Graph_lib::Circle{Point(x, y), PlayerRad};
 }
 
