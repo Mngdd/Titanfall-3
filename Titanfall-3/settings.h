@@ -37,8 +37,9 @@ inline Graph_lib::Color MediumObsColor = Graph_lib::Color::black;
 inline Graph_lib::Color SmallObsColor = Graph_lib::Color::black;
 
 // Случайный цвет игроков
-inline bool RainbowPlayers = true; // FIXME: не работает
+inline bool RainbowPlayers = true;  // FIXME: не работает
 inline Graph_lib::Color PlayerColor = Graph_lib::Color::green;
+
 // Color Team1PlayerColor = Color::blue;
 // Color Team2PlayerColor = Color::red;
 

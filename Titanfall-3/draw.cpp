@@ -1,19 +1,20 @@
+#include <FL/Enumerations.H>
 #include <Graph_lib/Graph.h>
 #include <Graph_lib/Simple_window.h>
-#include <FL/Enumerations.H>
 
 #include "draw.h"
 #include "level_gen.h"
 #include "settings.h"
 
 using namespace Graph_lib;
-Graph_lib::Open_polyline *fn2; // наш график
-Vector_ref<Circle> show_obs;   // препятствия
-Vector_ref<Circle> show_pl;    // игроки
-Vector_ref<Text> show_nm;      // имена игроков
-void game_draw(Screen &win, std::vector<Player> &pl,
-               std::vector<Obstacle> &obst, input_data equation, Player real_player)
-{ // TODO: add icon
+Graph_lib::Open_polyline* fn2;  // наш график
+Vector_ref<Circle> show_obs;    // препятствия
+Vector_ref<Circle> show_pl;     // игроки
+Vector_ref<Text> show_nm;       // имена игроков
+
+void game_draw (Screen& win, std::vector<Player>& pl, std::vector<Obstacle>& obst, input_data equation,
+                Player real_player)
+{  // TODO: add icon
     // очищаем вывод
     std::string s1 = "";
 
@@ -47,7 +48,7 @@ void game_draw(Screen &win, std::vector<Player> &pl,
 
         for (auto i : l)
         {
-            Point *j = new Point(i.first, i.second);
+            Point* j = new Point(i.first, i.second);
             fn2->add(*j);
         }
         fn2->set_color(Graph_lib::Color::red);
@@ -73,7 +74,7 @@ void game_draw(Screen &win, std::vector<Player> &pl,
     // создаем препятствия и вырезы
     for (size_t i = 0; i < obst.size(); ++i)
     {
-        Circle *c = new Circle{obst[i].center, obst[i].radius};
+        Circle* c = new Circle{obst[i].center, obst[i].radius};
         if (obst[i].hole)
         {
             c->set_fill_color(FL_LIGHT1);
@@ -102,7 +103,7 @@ void game_draw(Screen &win, std::vector<Player> &pl,
     // рисуем игроков
     for (size_t i{0}; i < pl.size(); ++i)
     {
-        Circle *c = new Circle{Point(pl[i].GetCords().first, pl[i].GetCords().second), PlayerRad};
+        Circle* c = new Circle{Point(pl[i].GetCords().first, pl[i].GetCords().second), PlayerRad};
         if (pl[i].IsAlive())
         {
             if (pl[i].GetName() == real_player.GetName())
@@ -121,16 +122,14 @@ void game_draw(Screen &win, std::vector<Player> &pl,
         }
         show_pl.push_back(c);
         win.attach(show_pl[i]);
-        Text *t{nullptr};
+        Text* t{nullptr};
         if (pl[i].GetCords().second + PlayerRad >= FieldHeight)
         {
-            t = new Text{Point(pl[i].GetCords().first, pl[i].GetCords().second + PlayerRad),
-                         pl[i].GetName()};
+            t = new Text{Point(pl[i].GetCords().first, pl[i].GetCords().second + PlayerRad), pl[i].GetName()};
         }
         else
         {
-            t = new Text{Point(pl[i].GetCords().first, pl[i].GetCords().second - PlayerRad),
-                         pl[i].GetName()};
+            t = new Text{Point(pl[i].GetCords().first, pl[i].GetCords().second - PlayerRad), pl[i].GetName()};
         }
         t->set_font_size(NickSize);
         t->set_color(Graph_lib::Color::dark_magenta);
@@ -140,7 +139,7 @@ void game_draw(Screen &win, std::vector<Player> &pl,
 }
 
 // перерисовка
-void respawn(Screen &win, std::vector<Obstacle> &obst, Player &player, std::vector<Player> &pl_)
+void respawn (Screen& win, std::vector<Obstacle>& obst, Player& player, std::vector<Player>& pl_)
 {
     win.detach(*fn2);
     // получаем нужные настройки
@@ -158,7 +157,7 @@ void respawn(Screen &win, std::vector<Obstacle> &obst, Player &player, std::vect
     GenerateObstacles(genset, obst);
     for (size_t i = 0; i < obst.size(); ++i)
     {
-        Circle *c = new Circle{obst[i].center, obst[i].radius};
+        Circle* c = new Circle{obst[i].center, obst[i].radius};
         if (obst[i].hole)
         {
             c->set_fill_color(FL_LIGHT1);
@@ -185,7 +184,7 @@ void respawn(Screen &win, std::vector<Obstacle> &obst, Player &player, std::vect
     // рисуем новых игроков
     for (size_t i{0}; i < pl_.size(); ++i)
     {
-        Circle *c = new Circle{Point(pl_[i].GetCords().first, pl_[i].GetCords().second), PlayerRad};
+        Circle* c = new Circle{Point(pl_[i].GetCords().first, pl_[i].GetCords().second), PlayerRad};
         if (pl_[i].IsAlive())
         {
             if (pl_[i].GetName() == player.GetName())
@@ -214,16 +213,14 @@ void respawn(Screen &win, std::vector<Obstacle> &obst, Player &player, std::vect
     // печатаем новые имена
     for (int i{0}; i < show_pl.size(); ++i)
     {
-        Text *c{nullptr};
+        Text* c{nullptr};
         if (pl_[i].GetCords().second + PlayerRad >= FieldHeight)
         {
-            c = new Text{Point(pl_[i].GetCords().first, pl_[i].GetCords().second + PlayerRad),
-                         pl_[i].GetName()};
+            c = new Text{Point(pl_[i].GetCords().first, pl_[i].GetCords().second + PlayerRad), pl_[i].GetName()};
         }
         else
         {
-            c = new Text{Point(pl_[i].GetCords().first, pl_[i].GetCords().second - PlayerRad),
-                         pl_[i].GetName()};
+            c = new Text{Point(pl_[i].GetCords().first, pl_[i].GetCords().second - PlayerRad), pl_[i].GetName()};
         }
         c->set_font_size(NickSize);
         c->set_color(Graph_lib::Color::dark_magenta);
@@ -232,13 +229,13 @@ void respawn(Screen &win, std::vector<Obstacle> &obst, Player &player, std::vect
     };
 }
 
-void func_draw(Screen &win, std::vector<Point> &f)
-{ // TODO: add icon
+void func_draw (Screen& win, std::vector<Point>& f)
+{  // TODO: add icon
     Graph_lib::Open_polyline fn2;
     // create & draw function
     for (auto i : f)
     {
-        Point *j = new Point(i.x, i.y);
+        Point* j = new Point(i.x, i.y);
         fn2.add(*j);
     }
     fn2.set_color(Graph_lib::Color::red);

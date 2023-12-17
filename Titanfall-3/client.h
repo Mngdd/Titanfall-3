@@ -4,16 +4,11 @@
 #include <cstdio>
 #include <map>
 #include <string>
-#include <unistd.h>// write
+#include <unistd.h>  // write
 #include <utility>
 #include <vector>
 
-using container = std::map<
-        std::string,
-        std::vector<
-                std::pair<
-                        std::string,
-                        std::pair<int, int>>>>;
+using container = std::map<std::string, std::vector<std::pair<std::string, std::pair<int, int>>>>;
 
 // class Client {
 // private:
@@ -27,7 +22,6 @@ using container = std::map<
 //     int iResult;
 //     // размер буфера приема
 
-
 // public:
 //     Client();
 //     ~Client();
@@ -37,6 +31,6 @@ using container = std::map<
 //     container Recv();
 // };
 
-int client_test(const char ip[], int port);
+int client_test (const char ip[], int port);
 
-#endif//TITANFALL_3_CLIENT_H
+#endif  // TITANFALL_3_CLIENT_H
