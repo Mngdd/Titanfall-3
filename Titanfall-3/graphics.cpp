@@ -1,7 +1,6 @@
 #include "graphics.h"
 #include "settings.h"
 #include <Fl/Enumerations.H>
-#include "level_gen.h"
 
 #include <bits/stdc++.h>
 
@@ -89,13 +88,14 @@ SliderInput::SliderInput(int x, int y, int w, int h,
 
 Screen::Screen(Point xy, int w, int h, const std::string &title, bool &my_turn)
     : Window(xy, w, h, title),
-      host_button{Point{50, 50}, 100, 20, "Start game", cd_host},
-      quit_button{Point{50, 80}, 100, 20, "Go out", cd_quit},
-      nick_input{Point(400, 50), 150, 20, "Your nickname: "},
+      host_button{Point{50, 50}, 70, 20, "Host", cd_host},
+      join_button{Point{50, 80}, 70, 20, "Join", cd_join},
+      quit_button{Point{50, 110}, 70, 20, "Quit", cd_quit},
+      nick_input{Point(200, 50), 150, 20, "ur nick: "},
       game_name{Point{30, 30}, GameName}
 {
-    game_name.set_color(Graph_lib::Color::dark_cyan);
     attach(quit_button);
+    attach(join_button);
     attach(host_button);
     attach(nick_input);
     attach(game_name);
@@ -103,12 +103,17 @@ Screen::Screen(Point xy, int w, int h, const std::string &title, bool &my_turn)
     game_name.set_font_size(20);
     size_range(FieldWidth, FieldHeight, FieldWidth, FieldHeight);
     control_win.hide();
+    // control_win.callback(control_close);
     gamin_now = false;
+
+    // this->redraw();
+    // status = control_win.wait_for_game_button();
 }
 
 Screen::~Screen()
 {
     detach(host_button);
+    detach(join_button);
     detach(quit_button);
     detach(game_name);
     detach(nick_input);
@@ -141,8 +146,24 @@ void Screen::event_host()
     mini_menu.size_range(HostWin_x, HostWin_y, HostWin_x, HostWin_y); // lock size
     mini_menu.next_button.move(-HostWin_x + bg_offset + mini_menu.next_button.width, HostWin_y - bg_offset + 5);
 
+    // show ip
+    Out_box ip{Point(40, 20), 100, 20, "Ip:"};
+    mini_menu.attach(ip);
+    ip.put(MY_IP);
+
+    // input port
+    In_box port{Point(200, 20), 50, 20, "Port: "};
+    mini_menu.attach(port);
+
     // change some global vars ---------------------------------------
     mini_menu.Graph_lib::Window::begin();
+    // background
+    //  кривое, неудобное, обрезаное poop, не использовать
+    //  Graph_lib::Rectangle rect{Point{bg_offset, bg_offset + 40},
+    //                            HostWin_x - 2 * bg_offset, HostWin_y - 2 * bg_offset - 40};
+    //  mini_menu.attach(rect);
+    //  // poly.set_style(Line_style{Line_style::dash, 4});
+    //  rect.set_fill_color(FL_LIGHT1);
     Fl_Box *box = new Fl_Box(
         bg_offset, bg_offset + 10,
         HostWin_x - 2 * bg_offset, HostWin_y - 2 * bg_offset - 10);
@@ -158,21 +179,21 @@ void Screen::event_host()
     t.set_font(Graph_lib::Font::helvetica);
     t.set_font_size(NickSize);
 
-    // SliderInput *sl_0 = new SliderInput(bg_offset + x_offset, btn_begin + txt_offset,
-    //                                     slide_w, slide_h,
-    //                                     "Player amount", NumOfPlayers, 15);
+    SliderInput *sl_0 = new SliderInput(bg_offset + x_offset, btn_begin + txt_offset,
+                                        slide_w, slide_h,
+                                        "Player amount", NumOfPlayers, 15);
 
     SliderInput *sl_1 = new SliderInput(bg_offset + x_offset, btn_begin + txt_offset + btn_betw,
                                         slide_w, slide_h,
-                                        "Amount of huge obstacles");
+                                        "Amount of huge obstacles", NumOfHugeObs);
 
     SliderInput *sl_2 = new SliderInput(bg_offset + x_offset, btn_begin + txt_offset + 2 * btn_betw,
                                         slide_w, slide_h,
-                                        "Amount of medium obstacles");
+                                        "Amount of medium obstacles", NumOfMediumObs);
 
     SliderInput *sl_3 = new SliderInput(bg_offset + x_offset, btn_begin + txt_offset + 3 * btn_betw,
                                         slide_w, slide_h,
-                                        "Amount of small obstacles");
+                                        "Amount of small obstacles", NumOfSmallObs);
 
     mini_menu.Graph_lib::Window::end();
     // end -----------------------------------------------------------
@@ -181,60 +202,59 @@ void Screen::event_host()
     // get values ---------------------------------------------------
 
     // получаем значения с ползунков
-
-    data.push_back(sl_1->value());
-    data.push_back(sl_2->value());
-    data.push_back(sl_3->value());
+    NumOfPlayers = sl_0->value();
+    NumOfHugeObs = sl_1->value();
+    NumOfMediumObs = sl_2->value();
+    NumOfSmallObs = sl_3->value();
 
     // считываем порт
-    // PORT = port.get_int();
+    PORT = port.get_int();
     IM_A_HOST = true;
+    // pl_name.push_back(name1);
 
+    // hide_all();
     delete box;
+    delete sl_0;
     delete sl_1;
     delete sl_2;
     delete sl_3;
+
+    mini_menu.detach(ip);
+    mini_menu.detach(port);
 }
 
-GenerationSettings Screen::settings()
+void Screen::cd_join(Address, Address widget)
 {
-    return GenerationSettings{.NumOfPlayers = NumOfPlayers,
-                              .NumOfHugeObs = this->data[0],
-                              .NumOfMediumObs = this->data[1],
-                              .NumOfSmallObs = this->data[2]};
+    auto &btn = reference_to<Button>(widget);
+    dynamic_cast<Screen &>(btn.window()).event_join();
 }
-// void Screen::cd_join(Address, Address widget)
-// {
-//     auto &btn = reference_to<Button>(widget);
-//     dynamic_cast<Screen &>(btn.window()).event_join();
-// }
 
-// void Screen::event_join()
-// {
-//     button_pushed = true;
-//     Simple_window mini_menu{Point(500, 100),
-//                             ConnWin_x, ConnWin_y,
-//                             "Connect to the game..."};
-//     mini_menu.size_range(ConnWin_x, ConnWin_y, ConnWin_x, ConnWin_y); // lock size
-//     mini_menu.next_button.move(-ConnWin_x + bg_offset + mini_menu.next_button.width,
-//                                ConnWin_y - bg_offset + 5);
+void Screen::event_join()
+{
+    button_pushed = true;
+    Simple_window mini_menu{Point(500, 100),
+                            ConnWin_x, ConnWin_y,
+                            "Connect to the game..."};
+    mini_menu.size_range(ConnWin_x, ConnWin_y, ConnWin_x, ConnWin_y); // lock size
+    mini_menu.next_button.move(-ConnWin_x + bg_offset + mini_menu.next_button.width,
+                               ConnWin_y - bg_offset + 5);
 
-//     // show ip
-//     In_box ip{Point(40, 20), 100, 20, "Ip:"};
-//     mini_menu.attach(ip);
-//     // input port
-//     In_box port{Point(200, 20), 50, 20, "Port: "};
-//     mini_menu.attach(port);
-//     mini_menu.wait_for_button();
-//     // get values ---------------------------------------------------
-//     CONN_IP = ip.get_string();
-//     PORT = port.get_int();
-//     IM_A_HOST = true;
+    // show ip
+    In_box ip{Point(40, 20), 100, 20, "Ip:"};
+    mini_menu.attach(ip);
+    // input port
+    In_box port{Point(200, 20), 50, 20, "Port: "};
+    mini_menu.attach(port);
+    mini_menu.wait_for_button();
+    // get values ---------------------------------------------------
+    CONN_IP = ip.get_string();
+    PORT = port.get_int();
+    IM_A_HOST = false;
 
-//     // hide_all();
-//     mini_menu.detach(ip);
-//     mini_menu.detach(port);
-// }
+    // hide_all();
+    mini_menu.detach(ip);
+    mini_menu.detach(port);
+}
 
 void Screen::wait_for_button() // conservation window
 {
@@ -271,17 +291,17 @@ InputMenu::InputMenu(Point xy, int w, int h, const std::string &title)
       data_output{Point{40, 116}, 305, 20, "info:"},
       func_input{Point{35, 20}, 310, 20, "y = "},
       left{Point{5, 50}, 85, 20,
-           "Shoot left", left_bt},
+           "shoot left", left_bt},
       right{Point(105, 50), 85, 20,
-            "Shoot right", right_bt},
+            "shoot right", right_bt},
       disconnect{Point(245, 80), 100, 20,
-                 "Leave game...", leave_bt},
+                 "leave game...", leave_bt},
       respawn{Point(105, 80), 85, 20,
-              "Respawn", respawn_bt},
+              "RESPAWN", respawn_bt},
       restart{Point(195, 50), 150, 20,
-              "Restart game", restart_bt},
+              "RESTART GAME", restart_bt},
       fire{Point(5, 80), 85, 20,
-           "Fire", fire_bt}
+           "FIRE", fire_bt}
 {
     this->size_range(InputWidth, InputHeight, InputWidth, InputHeight); // lock size
     callback(control_not_close);
@@ -296,15 +316,10 @@ InputMenu::InputMenu(Point xy, int w, int h, const std::string &title)
     attach(fire);
     to_the_right = true;
     game_button_pushed = false;
+    // game_state state;
     std::string line;
 }
 // WAIT_FOR_BUTTON
-
-void InputMenu::print_text(std::string &text)
-{
-    this->data_output.put(text);
-}
-
 input_data InputMenu::wait_for_game_button()
 {
     this->show();
@@ -351,6 +366,7 @@ void InputMenu::rt()
 void InputMenu::lt()
 {
     to_the_right = false;
+    // game_button_pushed = true;
 }
 InputMenu::~InputMenu()
 {
