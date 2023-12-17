@@ -172,7 +172,10 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
 {
     // const int size_map_y = FieldHeight; // длина поля для пробега y
     const int size_map_x = FieldWidth; // длина поля для пробега х
-
+    std::replace(func_enter.begin(), func_enter.end(), ',', '.');
+    if (func_enter.find(';') != string::npos){
+        throw std::invalid_argument("Неправильный ввод");
+    }
     // bool right_true = true; // в какую сторону стрелять
     size_t pos = func_enter.find('x');
     vector<pair<int, int>> cord_vector;
