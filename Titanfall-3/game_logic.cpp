@@ -25,7 +25,7 @@ void game_loop()
     bool my_turn = true;
 
     Screen main_win{Point(100, 100), FieldWidth, FieldHeight, GameName, my_turn};
-    // main_win.callback(event_close);
+    main_win.callback(event_close);
     main_win.wait_for_button();
     if (wanna_exit)
     {
@@ -91,9 +91,11 @@ void game_loop()
         main_win.control_win.print_text(str + std::to_string(score) +
                                         cur_record + std::to_string(main_win.control_win.record)); // выводим счет и рекорд
         main_win.control_win.wait_for_game_button();
+        main_win.callback(event_close);
+
         // main_win.control_win.wait_for_game_button();
 
-        // main_win.control_show(); // даем управление
+        // main_win.control_show();    // даем управление
         // main_win.wait_for_button(); // если жмет чета
 
         // *server send
@@ -103,9 +105,9 @@ void game_loop()
         // *client send
         // *client recv ans
         //------
-        // main_win.control_hide();
         // }
     }
+    // main_win.contro;
 }
 
 // void game_master()
