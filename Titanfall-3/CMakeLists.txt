@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required(VERSION 3.20)
 
-set(TARGET "Titanfall-3")
+set(TARGET "Titanfall-3.1")
 link_libraries(ws2_32 wsock32) # оч надо для сервера
 
 set(HEADERS
@@ -13,7 +13,6 @@ set(HEADERS
     level_gen.h
     server.h
     settings.h
-    #sounds.h
     ${LIB_DIR}/Graph_lib/fltk.h
     ${LIB_DIR}/Graph_lib/Graph.h
     ${LIB_DIR}/Graph_lib/GUI.h
@@ -32,7 +31,6 @@ set(SOURCES
     main.cpp
     server.cpp
     parser.cpp
-    #sounds.cpp
     ${LIB_DIR}/Graph_lib/Graph.cpp
     ${LIB_DIR}/Graph_lib/GUI.cpp
     ${LIB_DIR}/Graph_lib/Window.cpp

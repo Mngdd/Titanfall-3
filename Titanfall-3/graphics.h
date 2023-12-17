@@ -5,6 +5,7 @@
 #include <Graph_lib/Graph.h>
 #include <Graph_lib/Simple_window.h>
 
+#include "level_gen.h"
 #include "settings.h"
 #include "environment.h"
 #include <FL/Fl_Box.H>
@@ -32,6 +33,7 @@ struct InputMenu : Graph_lib::Window
     ~InputMenu();
     void control_show();
     input_data wait_for_game_button();
+    void print_text(std::string &);
 
 private:
     // MENU
@@ -106,13 +108,16 @@ struct Screen : Graph_lib::Window
     bool playing() { return gamin_now; }
     input_data status;
     input_data GetState() { return status; }
-    InputMenu control_win{Point(100, 100), InputWidth, InputHeight, "game contol"};
+    InputMenu control_win{Point(100, FieldHeight), InputWidth, InputHeight, "game contol"};
+    In_box nick_input;
+    GenerationSettings settings();
+    std::vector<int> data;
 
 private:
     void hide_menu()
-    { // мне лень делать красиво
+    {
+
         host_button.hide();
-        join_button.hide();
         quit_button.hide();
         detach(game_name);
         nick_input.hide();
@@ -120,14 +125,9 @@ private:
 
     // MENU
     Text game_name;
-    In_box nick_input;
     Button host_button;
-    Button join_button;
     Button quit_button;
     bool gamin_now;
-    // IN-GAME
-    // cd просто для привязки
-    // Button Quit
     bool button_pushed = false;
     static void cd_quit(Address, Address widget);
     void event_quit();
