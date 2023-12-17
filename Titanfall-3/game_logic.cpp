@@ -17,11 +17,6 @@ void event_close(Fl_Widget *widget, void *)
 
 void game_loop()
 {
-    // while (!wanna_exit)
-    // {
-    //================ MENU ================
-    // MY_IP = get_my_ip();
-    // главное окно, переименовал для ясности
     bool my_turn = true;
 
     Screen main_win{Point(100, 100), FieldWidth, FieldHeight, GameName, my_turn};
@@ -109,7 +104,3 @@ void game_loop()
     }
     // main_win.contro;
 }
-
-// void game_master()
-// {
-// }

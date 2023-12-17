@@ -47,7 +47,6 @@ private:
     Button left;
     Button right;
     Button disconnect;
-    Button respawn;
     Button restart;
     Button fire;
     bool game_button_pushed;
@@ -55,20 +54,12 @@ private:
     std::string line;
     game_state GetState() { return state; }
     // RESTART
-
     static void restart_bt(Address, Address widget)
     {
         auto &btn = reference_to<Button>(widget);
         dynamic_cast<InputMenu &>(btn.window()).restart_();
     }
     void restart_();
-    // RESPAWN
-    static void respawn_bt(Address, Address widget)
-    {
-        auto &btn = reference_to<Button>(widget);
-        dynamic_cast<InputMenu &>(btn.window()).resp();
-    }
-    void resp();
     // LEAVE
     static void leave_bt(Address, Address widget)
     {

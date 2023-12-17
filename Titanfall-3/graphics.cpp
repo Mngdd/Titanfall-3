@@ -203,38 +203,6 @@ GenerationSettings Screen::settings()
                               .NumOfMediumObs = this->data[1],
                               .NumOfSmallObs = this->data[2]};
 }
-// void Screen::cd_join(Address, Address widget)
-// {
-//     auto &btn = reference_to<Button>(widget);
-//     dynamic_cast<Screen &>(btn.window()).event_join();
-// }
-
-// void Screen::event_join()
-// {
-//     button_pushed = true;
-//     Simple_window mini_menu{Point(500, 100),
-//                             ConnWin_x, ConnWin_y,
-//                             "Connect to the game..."};
-//     mini_menu.size_range(ConnWin_x, ConnWin_y, ConnWin_x, ConnWin_y); // lock size
-//     mini_menu.next_button.move(-ConnWin_x + bg_offset + mini_menu.next_button.width,
-//                                ConnWin_y - bg_offset + 5);
-
-//     // show ip
-//     In_box ip{Point(40, 20), 100, 20, "Ip:"};
-//     mini_menu.attach(ip);
-//     // input port
-//     In_box port{Point(200, 20), 50, 20, "Port: "};
-//     mini_menu.attach(port);
-//     mini_menu.wait_for_button();
-//     // get values ---------------------------------------------------
-//     CONN_IP = ip.get_string();
-//     PORT = port.get_int();
-//     IM_A_HOST = true;
-
-//     // hide_all();
-//     mini_menu.detach(ip);
-//     mini_menu.detach(port);
-// }
 
 void Screen::wait_for_button() // conservation window
 {
@@ -276,8 +244,6 @@ InputMenu::InputMenu(Point xy, int w, int h, const std::string &title)
             "Shoot right", right_bt},
       disconnect{Point(245, 80), 100, 20,
                  "Leave game...", leave_bt},
-      respawn{Point(105, 80), 85, 20,
-              "Respawn", respawn_bt},
       restart{Point(195, 50), 150, 20,
               "Restart game", restart_bt},
       fire{Point(5, 80), 85, 20,
@@ -291,7 +257,6 @@ InputMenu::InputMenu(Point xy, int w, int h, const std::string &title)
     attach(left);
     attach(right);
     attach(disconnect);
-    attach(respawn);
     attach(restart);
     attach(fire);
     to_the_right = true;
@@ -324,20 +289,11 @@ input_data InputMenu::wait_for_game_button()
     };
     game_button_pushed = false;
     Fl::redraw();
-    // input_data *s = new input_data{
-    //     state, line, to_the_right};
-    // return *s;
     input_data s{state, line, to_the_right};
     return s;
 }
 // RESTART
 void InputMenu::restart_()
-{
-    state = game_state::RESTART;
-    game_button_pushed = true;
-}
-// RESPAWN
-void InputMenu::resp()
 {
     state = game_state::RESPAWN;
     game_button_pushed = true;
@@ -370,7 +326,6 @@ InputMenu::~InputMenu()
     left.hide();
     right.hide();
     disconnect.hide();
-    respawn.hide();
     restart.hide();
     data_output.hide();
     func_input.hide();
