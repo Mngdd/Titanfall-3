@@ -47,8 +47,7 @@ enum game_state
 {
     FIRE = 0,
     RESPAWN = 1,
-    RESTART = 2,
-    LEAVE = 3
+    LEAVE = 2
 };
 
 // СЕРВЕР

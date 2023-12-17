@@ -10,4 +10,4 @@ void game_loop();
 
 void game_master();
 
-#endif//TITANFALL_3_LOGIC_H
+#endif // TITANFALL_3_LOGIC_H
