@@ -15,7 +15,6 @@ Player::Player(const string &namePlayer, int xcord, int ycord)
     y = ycord;
     alive = true;
     awaits_respawn = true;
-    func = "x";
     // body = new  = new Graph_lib::Circle{Point(x, y), PlayerRad};
 }
 
@@ -25,8 +24,12 @@ Player::Player(const string &namePlayer)
     x = y = -1;
     alive = true;
     awaits_respawn = true;
-    func = "x";
     // body = new  = new Graph_lib::Circle{Point(x, y), PlayerRad};
+}
+
+void Player::SetAlive()
+{
+    alive = true;
 }
 
 string Player::GetName()
@@ -34,15 +37,15 @@ string Player::GetName()
     return name;
 }
 
-void Player::Revive()
+void Player::Revive() // Makes player alive
 {
     alive = true;
     awaits_respawn = false;
 }
 
-pair<int, int> Player::GetCords()
+pair<int &, int &> Player::GetCords()
 {
-    return pair<int, int>{x, y};
+    return pair<int &, int &>{x, y};
 }
 
 ///  мат выражения
@@ -216,7 +219,7 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                 auto obst_for = find(black_cords.begin(), black_cords.end(), p); // для проверки на попадание в препятсвие
                 auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
 
-                if (x <= PlayerRad + SpawnObsMinDist)
+                if (x <= PlayerRad + 1)
                 {
                     cord_vector.push_back(make_pair(x_i, y_i));
                     continue;

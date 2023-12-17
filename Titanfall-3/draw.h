@@ -14,5 +14,6 @@ std::vector<std::pair<int, int>> Func_trace(std::string func_enter, std::pair<in
 void game_draw(Screen &main_win, std::vector<Player> &pl,
                std::vector<Obstacle> &obstacles, input_data equation, Player real_player);
 // void print_text()
+void respawn(Screen &win, std::vector<Obstacle> &obst, Player &player, std::vector<Player> &pl_);
 
 #endif // TITANFALL_3_SERVER_H

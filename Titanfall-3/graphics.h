@@ -5,6 +5,7 @@
 #include <Graph_lib/Graph.h>
 #include <Graph_lib/Simple_window.h>
 
+#include "level_gen.h"
 #include "settings.h"
 #include "environment.h"
 #include <FL/Fl_Box.H>
@@ -16,7 +17,7 @@
 
 using namespace Graph_lib;
 
-struct input_data // данные передаваемые кнопкой
+struct input_data // данные передаваемые при нажатии кнопки
 {
     game_state g_s;
     std::string equation;
@@ -32,6 +33,10 @@ struct InputMenu : Graph_lib::Window
     ~InputMenu();
     void control_show();
     input_data wait_for_game_button();
+    void print_text(std::string);
+    int record{0};
+    input_data wait_for_restart();
+    bool button_pushed = false;
 
 private:
     // MENU
@@ -49,8 +54,8 @@ private:
     game_state state;
     std::string line;
     game_state GetState() { return state; }
-
     // RESTART
+
     static void restart_bt(Address, Address widget)
     {
         auto &btn = reference_to<Button>(widget);
@@ -106,37 +111,39 @@ struct Screen : Graph_lib::Window
     bool playing() { return gamin_now; }
     input_data status;
     input_data GetState() { return status; }
-    InputMenu control_win{Point(100, 100), InputWidth, InputHeight, "game contol"};
+    InputMenu control_win{Point(100, FieldHeight), InputWidth, InputHeight, "game contol"};
+    In_box nick_input;
+    GenerationSettings settings();
+    std::vector<int> data;
+
+    static Graph_lib::Open_polyline *fn2;
+    static Vector_ref<Circle> show_obs;
+    static Vector_ref<Circle> show_pl;
+    static Vector_ref<Text> show_nm;
 
 private:
     void hide_menu()
-    { // мне лень делать красиво
+    {
+
         host_button.hide();
-        join_button.hide();
         quit_button.hide();
         detach(game_name);
         nick_input.hide();
     }
-
     // MENU
     Text game_name;
-    In_box nick_input;
     Button host_button;
-    Button join_button;
     Button quit_button;
     bool gamin_now;
-    // IN-GAME
-    // cd просто для привязки
-    // Button Quit
     bool button_pushed = false;
     static void cd_quit(Address, Address widget);
     void event_quit();
-    // Button Host
+    // Button Go_play
     static void cd_host(Address, Address widget);
     void event_host();
     // Button Join
-    static void cd_join(Address, Address widget);
-    void event_join();
+    // static void cd_join(Address, Address widget);
+    // void event_join();
 };
 
 class SliderInput : public Fl_Group
@@ -149,11 +156,9 @@ class SliderInput : public Fl_Group
     //    These 'attach' the input and slider's values together.
     //
     void Slider_CB2();
-
-    static void Slider_CB(Fl_Widget *w, void *data) { ((SliderInput *)data)->Slider_CB2(); }
-
+    static void Slider_CB(Fl_Widget *, void *data) { ((SliderInput *)data)->Slider_CB2(); }
     void Input_CB2();
-    static void Input_CB(Fl_Widget *w, void *data) { ((SliderInput *)data)->Input_CB2(); }
+    static void Input_CB(Fl_Widget *, void *data) { ((SliderInput *)data)->Input_CB2(); }
 
 public:
     // CTOR
