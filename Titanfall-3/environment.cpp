@@ -45,6 +45,9 @@ pair<int, int> Player::GetCords()
     return pair<int, int>{x, y};
 }
 
+
+
+
 ///  мат выражения
 //
 // It supports operators: + - * / ^ ( )
@@ -53,6 +56,16 @@ pair<int, int> Player::GetCords()
 // COSH, TANH, ASINH, ACOSH, ATANH, LN, LOG, EXP, SQRT, SQR, ROUND, INT.
 
 // It supports variables A to Z.
+double distance(pair<int, int> a, pair<int, int> b) {
+    return sqrt(pow(b.second - a.first, 2) + pow(b.second - a.second, 2));
+}
+
+bool doesLineIntersectCircle(pair<int, int> a, pair<int, int> b,int x,int y,const int r) {
+    double dist = abs((b.second - a.second) * x - (b.first - a.first) * y + b.first * a.second - b.second * a.first) / distance(a, b);
+    return dist < r;
+}
+
+
 
 std::vector<std::pair<int, int>> cut_x_y(vector<Obstacle> &findxyobst)
 {
@@ -106,33 +119,38 @@ std::vector<std::pair<int, int>> obstac_x_y(vector<Obstacle> &findxyobst)
     return points;
 }
 
-vector<pair<int, int>> player_x_y(vector<Player> &findxyobst)
+bool player_x_y(vector<Player> &findxyobst, pair<int,int> news, pair<int,int> old)
 {
     vector<pair<int, int>> points;
     for (const auto &i : findxyobst)
     {
 
-        int a = i.GetPos().x;
+        int a = i.GetPos().x; //* кординаты игрока
         int b = i.GetPos().y;
         const int r = PlayerRad;
-        for (int x = a - r; x <= a + r; x += 1)
-        {
-            for (int y = b - r; y <= b + r; y += 1)
-            {
-                if (std::pow(x - a, 2) + std::pow(y - b, 2) <= std::pow(r, 2))
-                {
-                    points.push_back(std::make_pair(x, y));
-                }
-            }
+
+        if (doesLineIntersectCircle(news, old, a, b, r)){
+            return true;
         }
+        // for (int x = a - r; x <= a + r; x += 1)
+        // {
+        //     for (int y = b - r; y <= b + r; y += 1)
+        //     {
+        //         if (std::pow(x - a, 2) + std::pow(y - b, 2) <= std::pow(r, 2))
+        //         {
+        //             points.push_back(std::make_pair(x, y));
+        //         }
+        //     }
+        // }
+
     }
 
-    return points;
+    return false;
 }
 
 Player &check_player(int x, int y, vector<Player> &players)
 { // тут ищем кому приндлежит данная точка
-    int min_dist = PlayerRad + 2;
+    int min_dist = PlayerRad * 3;
     size_t closest;
     for (size_t i = 0; i < players.size(); ++i)
     {
@@ -160,8 +178,9 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
     vector<pair<int, int>> cord_vector;
     vector<pair<int, int>> white_cords = cut_x_y(obstacle_mini);     // нашли все координаты вырезов
     vector<pair<int, int>> black_cords = obstac_x_y(obstacle_mini);  // нашли все координаты препятствия
-    vector<pair<int, int>> gamers_cords = player_x_y(players_cords); // нашли все координаты игроков
+    // vector<pair<int, int>> gamers_cords = player_x_y(players_cords); // нашли все координаты игроков
     vector<int> index;
+    int x_old = cords.first, y_old = cords.second;
     if (pos != string::npos) // проверка есть ли аргумент Х в функции
     {
         for (size_t i = 0; i <= func_enter.size() - 1; ++i)
@@ -214,18 +233,20 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                 }
                 pair<int, int> p = make_pair(x_i, y_i);
                 auto obst_for = find(black_cords.begin(), black_cords.end(), p); // для проверки на попадание в препятсвие
-                auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
+                // auto gamer_for = find(gamers_cords.begin(), gamers_cords.end(), p);
 
                 if (x <= PlayerRad + SpawnObsMinDist)
                 {
                     cord_vector.push_back(make_pair(x_i, y_i));
+                    x_old = x_i, y_old = y_i;
                     continue;
                 }
-                if (gamer_for != gamers_cords.end()) // true если попали в игрока
+                if (player_x_y(players_cords,p,make_pair(x_old, y_old))) // true если попали в игрока
                 {                                    // удалям координаты из вектора
                     cord_vector.push_back(make_pair(x_i, y_i));
 
                     check_player(x_i, y_i, players_cords).Kill();
+                    x_old = x_i, y_old = y_i;
                     continue;
                 }
 
@@ -233,6 +254,7 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                 if (cut_for != white_cords.end())
                 {
                     cord_vector.push_back(make_pair(x_i, y_i));
+                    x_old = x_i, y_old = y_i;
                     continue;
                 }
 
@@ -241,9 +263,11 @@ vector<pair<int, int>> Func_trace(string &func_enter, pair<int, int> &cords,
                     int rad = WhiteObsRad;
                     Obstacle with_out = Obstacle{Graph_lib::Point(x_i, y_i), rad, true};
                     obstacle_mini.push_back(with_out); // попали в препятствие x_i добавляем вырез
+                    x_old = x_i, y_old = y_i;
                     break;
                 }
                 cord_vector.push_back(make_pair(x_i, y_i));
+                x_old = x_i, y_old = y_i;
             }
         }
     }
