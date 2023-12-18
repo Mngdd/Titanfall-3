@@ -245,7 +245,7 @@ void game_loop() {
                     if (players[i].GetName() == real_player.GetName()) {
                         real_player = players[i];
                         //me_ptr = &players[i];
-                        //break; // FIXME: этот ебаный урод почемут работает как continue для while...
+                        //break; // FIXME: это chel почемут работает как continue для while...
                 }
 
                 std::cout << "phase 3 " << players[i].GetName() << "\n";
