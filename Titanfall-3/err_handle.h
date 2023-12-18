@@ -4,8 +4,8 @@
 #define TRUE_BOOL '1'
 
 #include <WinSock2.h> // замена linux <sys/socket.h>, тут функция сокет определена
-#include <windows.h>
 #include <ws2tcpip.h> // socketlen_t
+#include <windows.h>
 #include <cstdlib> // exit + perror
 #include <string>
 

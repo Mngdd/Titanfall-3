@@ -34,11 +34,11 @@ const unsigned int btn_betw = 50;
 
 inline Graph_lib::Color HugeObsColor = Graph_lib::Color::black;
 inline Graph_lib::Color MediumObsColor = Graph_lib::Color::black;
-inline Graph_lib::Color SmallObsColor = Graph_lib::Color::black;
+inline static Graph_lib::Color SmallObsColor = Graph_lib::Color::black;
 
 // Случайный цвет игроков
-inline bool RainbowPlayers = true; //FIXME: не работает
-inline Graph_lib::Color PlayerColor = Graph_lib::Color::green;
+constexpr bool RainbowPlayers = false; //FIXME: не работает
+inline static Graph_lib::Color PlayerColor = Graph_lib::Color::green;
 // Color Team1PlayerColor = Color::blue;
 // Color Team2PlayerColor = Color::red;
 
@@ -47,7 +47,8 @@ enum game_state {
     FIRE = 0,
     RESPAWN = 1,
     RESTART = 2,
-    LEAVE = 3
+    LEAVE = 3,
+    IDLE = 4
 };
 
 
@@ -67,6 +68,8 @@ constexpr char delimiter = '$';
 constexpr char endchar = ';';
 // могу щас удалять/добавлять игроков?
 inline bool could_interact = false;
+// таймаут сокета
+constexpr int SOCKET_TIMEOUT_SEC = 15;
 
 // кол-во игроков
 inline int NumOfPlayers = 2;
@@ -76,7 +79,8 @@ const int PlayerRad = 10;
 const int NickSize = 15;
 // Имя нашего игрока
 inline std::string UserNick = "Player";
-
+// дефолтная пустая функция
+const std::string default_func("1/0");
 // радиус бабаха
 const int WhiteObsRad = 5;
 

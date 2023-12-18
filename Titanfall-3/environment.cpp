@@ -4,44 +4,34 @@
 #include "environment.h"
 #include "settings.h"
 #include <Graph_lib/Point.h>
-#include <bits/stdc++.h>
+#include <bits/stdc++.h> // кринж воняеш
 #include "parser.h"
 using namespace std;
 
-Player::Player(const string &namePlayer, int xcord, int ycord)
-{
-    name = namePlayer;
+Player::Player(const string &namePlayer, int xcord, int ycord) : Player(namePlayer) {
     x = xcord;
     y = ycord;
-    alive = true;
-    awaits_respawn = true;
-    func = "x";
-    // body = new  = new Graph_lib::Circle{Point(x, y), PlayerRad};
 }
 
-Player::Player(const string &namePlayer)
-{
+Player::Player(const string &namePlayer) {
     name = namePlayer;
     x = y = -1;
     alive = true;
     awaits_respawn = true;
-    func = "x";
+    func = default_func;
     // body = new  = new Graph_lib::Circle{Point(x, y), PlayerRad};
 }
 
-string Player::GetName()
-{
+string Player::GetName() const {
     return name;
 }
 
-void Player::Revive()
-{
+void Player::Revive() {
     alive = true;
     awaits_respawn = false;
 }
 
-pair<int, int> Player::GetCords()
-{
+pair<int, int> Player::GetCords() const {
     return pair<int, int>{x, y};
 }
 

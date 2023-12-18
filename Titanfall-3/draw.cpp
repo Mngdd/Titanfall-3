@@ -78,20 +78,16 @@ void game_draw(Screen &main_win, std::vector<Player> &pl,
     };
     std::string function = equation.equation;
     // draw function
-
-    if (equation.g_s == game_state::FIRE)
+    main_win.detach(*fn2);
+    fn2 = new Graph_lib::Open_polyline;
+    l = Func_trace(function, q, obst, pl, equation.right);
+    for (auto i : l)
     {
-        main_win.detach(*fn2);
-        fn2 = new Graph_lib::Open_polyline;
-        l = Func_trace(function, q, obst, pl, equation.right);
-        for (auto i : l)
-        {
-            Point *j = new Point(i.first, i.second);
-            fn2->add(*j);
-        }
-        fn2->set_color(Graph_lib::Color::red);
-        main_win.attach(*fn2);
+        Point *j = new Point(i.first, i.second);
+        fn2->add(*j);
     }
+    fn2->set_color(Graph_lib::Color::red);
+    main_win.attach(*fn2);
 }
 
 void func_draw(Screen &main_win, std::vector<Point> &f)

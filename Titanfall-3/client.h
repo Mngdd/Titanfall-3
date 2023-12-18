@@ -28,17 +28,18 @@ private:
     int iResult;
     // размер буфера приема
     void decode(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
-                std::string &func_text_, bool right, std::string &who, const char *buf);
+                std::string &func_text_, bool& right, std::string &who, const char *buf);
 
 public:
-    Client(const std::string &ip_, const int port);
+    Client();
     ~Client();
     //void Connect(std::string &ip, int port);
     // возвращает кол-во
+    void Connect_to(const std::string &ip_, const int port);
     int Send(const std::string &name, bool respawn, bool alive,
              const std::string &func, bool right);
     int Recv(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
-             std::string &func_text_, bool right, std::string &who);
+             std::string &func_text_, bool& right, std::string &who);
 };
 
 int client_test(const char ip[], int port);

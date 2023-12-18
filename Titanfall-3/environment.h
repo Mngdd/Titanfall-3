@@ -28,9 +28,9 @@ public:
     ~Player() {}
     Player(const std::string &namePlayer, int xcord, int ycord);
     Player(const std::string &namePlayer);
-    std::string GetName();
+    std::string GetName() const;
     void SetName(const std::string &name_) { name = name_; }
-    std::pair<int, int> GetCords(); //fixme: уже есть GetPos, нес мешно
+    std::pair<int, int> GetCords() const; //fixme: уже есть GetPos, нес мешно
     void Kill() { alive = false; }
     void Revive();
     bool IsAlive() const { return alive; }

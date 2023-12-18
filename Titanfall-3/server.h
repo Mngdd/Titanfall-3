@@ -5,23 +5,27 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <map>
 
 
 //todo: add send_ALL & read_ALL, prevent delete/add without permission
 class Server {
 public:
     Server(const int port);
+    Server() = default;
     ~Server();
     void StartListen();
     void StopListen();
-    void Send(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
-             std::string &func_text_, bool right, std::string &who,
+    int Send(const std::vector<Player> &players_, const std::vector<Obstacle> &obstacles_,
+             const std::string &func_text_, bool right, const std::string &who,
              SOCKET to_who);
-    void Recv(Player &pl, SOCKET from_who);
-    void decode(Player &pl, const char *buf);
-    const char *encode(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
-                       std::string &func_text_, bool right, std::string &who);
-    void disconnect(SOCKET client_socket_);
+    void SendAll(const std::vector<Player> &players_, const std::vector<Obstacle> &obstacles_,
+                const std::string &func_text_, bool right, const std::string &who);
+    int Recv(Player *pl);
+    void decode(Player *pl, const char *buf);
+    const char *encode(const std::vector<Player> &players_, const std::vector<Obstacle> &obstacles_,
+                       const std::string &func_text_, bool right, const std::string &who);
+    void disconnect(Player* who);
     // можем ли сейчас менять что-то в data
     // переменная нужна для предотвращения изменений в data во время итерации по ней же
     bool can_change;
@@ -30,7 +34,7 @@ private:
     // данные игрока + его сокет
     // Player не pointer потому что мы 24/7 меняем/удаляем игроков
     // работать с памятью так быстро напряжно
-    std::vector<std::pair<Player *, SOCKET>> data;
+    std::map<Player *, SOCKET> data;
     unsigned int curr_players_amount;
     // для предотвращения двойного открытия прослушки
     // просто проверять player_count < max не подойдет, могли отключиться после закрытия прослушки

@@ -261,14 +261,9 @@ void Screen::wait_for_button() // conservation window
     while (!button_pushed && Fl::wait())
     {
     };
-    if (!gamin_now)
-    {
-        hide_menu();
-    }
-    else
-    {
-        //...
-    }
+    hide_menu();
+    UserNick = nick_input.get_string();
+
     button_pushed = false;
     Fl::redraw();
 }

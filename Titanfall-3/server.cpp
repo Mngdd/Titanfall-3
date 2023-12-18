@@ -2,30 +2,29 @@
 #include "settings.h"
 #include <cstring>
 #include <unistd.h>// write + sleep
+#include <thread>
 
 bool getMyIP(IPv4 &myIP) {
     char szBuffer[1024];
 
-#ifdef WIN32
+    #ifdef WIN32
     WSADATA wsaData;
     WORD wVersionRequested = MAKEWORD(2, 0);
     if (::WSAStartup(wVersionRequested, &wsaData) != 0)
         return false;
-#endif
-
-
+    #endif
     if (gethostname(szBuffer, sizeof(szBuffer)) == SOCKET_ERROR) {
-#ifdef WIN32
+    #ifdef WIN32
         WSACleanup();
-#endif
+    #endif
         return false;
     }
 
     struct hostent *host = gethostbyname(szBuffer);
     if (host == NULL) {
-#ifdef WIN32
+    #ifdef WIN32
         WSACleanup();
-#endif
+    #endif
         return false;
     }
 
@@ -35,9 +34,9 @@ bool getMyIP(IPv4 &myIP) {
     myIP.b3 = ((struct in_addr *) (host->h_addr))->S_un.S_un_b.s_b3;
     myIP.b4 = ((struct in_addr *) (host->h_addr))->S_un.S_un_b.s_b4;
 
-#ifdef WIN32
+    #ifdef WIN32
     WSACleanup();
-#endif
+    #endif
     return true;
 }
 
@@ -54,7 +53,7 @@ Server::Server(const int port) {
     is_listening = false;
     can_change = true;
 
-    data.reserve(NumOfPlayers);
+    //data.reserve(NumOfPlayers);
     printf("server_test started...\n");
     printf("tryin to init WSAStartup on server...\n");
 
@@ -100,14 +99,15 @@ Server::~Server() {
     freeaddrinfo(result);// Освобождаем памятьб
 
     // чистим-чистим
-    for (auto &i: data) {
-        disconnect(i.second);
+    for (auto& [key, val] : data) {
+        disconnect(key);
     }
     WSACleanup();
 }
 
 void Server::StartListen() {
     // создаем сокет ДЛЯ прослушивания подключений клиентов...
+    printf("creating ListenSocket...\n");
     ListenSocket = Socket(result);
     printf("creating ListenSocket success!\n");
     // связываем сокет прослушки с адресом из result
@@ -119,15 +119,16 @@ void Server::StartListen() {
     // принимаем клиентский сокет
     is_listening = true;
     while ((curr_players_amount < NumOfPlayers) && is_listening) {
-        printf("Waiting...\n");
+        printf("SRV Waiting...\n");
         ClientSocket = Accept(ListenSocket, NULL, NULL);
         printf("Client found!\n");
-        bool accepted = true;
 
-        Player *ptr = new Player("ponos_net_tmp");
-        Recv(*ptr, ClientSocket);                                     //fixme
-        for (auto pl: data) {                           // проверяем, есть ли такой ник на серве
-            if (pl.first->GetName() == ptr->GetName()) {// ник все-таки занят
+        Player *ptr = new Player(UserNick);
+        Recv(ptr);
+
+        bool accepted = true;
+        for (auto& [key, val] : data) {                           // проверяем, есть ли такой ник на серве
+            if (key->GetName() == ptr->GetName()) {// ник все-таки занят
                 closesocket(ClientSocket);
                 accepted = false;
                 delete ptr;
@@ -136,9 +137,8 @@ void Server::StartListen() {
         }
         if (accepted) {// ADD
             // ждем пока разрешат, точно уйдет в бесконечность (>1 сек уж точно)
-            while (!can_change)
-                ;
-            data.emplace_back(ptr, ClientSocket);
+            while (!can_change);
+            data[ptr] = ClientSocket;
         }
     }
     StopListen();
@@ -150,16 +150,28 @@ void Server::StopListen() {
     closesocket(ListenSocket);
 }
 
-void Server::Recv(Player &pl, SOCKET from_who) {
+int Server::Recv(Player *pl) {
     char buf[DEFAULT_BUFLEN];
     printf("SRV Receiving...\n");
+    
+    SOCKET from_who = data[pl];
+    DWORD max_timeout = SOCKET_TIMEOUT_SEC * 1000;
+    setsockopt(from_who, SOL_SOCKET, SO_RCVTIMEO, (char*)&max_timeout, sizeof(max_timeout));
+    
     iResult = recv(from_who, buf, DEFAULT_BUFLEN, 0);// тут получаем
     if (iResult > 0) {                               // если клиент не отключен
         printf("Bytes received: %d\n", iResult);
         printf("RECEIVED: %s\n", buf);// там чета сзади прилипает в выводе, наверное служебная инфа
-    } else if (iResult == 0)          // означает что клиент отключился
-        printf("SRV Client disconnected...\n");
-    else {
+    } else if (iResult == 0) {        // означает что клиент отключился
+        printf("SRV Client %s disconnected...\n", pl->GetName().c_str());
+        data.erase(pl);
+        return 0;
+    } else if (WSAGetLastError() != WSAETIMEDOUT) {
+        printf("SRV Client %s timeout reached...\n", pl->GetName().c_str());
+        disconnect(pl);
+        return 0;
+    } else {
+        
         // printf("SRV recv failed with error: %d\n", WSAGetLastError());
         closesocket(from_who);
         WSACleanup();
@@ -168,10 +180,11 @@ void Server::Recv(Player &pl, SOCKET from_who) {
     }
 
     decode(pl, buf);
+    return iResult;
 }
 
-void Server::Send(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
-                 std::string &func_text_, bool right, std::string &who,
+int Server::Send(const std::vector<Player> &players_, const std::vector<Obstacle> &obstacles_,
+                 const std::string &func_text_, bool right, const std::string &who,
                  SOCKET to_who) {// все по ссылке - вдруг мы успеем чет нажать
     // отправим на ClientSocket данные char'ы из buf, iResult штук
     printf("SRV Sending...\n");
@@ -185,10 +198,18 @@ void Server::Send(std::vector<Player> &players_, std::vector<Obstacle> &obstacle
         throw std::runtime_error(err_msg);
     }
     printf("SRV Bytes sent: %d\n", iSendResult);
+    return iSendResult;
 }
 
-const char *Server::encode(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
-                           std::string &func_text_, bool right, std::string &who) {
+void Server::SendAll(const std::vector<Player> &players_, const std::vector<Obstacle> &obstacles_,
+                    const std::string &func_text_, bool right, const std::string &who) {
+    for (auto& [key, val] : data) {
+        Send(players_, obstacles_, func_text_, right, who, val);
+    }
+}
+
+const char *Server::encode(const std::vector<Player> &players_, const std::vector<Obstacle> &obstacles_,
+                           const std::string &func_text_, bool right, const std::string &who) {
     std::string msg{};
     // single client: name$x$y$respawn$alive... ($ if next player exists else ;)
     for (size_t i = 0; i < players_.size(); ++i) {
@@ -225,43 +246,44 @@ const char *Server::encode(std::vector<Player> &players_, std::vector<Obstacle> 
     return ptr;
 }
 
-void Server::decode(Player &pl, const char *buf) {
+void Server::decode(Player *pl, const char *buf) {
     const char *ptr = buf;
     std::string msg{};
 
     // get name
     for (; *ptr != delimiter; ++ptr) { msg += *ptr; }
-    pl.SetName(msg);
+    pl->SetName(msg);
     msg.clear();
     ++ptr;
 
     // get respawn+alive and respawn if needed else kill
-    pl.awaits_respawn = *ptr == TRUE_BOOL;
+    pl->awaits_respawn = *ptr == TRUE_BOOL;
     ptr += 2;
     bool alive_ = *ptr == TRUE_BOOL;
     ptr += 2;
-    if (alive_ || pl.awaits_respawn) {
-        pl.Revive();
+    if (alive_ || pl->awaits_respawn) {
+        pl->Revive();
     } else {
-        pl.Kill();
+        pl->Kill();
     }
 
     // get func
     for (; *ptr != delimiter; ++ptr) { msg += *ptr; }
-    pl.func = msg;
+    pl->func = msg;
     msg.clear();
     ++ptr;
 
     // get right(bool)
-    pl.right = *ptr == TRUE_BOOL;
+    pl->right = *ptr == TRUE_BOOL;
 }
 
-void Server::disconnect(SOCKET client_socket_) {
-    iResult = shutdown(client_socket_, SD_SEND);
+void Server::disconnect(Player* who) {
+    iResult = shutdown(data[who], SD_SEND);
     if (iResult == SOCKET_ERROR) {
         printf("shutdown failed with error: %d\n", WSAGetLastError());
     }
-    closesocket(client_socket_);// free mem
+    closesocket(data[who]);// free mem
+    data.erase(who);
 }
 
 int server_test(int port) {
@@ -320,7 +342,7 @@ int server_test(int port) {
     Listen(ListenSocket, SOMAXCONN);// ждемс
 
     // принимаем клиентский сокет
-    printf("Waiting...\n");
+    printf("SRV Waiting...\n");
     ClientSocket = Accept(ListenSocket, NULL, NULL);
 
     printf("Client found!\n");

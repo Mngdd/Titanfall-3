@@ -4,12 +4,12 @@
 #include <iostream>
 #include <stdexcept>
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
-#pragma comment(lib, "Ws2_32.lib")
-#pragma comment(lib, "Mswsock.lib")
-#pragma comment(lib, "AdvApi32.lib")// TODO: помогите, откуда их в симейке привязывать...
+// #pragma comment(lib, "Ws2_32.lib")
+// #pragma comment(lib, "Mswsock.lib")
+// #pragma comment(lib, "AdvApi32.lib")// TODO: помогите, откуда их в симейке привязывать...
 
 
-Client::Client(const std::string &ip_, const int port) {
+Client::Client() {
     ConnectSocket = INVALID_SOCKET;
     result = NULL;
     ptr = NULL;
@@ -28,7 +28,20 @@ Client::Client(const std::string &ip_, const int port) {
     hints.ai_family = AF_UNSPEC;      // без семейства
     hints.ai_socktype = SOCK_STREAM;  // тип сокета, берем дефолтный
     hints.ai_protocol = IPPROTO_TCP;  // берем протокол TCP, т.е. нам все одной пачкой придет
+}
 
+Client::~Client() {
+    std::cout << "CLIENT IS SHUTTIN DOWN!\n";
+    iResult = shutdown(ConnectSocket, SD_SEND);
+    if (iResult == SOCKET_ERROR) {
+        // change da wolrd, my final message, goodbye
+        printf("shutdown failed with error: %d\n", WSAGetLastError());
+    }
+    closesocket(ConnectSocket);
+    WSACleanup();
+}
+
+void Client::Connect_to(const std::string &ip_, const int port) {
     // getaddrinfo обеспечивает независимое от протокола преобразование из имени узла ANSI в адрес
     // (крч в нормальный вид приводим адрес, и еще динамич. память выделяем на это!)
     iResult = getaddrinfo(ip_.c_str(), std::to_string(port).c_str(), &hints, &result);
@@ -38,7 +51,6 @@ Client::Client(const std::string &ip_, const int port) {
         std::string err_msg = "getaddrinfo failed with error: " + std::to_string(iResult);
         throw std::runtime_error(err_msg);
     }
-
     // подключаемся до тех пор, пока нас не подключит
     for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
 
@@ -60,23 +72,8 @@ Client::Client(const std::string &ip_, const int port) {
     }
 }
 
-Client::~Client() {
-    std::cout << "CLIENT IS SHUTTIN DOWN!\n";
-    iResult = shutdown(ConnectSocket, SD_SEND);
-    if (iResult == SOCKET_ERROR) {
-        // change da wolrd, my final message, goodbye
-        printf("shutdown failed with error: %d\n", WSAGetLastError());
-    }
-    closesocket(ConnectSocket);
-    WSACleanup();
-}
-
 int Client::Send(const std::string &name, bool respawn, bool alive,
                  const std::string &func, bool right) {
-    // ! первые 20 байт выделены на ник игрока, еще 3 на bool (включая пробелы справа и слева),
-    // ! оставшееся выделено на функцию
-    // fixme: зафиксировать размеры отправляемых файлов!
-
     std::string msg = name + delimiter + std::to_string(respawn) + delimiter +
                       std::to_string(alive) + delimiter + func + delimiter +
                       std::to_string(right) + endchar;
@@ -93,14 +90,15 @@ int Client::Send(const std::string &name, bool respawn, bool alive,
 }
 
 int Client::Recv(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
-                 std::string &func_text_, bool right, std::string &who) {
+                 std::string &func_text_, bool& right, std::string &who) {
     char buf[DEFAULT_BUFLEN];
     iResult = recv(ConnectSocket, buf, DEFAULT_BUFLEN, 0);
     if (iResult > 0) {
         printf("Bytes received: %d\n", iResult);
     } else if (iResult == 0) {
-        throw std::runtime_error("Connection closed\n");
-        //printf("Connection closed\n");
+        //throw std::runtime_error("Connection closed\n");
+        printf("Connection closed\n");
+        return 0;
     } else {
         std::string err_msg = "recv failed with error: " + std::to_string(WSAGetLastError());
         throw std::runtime_error(err_msg);
@@ -112,7 +110,7 @@ int Client::Recv(std::vector<Player> &players_, std::vector<Obstacle> &obstacles
 
 // молимся что оно работает и я не потерял нигде ++ptr ;(
 void Client::decode(std::vector<Player> &players_, std::vector<Obstacle> &obstacles_,
-                    std::string &func_text_, bool right, std::string &who, const char *buf) {
+                    std::string &func_text_, bool& right, std::string &who, const char *buf) {
     const char *ptr = buf;
     std::string msg{};
     players_.clear();

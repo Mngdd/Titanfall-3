@@ -124,7 +124,7 @@ private:
     Button host_button;
     Button join_button;
     Button quit_button;
-    bool gamin_now;
+    bool gamin_now; // FIXME: OBSOLETE
     // IN-GAME
     // cd просто для привязки
     // Button Quit
